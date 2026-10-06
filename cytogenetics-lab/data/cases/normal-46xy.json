@@ -1,0 +1,57 @@
+{
+  "case_id": "normal-46xy",
+  "title": "Normal male karyotype",
+  "difficulty": "introductory",
+  "case_type": "constitutional",
+  "modules": ["karyotype", "abnormality", "iscn_interpretation", "iscn_construction"],
+  "clinical_history": "A 32-year-old man is studied as a control specimen during cytogenetics laboratory instruction. No congenital anomalies or hematologic disease are described.",
+  "unknown_prompt": "Arrange the chromosomes from this demonstration metaphase into a standard karyotype and report the ISCN.",
+  "chromosome_count": 46,
+  "sex_chromosomes": "XY",
+  "chromosome_set": { "sex": "XY" },
+  "abnormality_category": "normal",
+  "abnormality_type": [],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy"]
+  },
+  "chromosomes_involved": [],
+  "expected_iscn": "46,XY",
+  "accepted_iscn_variants": ["46,XY"],
+  "iscn_prompt": "46,XY",
+  "plain_language_interpretation": "A normal male diploid karyotype: 46 chromosomes with one X and one Y chromosome and no numerical or structural abnormality reported.",
+  "interpretation_items": {
+    "chromosome_count": "46",
+    "sex_chromosomes": "XY",
+    "numerical": "none",
+    "structural": "none",
+    "chromosomes_involved": "none",
+    "arm": "none",
+    "band": "none"
+  },
+  "diagnosis": "No cytogenetic abnormality identified (normal male karyotype)",
+  "diagnosis_options": [
+    "No cytogenetic abnormality identified (normal male karyotype)",
+    "No cytogenetic abnormality identified (normal female karyotype)",
+    "Down syndrome (trisomy 21)",
+    "Klinefelter syndrome"
+  ],
+  "explanation": "A standard male karyotype contains 22 pairs of autosomes plus X and Y. Chromosomes are arranged by the Denver/ISCN groups using relative length and centromere position: A (1–3), B (4–5), C (6–12 and X), D (13–15), E (16–18), F (19–20), and G (21–22 and Y). The ISCN 46,XY states the chromosome number first, then the sex-chromosome complement, with no additional abnormality tokens.",
+  "hints": [
+    "Count the chromosomes in the unassigned tray before you begin grouping. A normal human metaphase has 46 chromosomes.",
+    "Place the two largest metacentric chromosomes in group A as pair 1. Pair 2 is large and more submetacentric; pair 3 is slightly smaller and nearly metacentric.",
+    "The Y chromosome is a small acrocentric chromosome with a dark-staining q arm; it belongs in group G with 21 and 22, not with the C-group X chromosome."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+    },
+    {
+      "label": "Textbook",
+      "citation": "Nussbaum RL, McInnes RR, Willard HF. Thompson & Thompson Genetics in Medicine. 8th ed. Philadelphia: Elsevier; 2016. Chapter on chromosomal basis of heredity."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

@@ -1,0 +1,3772 @@
+{
+  "version": "3.0.0",
+  "disclaimer": "Teaching cases are the canonical records that have a playable laboratory activity. Other records remain reference mechanisms and are not separate workflows.",
+  "visibility": [
+    {
+      "id": "clearly_visible",
+      "label": "Clearly visible on a conventional karyotype"
+    },
+    {
+      "id": "potentially_visible",
+      "label": "Sometimes visible; smaller cases often need FISH or a microarray"
+    },
+    {
+      "id": "usually_not_visible",
+      "label": "Usually not visible by arranging a conventional karyotype"
+    },
+    {
+      "id": "size_dependent",
+      "label": "Visible when the change is large; smaller cases often need FISH or a microarray"
+    }
+  ],
+  "changes": [
+    {
+      "id": "missing",
+      "label": "Material is missing"
+    },
+    {
+      "id": "duplicated",
+      "label": "Material is duplicated"
+    },
+    {
+      "id": "moved",
+      "label": "Material has moved between chromosomes"
+    },
+    {
+      "id": "extra",
+      "label": "An entire extra chromosome is present"
+    },
+    {
+      "id": "absent",
+      "label": "A whole chromosome is missing"
+    }
+  ],
+  "places": [
+    {
+      "id": "p",
+      "label": "p arm"
+    },
+    {
+      "id": "q",
+      "label": "q arm"
+    },
+    {
+      "id": "both",
+      "label": "both arms"
+    },
+    {
+      "id": "whole",
+      "label": "the whole chromosome"
+    }
+  ],
+  "identifies": [
+    {
+      "id": "trisomy",
+      "label": "Trisomy"
+    },
+    {
+      "id": "monosomy",
+      "label": "Monosomy"
+    },
+    {
+      "id": "deletion",
+      "label": "Deletion"
+    },
+    {
+      "id": "duplication",
+      "label": "Duplication"
+    },
+    {
+      "id": "translocation",
+      "label": "Translocation"
+    },
+    {
+      "id": "inversion",
+      "label": "Inversion"
+    },
+    {
+      "id": "other",
+      "label": "Other"
+    }
+  ],
+  "diseases": [
+    {
+      "id": "down-syndrome",
+      "disease_name": "Down syndrome",
+      "teaching_notes": "Down syndrome is the disease. Free trisomy 21, Robertsonian translocation, and mosaicism are different cytogenetic cases. The simple lab uses free trisomy 21 only.",
+      "cytogenetic_cases": [
+        {
+          "id": "free-trisomy-21",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "Free trisomy 21",
+          "patient_case_label": "This patient's case: free trisomy 21.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "21"
+          ],
+          "homolog_affected": "An additional free chromosome 21",
+          "primary_locus": "21",
+          "specific_region": null,
+          "abnormality_type": "whole-chromosome gain",
+          "structural_class": "Aneuploidy",
+          "typical_configuration": "Three separate chromosomes 21",
+          "whole_chromosome_count": "47",
+          "visual_change": "Three separate chromosome 21s",
+          "material_missing": "None",
+          "material_added": "One whole chromosome 21",
+          "partner_chromosome": null,
+          "partner_note": "None. The extra chromosome is free.",
+          "example_notation": [
+            "47,XX,+21",
+            "47,XY,+21"
+          ],
+          "mechanism": "Meiotic nondisjunction producing free trisomy 21",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not modify the shape or banding of chromosome 21. Robertsonian and mosaic Down syndrome are different cases.",
+          "student_should_notice": "Three separate chromosome 21s",
+          "correct_chromosome": [
+            "21"
+          ],
+          "correct_arm": null,
+          "correct_classification": "trisomy",
+          "final_interpretation": "Aneuploidy: free trisomy 21",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "extra",
+            "place": "whole"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "47,XX,+21",
+            "label": "Female free trisomy 21",
+            "sex": "XX",
+            "copy_number": {
+              "21": 3
+            },
+            "variants": {},
+            "chromosomes_to_find": [
+              "21"
+            ]
+          },
+          "generation": {
+            "abnormality": "whole_chromosome_gain",
+            "copy_state": "3 × chromosome 21",
+            "structural_alteration": "none",
+            "breakpoints": [],
+            "derivatives": []
+          }
+        },
+        {
+          "id": "robertsonian-down",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Robertsonian translocation Down syndrome",
+          "patient_case_label": "This patient's case: Robertsonian translocation Down syndrome.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "14",
+            "21"
+          ],
+          "homolog_affected": "A Robertsonian derivative plus extra chromosome 21 material",
+          "primary_locus": "14 and 21",
+          "specific_region": "Centromeric fusion, commonly der(14;21)(q10;q10)",
+          "abnormality_type": "Robertsonian translocation",
+          "structural_class": "Structural rearrangement producing trisomy 21 material",
+          "typical_configuration": "Not three free chromosomes 21",
+          "whole_chromosome_count": "46",
+          "visual_change": "Extra chromosome 21 material is attached through a Robertsonian derivative",
+          "material_missing": "None",
+          "material_added": "Chromosome 21 long-arm material on the derivative, with an additional 21",
+          "partner_chromosome": [
+            "14",
+            "21"
+          ],
+          "partner_note": "14 and 21 in the common example",
+          "example_notation": [
+            "46,XX,der(14;21)(q10;q10),+21",
+            "46,XY,der(14;21)(q10;q10),+21"
+          ],
+          "mechanism": "Robertsonian translocation producing trisomy 21 material",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw this as three free chromosomes 21.",
+          "student_should_notice": "The cell does not simply contain three separate chromosomes 21",
+          "correct_chromosome": [
+            "14",
+            "21"
+          ],
+          "correct_arm": null,
+          "correct_classification": "translocation",
+          "final_interpretation": "Structural rearrangement producing trisomy 21 material",
+          "karyotype_visibility": "clearly_visible",
+          "answers": null
+        },
+        {
+          "id": "mosaic-down",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Mosaic trisomy 21",
+          "patient_case_label": "This patient's case: mosaic trisomy 21.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "21"
+          ],
+          "homolog_affected": "Trisomy 21 in some cells and two chromosomes 21 in other cells",
+          "primary_locus": "21",
+          "specific_region": null,
+          "abnormality_type": "mosaic trisomy",
+          "structural_class": "Mosaic aneuploidy",
+          "typical_configuration": "Two cell lines",
+          "whole_chromosome_count": "47 in the trisomic line and 46 in the other line",
+          "visual_change": "One metaphase cannot show both lines",
+          "material_missing": "None",
+          "material_added": "An extra chromosome 21 in the trisomic line only",
+          "partner_chromosome": null,
+          "partner_note": "None. The extra chromosome in the trisomic line is free.",
+          "example_notation": [
+            "47,XX,+21/46,XX",
+            "47,XY,+21/46,XY"
+          ],
+          "mechanism": "Mosaicism for free trisomy 21",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not use one metaphase as the whole diagnosis.",
+          "student_should_notice": "A second cell line has to be examined",
+          "correct_chromosome": [
+            "21"
+          ],
+          "correct_arm": null,
+          "correct_classification": "trisomy",
+          "final_interpretation": "Mosaic free trisomy 21",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "NCBI Bookshelf",
+          "citation": "Pal A, Daley SF. Down syndrome. StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing; 2026. Bookshelf ID NBK526016. Free trisomy 21, Robertsonian translocation, and mosaicism.",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK526016/"
+        },
+        {
+          "label": "MedlinePlus Genetics",
+          "citation": "Down syndrome. Most cases are trisomy 21. Translocation and mosaic Down syndrome are less common.",
+          "url": "https://medlineplus.gov/genetics/condition/down-syndrome/"
+        },
+        {
+          "label": "Clinical",
+          "citation": "Bull MJ; Committee on Genetics. Health supervision for children with Down syndrome. Pediatrics. 2011;128(2):393-406."
+        },
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "edwards-syndrome",
+      "disease_name": "Edwards syndrome",
+      "teaching_notes": "Edwards syndrome is the disease. The simple lab uses complete trisomy 18. Mosaic trisomy 18 and partial trisomy 18 are different cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "free-trisomy-18",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "Complete trisomy 18",
+          "patient_case_label": "This patient's case: complete trisomy 18.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "18"
+          ],
+          "homolog_affected": "An additional free chromosome 18",
+          "primary_locus": "18",
+          "specific_region": null,
+          "abnormality_type": "whole-chromosome gain",
+          "structural_class": "Aneuploidy",
+          "typical_configuration": "Three separate chromosomes 18",
+          "whole_chromosome_count": "47",
+          "visual_change": "Three separate chromosome 18s",
+          "material_missing": "None",
+          "material_added": "One whole chromosome 18",
+          "partner_chromosome": null,
+          "partner_note": "None. The extra chromosome is free.",
+          "example_notation": [
+            "47,XX,+18",
+            "47,XY,+18"
+          ],
+          "mechanism": "Meiotic nondisjunction producing free trisomy 18",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not change the structure of chromosome 18.",
+          "student_should_notice": "Three separate chromosome 18s",
+          "correct_chromosome": [
+            "18"
+          ],
+          "correct_arm": null,
+          "correct_classification": "trisomy",
+          "final_interpretation": "Aneuploidy: free trisomy 18",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "extra",
+            "place": "whole"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "47,XX,+18",
+            "label": "Female free trisomy 18",
+            "sex": "XX",
+            "copy_number": {
+              "18": 3
+            },
+            "variants": {},
+            "chromosomes_to_find": [
+              "18"
+            ]
+          },
+          "generation": {
+            "abnormality": "whole_chromosome_gain",
+            "copy_state": "3 × chromosome 18",
+            "structural_alteration": "none",
+            "breakpoints": [],
+            "derivatives": []
+          }
+        },
+        {
+          "id": "mosaic-edwards",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Mosaic trisomy 18",
+          "patient_case_label": "This patient's case: mosaic trisomy 18.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "18"
+          ],
+          "homolog_affected": "Trisomy 18 in some cells only",
+          "primary_locus": "18",
+          "specific_region": null,
+          "abnormality_type": "mosaic trisomy",
+          "structural_class": "Mosaic aneuploidy",
+          "typical_configuration": "Two cell lines",
+          "whole_chromosome_count": "47/46",
+          "visual_change": "One metaphase cannot show both lines",
+          "material_missing": "None",
+          "material_added": "An extra chromosome 18 in the trisomic line only",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "47,XX,+18/46,XX",
+            "47,XY,+18/46,XY"
+          ],
+          "mechanism": "Mosaicism for trisomy 18",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not treat one cell as every cell.",
+          "student_should_notice": "A second cell line has to be examined",
+          "correct_chromosome": [
+            "18"
+          ],
+          "correct_arm": null,
+          "correct_classification": "trisomy",
+          "final_interpretation": "Mosaic trisomy 18",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "partial-trisomy-18",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Partial trisomy 18",
+          "patient_case_label": "This patient's case: partial trisomy 18.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "18"
+          ],
+          "homolog_affected": "Extra chromosome 18 material, not a third free chromosome 18",
+          "primary_locus": "18",
+          "specific_region": "A segment of chromosome 18; the segment depends on the rearrangement",
+          "abnormality_type": "partial trisomy",
+          "structural_class": "Unbalanced rearrangement",
+          "typical_configuration": "Extra 18 material on a derivative chromosome",
+          "whole_chromosome_count": "Often 46",
+          "visual_change": "Not three separate chromosomes 18",
+          "material_missing": "None from chromosome 18",
+          "material_added": "Part of chromosome 18",
+          "partner_chromosome": null,
+          "partner_note": "A partner chromosome is often involved, and it is not the same in every patient",
+          "example_notation": [
+            "The ISCN depends on which segment of chromosome 18 is extra and how it is attached"
+          ],
+          "mechanism": "Unbalanced rearrangement producing partial trisomy 18",
+          "do_not_alter": "Do not draw three free chromosomes 18 for this case.",
+          "student_should_notice": "The cell does not contain three intact chromosomes 18",
+          "correct_chromosome": [
+            "18"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Partial trisomy 18",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "NCBI Bookshelf",
+          "citation": "Trisomy 18 (Edwards syndrome). StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing. Bookshelf ID NBK570597. Complete trisomy 18 is the common form; mosaic and partial trisomy 18 also occur.",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK570597/"
+        },
+        {
+          "label": "MedlinePlus Genetics",
+          "citation": "Trisomy 18. Mosaic trisomy 18 and partial trisomy 18 are described separately from complete trisomy 18.",
+          "url": "https://medlineplus.gov/genetics/condition/trisomy-18/"
+        },
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "patau-syndrome",
+      "disease_name": "Patau syndrome",
+      "teaching_notes": "Patau syndrome is the disease. The simple lab uses complete trisomy 13. Robertsonian, mosaic, and partial forms are different cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "free-trisomy-13",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "Complete trisomy 13",
+          "patient_case_label": "This patient's case: complete trisomy 13.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "13"
+          ],
+          "homolog_affected": "An additional free chromosome 13",
+          "primary_locus": "13",
+          "specific_region": null,
+          "abnormality_type": "whole-chromosome gain",
+          "structural_class": "Aneuploidy",
+          "typical_configuration": "Three separate chromosomes 13",
+          "whole_chromosome_count": "47",
+          "visual_change": "Three separate chromosome 13s",
+          "material_missing": "None",
+          "material_added": "One whole chromosome 13",
+          "partner_chromosome": null,
+          "partner_note": "None. The extra chromosome is free.",
+          "example_notation": [
+            "47,XX,+13",
+            "47,XY,+13"
+          ],
+          "mechanism": "Meiotic nondisjunction producing free trisomy 13",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not change the structure of chromosome 13, and do not draw the Robertsonian form as three free chromosomes 13.",
+          "student_should_notice": "Three separate chromosome 13s",
+          "correct_chromosome": [
+            "13"
+          ],
+          "correct_arm": null,
+          "correct_classification": "trisomy",
+          "final_interpretation": "Aneuploidy: free trisomy 13",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "extra",
+            "place": "whole"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "47,XX,+13",
+            "label": "Female free trisomy 13",
+            "sex": "XX",
+            "copy_number": {
+              "13": 3
+            },
+            "variants": {},
+            "chromosomes_to_find": [
+              "13"
+            ]
+          },
+          "generation": {
+            "abnormality": "whole_chromosome_gain",
+            "copy_state": "3 × chromosome 13",
+            "structural_alteration": "none",
+            "breakpoints": [],
+            "derivatives": []
+          }
+        },
+        {
+          "id": "robertsonian-patau",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Robertsonian translocation Patau syndrome",
+          "patient_case_label": "This patient's case: Robertsonian translocation trisomy 13.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "13",
+            "14"
+          ],
+          "homolog_affected": "A Robertsonian derivative plus extra chromosome 13 material",
+          "primary_locus": "13 and 14",
+          "specific_region": "Common example der(13;14)(q10;q10)",
+          "abnormality_type": "Robertsonian translocation",
+          "structural_class": "Structural rearrangement producing trisomy 13 material",
+          "typical_configuration": "Not three free chromosomes 13",
+          "whole_chromosome_count": "46",
+          "visual_change": "Extra chromosome 13 material is carried on a Robertsonian derivative",
+          "material_missing": "None",
+          "material_added": "Chromosome 13 long-arm material",
+          "partner_chromosome": [
+            "13",
+            "14"
+          ],
+          "partner_note": "13 and 14 in a common example",
+          "example_notation": [
+            "46,XX,der(13;14)(q10;q10),+13",
+            "46,XY,der(13;14)(q10;q10),+13"
+          ],
+          "mechanism": "Robertsonian translocation producing trisomy 13 material",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw this as three free chromosomes 13.",
+          "student_should_notice": "The cell does not simply contain three separate chromosomes 13",
+          "correct_chromosome": [
+            "13",
+            "14"
+          ],
+          "correct_arm": null,
+          "correct_classification": "translocation",
+          "final_interpretation": "Structural rearrangement producing trisomy 13 material",
+          "karyotype_visibility": "clearly_visible",
+          "answers": null
+        },
+        {
+          "id": "mosaic-patau",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Mosaic trisomy 13",
+          "patient_case_label": "This patient's case: mosaic trisomy 13.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "13"
+          ],
+          "homolog_affected": "Trisomy 13 in some cells only",
+          "primary_locus": "13",
+          "specific_region": null,
+          "abnormality_type": "mosaic trisomy",
+          "structural_class": "Mosaic aneuploidy",
+          "typical_configuration": "Two cell lines",
+          "whole_chromosome_count": "47 in the trisomic line and 46 in the other line",
+          "visual_change": "One metaphase cannot show both lines",
+          "material_missing": "None",
+          "material_added": "An extra chromosome 13 in the trisomic line only",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "47,XX,+13/46,XX",
+            "47,XY,+13/46,XY"
+          ],
+          "mechanism": "Mosaicism for free trisomy 13",
+          "do_not_alter": "Do not report one cell as the whole karyotype.",
+          "student_should_notice": "A second cell line has to be examined",
+          "correct_chromosome": [
+            "13"
+          ],
+          "correct_arm": null,
+          "correct_classification": "trisomy",
+          "final_interpretation": "Mosaic trisomy 13",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "partial-trisomy-13",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Partial trisomy 13",
+          "patient_case_label": "This patient's case: partial trisomy 13.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "13"
+          ],
+          "homolog_affected": "Extra chromosome 13 material, not a third free chromosome 13",
+          "primary_locus": "13",
+          "specific_region": "A segment of chromosome 13; the segment depends on the rearrangement",
+          "abnormality_type": "partial trisomy",
+          "structural_class": "Unbalanced rearrangement",
+          "typical_configuration": "Extra 13 material without three free chromosomes 13",
+          "whole_chromosome_count": "Often 46",
+          "visual_change": "Not three separate chromosomes 13",
+          "material_missing": "None from chromosome 13",
+          "material_added": "Part of chromosome 13",
+          "partner_chromosome": null,
+          "partner_note": "A partner chromosome may be involved",
+          "example_notation": [
+            "The ISCN depends on which segment of chromosome 13 is extra"
+          ],
+          "mechanism": "Unbalanced rearrangement producing partial trisomy 13",
+          "do_not_alter": "Do not draw three free chromosomes 13 for this case.",
+          "student_should_notice": "The cell does not contain three intact chromosomes 13",
+          "correct_chromosome": [
+            "13"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Partial trisomy 13",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "NCBI Bookshelf",
+          "citation": "Siddik AB, Daley SF. Trisomy 13 (Patau syndrome). StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing; 2026. Bookshelf ID NBK559091. Complete, translocation, partial, and mosaic forms.",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK559091/"
+        },
+        {
+          "label": "MedlinePlus Genetics",
+          "citation": "Trisomy 13. Translocation trisomy 13 and mosaic trisomy 13 are distinguished from complete trisomy 13.",
+          "url": "https://medlineplus.gov/genetics/condition/trisomy-13/"
+        },
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "turner",
+      "disease_name": "Turner syndrome",
+      "teaching_notes": "Turner syndrome is the disease. 45,X is the canonical case. Mosaic 45,X/46,XX, an X isochromosome, a ring X, and other structural X abnormalities are different cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "monosomy-x",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "45,X",
+          "patient_case_label": "This patient's case: 45,X.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "X"
+          ],
+          "homolog_affected": "A single X chromosome and no second sex chromosome",
+          "primary_locus": "X",
+          "specific_region": null,
+          "abnormality_type": "monosomy",
+          "structural_class": "Sex-chromosome aneuploidy",
+          "typical_configuration": "One X chromosome",
+          "whole_chromosome_count": "45",
+          "visual_change": "One sex chromosome, an X",
+          "material_missing": "One sex chromosome",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None. The second sex chromosome is absent.",
+          "example_notation": [
+            "45,X"
+          ],
+          "mechanism": "Sex-chromosome nondisjunction or anaphase loss producing a 45,X line",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not teach Turner syndrome as only a missing X. Mosaic and structural X cases exist.",
+          "student_should_notice": "Only one X is present",
+          "correct_chromosome": [
+            "X"
+          ],
+          "correct_arm": null,
+          "correct_classification": "monosomy",
+          "final_interpretation": "Monosomy X: 45,X",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "absent",
+            "place": "whole"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "45,X",
+            "label": "45,X",
+            "sex": "X",
+            "copy_number": {
+              "X": 1,
+              "Y": 0
+            },
+            "variants": {},
+            "chromosomes_to_find": [
+              "X"
+            ]
+          },
+          "generation": {
+            "abnormality": "whole_chromosome_loss",
+            "copy_state": "1 × chromosome X",
+            "structural_alteration": "none",
+            "breakpoints": [],
+            "derivatives": []
+          }
+        },
+        {
+          "id": "mosaic-turner",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Mosaic Turner syndrome",
+          "patient_case_label": "This patient's case: mosaic Turner syndrome.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "X"
+          ],
+          "homolog_affected": "45,X in some cells and a second line with two X chromosomes",
+          "primary_locus": "X",
+          "specific_region": null,
+          "abnormality_type": "mosaic monosomy",
+          "structural_class": "Mosaic sex-chromosome complement",
+          "typical_configuration": "More than one cell line",
+          "whole_chromosome_count": "45 in one line and 46 in another",
+          "visual_change": "One metaphase cannot show both lines",
+          "material_missing": "A sex chromosome in the 45,X line only",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None in the 45,X line",
+          "example_notation": [
+            "45,X/46,XX"
+          ],
+          "mechanism": "Mosaicism that includes a 45,X line",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not report one cell as the whole karyotype.",
+          "student_should_notice": "A second cell line has to be examined",
+          "correct_chromosome": [
+            "X"
+          ],
+          "correct_arm": null,
+          "correct_classification": "monosomy",
+          "final_interpretation": "Mosaic Turner syndrome, commonly 45,X/46,XX",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "structural-x",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Structural X abnormality",
+          "patient_case_label": "This patient's case: a structural abnormality of one X chromosome.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "X"
+          ],
+          "homolog_affected": "One structurally abnormal X",
+          "primary_locus": "X",
+          "specific_region": "Example: isochromosome Xq, i(X)(q10). Other structural X abnormalities also occur.",
+          "abnormality_type": "structural sex-chromosome abnormality",
+          "structural_class": "Isochromosome or other structural change of X",
+          "typical_configuration": "46 chromosomes with one abnormal X",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "One X is structurally abnormal rather than simply absent",
+          "material_missing": "Depends on the rearrangement. An i(X)(q10) lacks a normal Xp.",
+          "material_added": "Depends on the rearrangement. An i(X)(q10) has two Xq arms.",
+          "partner_chromosome": null,
+          "partner_note": "The second sex chromosome is the structurally abnormal X, not a Y in the usual example",
+          "example_notation": [
+            "46,X,i(X)(q10)"
+          ],
+          "mechanism": "Structural abnormality of X with loss of some X material",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw this as 45,X.",
+          "student_should_notice": "The X homologs are not a normal pair, and the count is not 45",
+          "correct_chromosome": [
+            "X"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Turner syndrome from a structural X abnormality, example 46,X,i(X)(q10)",
+          "karyotype_visibility": "clearly_visible",
+          "answers": null
+        },
+        {
+          "id": "ring-x",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Ring X",
+          "patient_case_label": "This patient's case: a ring X chromosome.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "X"
+          ],
+          "homolog_affected": "One X is a ring chromosome",
+          "primary_locus": "X",
+          "specific_region": "Both ends of the X can be lost when the ring forms",
+          "abnormality_type": "ring chromosome",
+          "structural_class": "Structural sex-chromosome abnormality",
+          "typical_configuration": "46,X,r(X)",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "One sex chromosome is a ring, not simply absent",
+          "material_missing": "Material from one or both ends of the X, depending on the ring",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,X,r(X)"
+          ],
+          "mechanism": "Ring X with loss of some X material",
+          "do_not_alter": "Do not draw this as 45,X.",
+          "student_should_notice": "A sex chromosome is present but is not a normal X",
+          "correct_chromosome": [
+            "X"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Turner syndrome from a ring X",
+          "karyotype_visibility": "clearly_visible",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "NCBI Bookshelf",
+          "citation": "Shankar Kikkeri N, Nagalli S. Turner syndrome. StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing. Bookshelf ID NBK554621. About 40% to 50% of cases are 45,X; mosaic and structural X forms make up the rest.",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK554621/"
+        },
+        {
+          "label": "Clinical",
+          "citation": "Gravholt CH, et al. Clinical practice guidelines for the care of girls and women with Turner syndrome. Eur J Endocrinol. 2017;177(3):G1-G70."
+        },
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Section on mosaicism and clone size notation."
+        }
+      ]
+    },
+    {
+      "id": "klinefelter",
+      "disease_name": "Klinefelter syndrome",
+      "teaching_notes": "Klinefelter syndrome is the disease. 47,XXY is the canonical case. Mosaic 46,XY/47,XXY and rarer higher-order sex-chromosome aneuploidies are different cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "xxy",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "47,XXY",
+          "patient_case_label": "This patient's case: 47,XXY.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "X",
+            "Y"
+          ],
+          "homolog_affected": "Two X chromosomes and one Y chromosome",
+          "primary_locus": "X and Y",
+          "specific_region": null,
+          "abnormality_type": "additional X chromosome",
+          "structural_class": "Sex-chromosome aneuploidy",
+          "typical_configuration": "XXY",
+          "whole_chromosome_count": "47",
+          "visual_change": "Two X chromosomes and one Y chromosome",
+          "material_missing": "None",
+          "material_added": "One extra X chromosome",
+          "partner_chromosome": null,
+          "partner_note": "X and Y are both present. Neither is a translocation partner.",
+          "example_notation": [
+            "47,XXY"
+          ],
+          "mechanism": "Sex-chromosome nondisjunction producing 47,XXY",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not alter the banding of X or Y.",
+          "student_should_notice": "The sex-chromosome complement is XXY",
+          "correct_chromosome": [
+            "X",
+            "Y"
+          ],
+          "correct_arm": null,
+          "correct_classification": "trisomy",
+          "final_interpretation": "Sex-chromosome trisomy: 47,XXY",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "extra",
+            "place": "whole"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "47,XXY",
+            "label": "47,XXY",
+            "sex": "XXY",
+            "copy_number": {
+              "X": 2,
+              "Y": 1
+            },
+            "variants": {},
+            "chromosomes_to_find": [
+              "X",
+              "Y"
+            ]
+          },
+          "generation": {
+            "abnormality": "sex_chromosome_gain",
+            "copy_state": "XXY",
+            "structural_alteration": "none",
+            "breakpoints": [],
+            "derivatives": []
+          }
+        },
+        {
+          "id": "mosaic-klinefelter",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Mosaic Klinefelter syndrome",
+          "patient_case_label": "This patient's case: mosaic 47,XXY.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "X",
+            "Y"
+          ],
+          "homolog_affected": "An XXY line and at least one other sex-chromosome line",
+          "primary_locus": "X and Y",
+          "specific_region": null,
+          "abnormality_type": "mosaic sex-chromosome aneuploidy",
+          "structural_class": "Mosaic sex-chromosome complement",
+          "typical_configuration": "More than one cell line",
+          "whole_chromosome_count": "47 in the XXY line",
+          "visual_change": "One metaphase cannot show both lines",
+          "material_missing": "None",
+          "material_added": "An extra X in the 47,XXY line",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "47,XXY/46,XY"
+          ],
+          "mechanism": "Mosaicism that includes a 47,XXY line",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not report one cell as the whole karyotype.",
+          "student_should_notice": "A second cell line has to be examined",
+          "correct_chromosome": [
+            "X",
+            "Y"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Mosaic Klinefelter syndrome",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "higher-order-klinefelter",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Higher-order sex-chromosome aneuploidy",
+          "patient_case_label": "This patient's case: a higher-order complement such as 48,XXXY.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "X",
+            "Y"
+          ],
+          "homolog_affected": "More than two X chromosomes, with a Y",
+          "primary_locus": "X and Y",
+          "specific_region": null,
+          "abnormality_type": "sex-chromosome aneuploidy",
+          "structural_class": "Sex-chromosome aneuploidy",
+          "typical_configuration": "Example 48,XXXY",
+          "whole_chromosome_count": "48 or more",
+          "visual_change": "More sex chromosomes than XXY",
+          "material_missing": "None",
+          "material_added": "More than one extra X",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "48,XXXY"
+          ],
+          "mechanism": "Higher-order sex-chromosome nondisjunction",
+          "do_not_alter": "Do not use 47,XXY as this karyotype.",
+          "student_should_notice": "The sex-chromosome count is higher than XXY",
+          "correct_chromosome": [
+            "X",
+            "Y"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Higher-order Klinefelter karyotype, example 48,XXXY",
+          "karyotype_visibility": "clearly_visible",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "NCBI Bookshelf",
+          "citation": "Kadam SJ, Leslie SW, Ford GA. Klinefelter syndrome. StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing. Bookshelf ID NBK482314. 47,XXY is the common karyotype; mosaic and higher-order forms are less common.",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK482314/"
+        },
+        {
+          "label": "NCBI PMC",
+          "citation": "Bonomi M, Rochira V, Pasquali D, et al. Klinefelter syndrome (KS): genetics, clinical phenotype and hypogonadism. J Endocrinol Invest. 2016. A 47,XXY karyotype is present in 80–90% of cases.",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5269463/"
+        },
+        {
+          "label": "Clinical",
+          "citation": "Groth KA, Skakkebaek A, Host C, Gravholt CH, Bojesen A. Clinical review: Klinefelter syndrome—a clinical update. J Clin Endocrinol Metab. 2013;98(1):20-30."
+        },
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "cri-du-chat",
+      "disease_name": "Cri-du-chat syndrome",
+      "teaching_notes": "Cri-du-chat syndrome is the disease. The simple lab uses a terminal 5p deletion and does not pretend every patient has the same breakpoint. Interstitial 5p deletions and unbalanced rearrangements are different cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "terminal-5p",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "Terminal 5p deletion",
+          "patient_case_label": "This patient's case: terminal deletion of 5p.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "5"
+          ],
+          "homolog_affected": "One chromosome 5",
+          "primary_locus": "5p",
+          "specific_region": "Distal 5p, with critical regions around 5p15. Exact breakpoints vary.",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Terminal 5p deletion",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "One chromosome 5 has a shortened p arm",
+          "material_missing": "Distal portion of 5p",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for the canonical simple deletion case",
+          "example_notation": [
+            "46,XX,del(5)(p)",
+            "46,XY,del(5)(p)"
+          ],
+          "mechanism": "Terminal deletion of one chromosome 5 short arm",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not assign one breakpoint to every patient. Deletion size varies. Interstitial deletions and unbalanced rearrangements are different cases.",
+          "student_should_notice": "The chromosome 5 homologs differ in p-arm length",
+          "correct_chromosome": [
+            "5"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 5p",
+          "karyotype_visibility": "size_dependent",
+          "answers": {
+            "change": "missing",
+            "place": "p"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "46,XX,del(5)(p)",
+            "label": "Female terminal 5p deletion; breakpoint not fixed",
+            "sex": "XX",
+            "copy_number": {},
+            "variants": {
+              "5a": "del(5)(p)"
+            },
+            "chromosomes_to_find": [
+              "5"
+            ]
+          },
+          "generation": {
+            "abnormality": "deletion",
+            "copy_state": "partial monosomy 5p",
+            "structural_alteration": "shorten the p arm of one chromosome 5",
+            "breakpoints": [
+              {
+                "chromosome": "5",
+                "arm": "p",
+                "band": "variable; critical regions around 5p15"
+              }
+            ],
+            "derivatives": []
+          }
+        },
+        {
+          "id": "unbalanced-5p",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Unbalanced rearrangement with monosomy 5p",
+          "patient_case_label": "This patient's case: an unbalanced rearrangement that deletes 5p.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "5"
+          ],
+          "homolog_affected": "A derivative chromosome that is missing distal 5p",
+          "primary_locus": "5p",
+          "specific_region": "Distal 5p, with breakpoints that depend on the rearrangement",
+          "abnormality_type": "unbalanced rearrangement",
+          "structural_class": "Partial monosomy from an unbalanced rearrangement",
+          "typical_configuration": "Derivative chromosome rather than a simple terminal deletion",
+          "whole_chromosome_count": "Usually 46, sometimes 45 if a chromosome is lost",
+          "visual_change": "Chromosome 5 material is rearranged, not only shortened as an isolated deletion",
+          "material_missing": "Distal 5p",
+          "material_added": "Material from the partner chromosome may be present on the derivative",
+          "partner_chromosome": null,
+          "partner_note": "A partner chromosome is involved, but it is not the same partner in every patient",
+          "example_notation": [
+            "Unbalanced rearrangement deleting distal 5p; the ISCN depends on the partner and the breakpoints"
+          ],
+          "mechanism": "Unbalanced rearrangement involving chromosome 5 that produces monosomy 5p",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not build this as an isolated del(5p).",
+          "student_should_notice": "A second chromosome may also be derivative",
+          "correct_chromosome": [
+            "5"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "translocation",
+          "final_interpretation": "Partial monosomy 5p from an unbalanced rearrangement",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "interstitial-5p",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Interstitial 5p deletion",
+          "patient_case_label": "This patient's case: an interstitial deletion within 5p.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "5"
+          ],
+          "homolog_affected": "One chromosome 5",
+          "primary_locus": "5p",
+          "specific_region": "An internal segment of 5p, not necessarily a terminal deletion",
+          "abnormality_type": "interstitial deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Interstitial 5p deletion",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The p arm may look less obviously shortened than a large terminal deletion",
+          "material_missing": "An internal portion of 5p",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX,del(5)(p) with two breakpoints; the bands are case-dependent"
+          ],
+          "mechanism": "Interstitial deletion of 5p",
+          "do_not_alter": "Do not draw this as the terminal teaching deletion.",
+          "student_should_notice": "Material is missing inside 5p rather than only from the end",
+          "correct_chromosome": [
+            "5"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 5p from an interstitial deletion",
+          "karyotype_visibility": "size_dependent",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "NCBI Bookshelf",
+          "citation": "Cri du chat syndrome. StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing. Bookshelf ID NBK482460. Most cases are terminal 5p deletions; interstitial deletions and unbalanced rearrangements also occur. Critical regions are described in 5p15.",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK482460/"
+        },
+        {
+          "label": "Clinical",
+          "citation": "Nguyen JM, Qualmann KJ, Okashah R, Reilly A, Alexeyev MF, Campbell DJ. 5p deletions: current knowledge and future directions. Am J Med Genet C Semin Med Genet. 2015;169(3):224-238."
+        },
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "wolf-hirschhorn",
+      "disease_name": "Wolf-Hirschhorn syndrome",
+      "teaching_notes": "Wolf-Hirschhorn syndrome is the disease. The simple lab uses a large terminal 4p deletion. Visibility is size-dependent: a small 4p16.3 deletion may not be obvious on a conventional karyotype. Unbalanced rearrangements are a different case.",
+      "cytogenetic_cases": [
+        {
+          "id": "terminal-4p",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "Terminal 4p deletion",
+          "patient_case_label": "This patient's case: terminal deletion of 4p.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "4"
+          ],
+          "homolog_affected": "One chromosome 4",
+          "primary_locus": "4p",
+          "specific_region": "Distal 4p, key region 4p16.3. Exact breakpoint is case-dependent.",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Terminal 4p deletion",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "One chromosome 4 has a shortened p arm",
+          "material_missing": "Distal portion of 4p",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for the canonical simple deletion case",
+          "example_notation": [
+            "46,XX,del(4)(p16)",
+            "46,XY,del(4)(p16)"
+          ],
+          "mechanism": "Terminal deletion of one chromosome 4 short arm",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not treat a small 4p16.3 deletion as this visible teaching karyotype. Small deletions can require FISH or a microarray.",
+          "student_should_notice": "The chromosome 4 homologs differ in p-arm length",
+          "correct_chromosome": [
+            "4"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 4p",
+          "karyotype_visibility": "size_dependent",
+          "answers": {
+            "change": "missing",
+            "place": "p"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "46,XX,del(4)(p16)",
+            "label": "Female terminal 4p deletion; exact breakpoint case-dependent",
+            "sex": "XX",
+            "copy_number": {},
+            "variants": {
+              "4a": "del(4)(p16)"
+            },
+            "chromosomes_to_find": [
+              "4"
+            ]
+          },
+          "generation": {
+            "abnormality": "deletion",
+            "copy_state": "partial monosomy 4p",
+            "structural_alteration": "remove distal p-arm material from one chromosome 4",
+            "breakpoints": [
+              {
+                "chromosome": "4",
+                "arm": "p",
+                "band": "16; exact sub-band varies"
+              }
+            ],
+            "derivatives": []
+          }
+        },
+        {
+          "id": "cryptic-4p",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Cryptic or unbalanced 4p deletion",
+          "patient_case_label": "This patient's case: a 4p deletion that is not the large terminal teaching example.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "4"
+          ],
+          "homolog_affected": "One chromosome 4, or a derivative that deletes 4p16.3",
+          "primary_locus": "4p16.3",
+          "specific_region": "Critical region in 4p16.3; the deletion may be cryptic",
+          "abnormality_type": "deletion or unbalanced rearrangement",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Often too small for a routine karyotype, or carried on a derivative",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The chromosome 4 pair can look normal when the deletion is small",
+          "material_missing": "4p16.3 material",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None when the change is a cryptic deletion. A partner is involved in an unbalanced translocation.",
+          "example_notation": [
+            "A normal-looking 46,XX or 46,XY does not exclude a cryptic 4p deletion"
+          ],
+          "mechanism": "Deletion or unbalanced rearrangement of 4p16.3 below reliable routine resolution",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw a shortened 4p for this case.",
+          "student_should_notice": "The karyotype may look normal",
+          "correct_chromosome": [
+            "4"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 4p16.3 that may require FISH or a microarray",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "NCBI GeneReviews",
+          "citation": "Battaglia A, Carey JC, South ST. Wolf-Hirschhorn syndrome. GeneReviews. Bookshelf ID NBK1183. Retired chapter, retained as the cited source: diagnosis uses the 4p16.3 critical region; conventional karyotyping detects only a portion of deletions, and smaller deletions need FISH or chromosomal microarray.",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK1183/"
+        },
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "cml",
+      "disease_name": "Chronic myeloid leukemia",
+      "teaching_notes": "Chronic myeloid leukemia is the disease. The simple lab uses the visible t(9;22) and asks the student to follow both derivative chromosomes. A cryptic or complex BCR::ABL1 rearrangement is a different case.",
+      "cytogenetic_cases": [
+        {
+          "id": "t9-22",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "t(9;22) Philadelphia chromosome",
+          "patient_case_label": "This patient's case: t(9;22)(q34;q11.2), with der(22) as the Philadelphia chromosome.",
+          "kind": "acquired",
+          "primary_chromosome": [
+            "9",
+            "22"
+          ],
+          "homolog_affected": "One chromosome 9 and one chromosome 22",
+          "primary_locus": "9q34 and 22q11.2",
+          "specific_region": "ABL1 at 9q34 and BCR at 22q11.2",
+          "abnormality_type": "reciprocal translocation",
+          "structural_class": "Balanced reciprocal translocation",
+          "typical_configuration": "der(9) and der(22)",
+          "whole_chromosome_count": "46",
+          "visual_change": "One chromosome 9 and one chromosome 22 are derivative chromosomes. der(22) is the small Philadelphia chromosome.",
+          "material_missing": "None. Material is exchanged.",
+          "material_added": "None. 9q material is on der(22), and 22q material is on der(9).",
+          "partner_chromosome": [
+            "9",
+            "22"
+          ],
+          "partner_note": "9 and 22 exchange pieces",
+          "example_notation": [
+            "46,XY,t(9;22)(q34;q11.2)",
+            "46,XX,t(9;22)(q34;q11.2)"
+          ],
+          "mechanism": "Reciprocal translocation joining ABL1 and BCR",
+          "derivative": "der(22), the Philadelphia chromosome",
+          "genes": "ABL1 and BCR; result BCR::ABL1",
+          "do_not_alter": "Do not describe this as an abnormality of chromosome 22 alone.",
+          "student_should_notice": "Pieces of 9q and 22q have exchanged. der(22) is the Philadelphia chromosome.",
+          "correct_chromosome": [
+            "9",
+            "22"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "translocation",
+          "final_interpretation": "t(9;22)(q34;q11.2) producing BCR::ABL1. der(22) is the Philadelphia chromosome.",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "moved",
+            "place": "q"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "46,XY,t(9;22)(q34;q11.2)",
+            "label": "Male t(9;22)",
+            "sex": "XY",
+            "copy_number": {},
+            "variants": {
+              "9a": "der(9)t(9;22)(q34;q11.2)",
+              "22a": "der(22)t(9;22)(q34;q11.2)"
+            },
+            "chromosomes_to_find": [
+              "9",
+              "22"
+            ]
+          },
+          "generation": {
+            "abnormality": "reciprocal_translocation",
+            "copy_state": "46 chromosomes",
+            "structural_alteration": "exchange 9q and 22q",
+            "breakpoints": [
+              {
+                "chromosome": "9",
+                "arm": "q",
+                "band": "34"
+              },
+              {
+                "chromosome": "22",
+                "arm": "q",
+                "band": "11.2"
+              }
+            ],
+            "derivatives": [
+              "der(9)",
+              "der(22)"
+            ]
+          }
+        },
+        {
+          "id": "cryptic-bcr-abl1",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Cryptic or complex BCR::ABL1",
+          "patient_case_label": "This patient's case: BCR::ABL1 without the classic visible t(9;22).",
+          "kind": "acquired",
+          "primary_chromosome": [
+            "9",
+            "22"
+          ],
+          "homolog_affected": "The fusion can be present when chromosomes 9 and 22 look normal, or when additional chromosomes are involved",
+          "primary_locus": "ABL1 and BCR",
+          "specific_region": "9q34 and 22q11.2, sometimes in a complex or insertion rearrangement",
+          "abnormality_type": "cryptic or complex rearrangement",
+          "structural_class": "BCR::ABL1 fusion that is not the simple two-break t(9;22) drawing",
+          "typical_configuration": "Not the classic der(9) and der(22) pair",
+          "whole_chromosome_count": "Often 46, but a complex karyotype can have other changes",
+          "visual_change": "Chromosomes 9 and 22 may look normal",
+          "material_missing": "None",
+          "material_added": "None",
+          "partner_chromosome": [
+            "9",
+            "22"
+          ],
+          "partner_note": "9 and 22, sometimes with additional chromosomes",
+          "example_notation": [
+            "BCR::ABL1 may require FISH or another assay when t(9;22) is not visible"
+          ],
+          "mechanism": "Cryptic insertion or complex rearrangement producing BCR::ABL1",
+          "derivative": "A Philadelphia chromosome may not be recognizable",
+          "genes": "ABL1 and BCR; result BCR::ABL1",
+          "do_not_alter": "Do not draw the classic der(22) for this case.",
+          "student_should_notice": "A normal-looking pair 9 and pair 22 does not exclude BCR::ABL1",
+          "correct_chromosome": [
+            "9",
+            "22"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "translocation",
+          "final_interpretation": "BCR::ABL1 without the classic visible Philadelphia chromosome",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+        },
+        {
+          "label": "WHO",
+          "citation": "Khoury JD, et al. The 5th edition of the World Health Organization classification of haematolymphoid tumours: myeloid and histiocytic/dendritic neoplasms. Leukemia. 2022;36:1703-1719."
+        }
+      ]
+    },
+    {
+      "id": "apl",
+      "disease_name": "Acute promyelocytic leukemia",
+      "teaching_notes": "Acute promyelocytic leukemia is the disease. The simple lab uses t(15;17) with PML::RARA. Variant RARA rearrangements are a different case and are not this chromosome pair.",
+      "cytogenetic_cases": [
+        {
+          "kind": "acquired",
+          "role": "canonical",
+          "lab_level": "default",
+          "material_missing": "None. Material is exchanged.",
+          "material_added": "None. Each derivative carries material from the partner.",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "moved",
+            "place": "q"
+          },
+          "correct_arm": "q",
+          "correct_classification": "translocation",
+          "id": "t15-17",
+          "case_title": "t(15;17), PML::RARA",
+          "patient_case_label": "This patient's case: t(15;17)(q24.1;q21.2), PML::RARA.",
+          "primary_chromosome": [
+            "15",
+            "17"
+          ],
+          "homolog_affected": "One chromosome 15 and one chromosome 17",
+          "primary_locus": "15q24.1 and 17q21.2",
+          "specific_region": "PML at 15q24.1 and RARA at 17q21.2",
+          "abnormality_type": "reciprocal translocation",
+          "structural_class": "Balanced reciprocal translocation",
+          "typical_configuration": "der(15) and der(17)",
+          "whole_chromosome_count": "46",
+          "visual_change": "One chromosome 15 and one chromosome 17 are derivative chromosomes",
+          "partner_chromosome": [
+            "15",
+            "17"
+          ],
+          "partner_note": "15 and 17 exchange pieces",
+          "example_notation": [
+            "46,XY,t(15;17)(q24.1;q21.2)",
+            "46,XX,t(15;17)(q24.1;q21.2)"
+          ],
+          "mechanism": "Reciprocal translocation joining PML and RARA",
+          "derivative": "der(15) and der(17)",
+          "genes": "PML and RARA; result PML::RARA",
+          "do_not_alter": "Do not describe this as an abnormality of chromosome 17 alone.",
+          "student_should_notice": "Pieces of 15q and 17q have exchanged. There is no single familiar small marker like the Philadelphia chromosome.",
+          "correct_chromosome": [
+            "15",
+            "17"
+          ],
+          "final_interpretation": "t(15;17)(q24.1;q21.2) producing PML::RARA",
+          "generation": {
+            "abnormality": "reciprocal_translocation",
+            "copy_state": "46 chromosomes",
+            "structural_alteration": "exchange 15q and 17q",
+            "breakpoints": [
+              {
+                "chromosome": "15",
+                "arm": "q",
+                "band": "24.1"
+              },
+              {
+                "chromosome": "17",
+                "arm": "q",
+                "band": "21.2"
+              }
+            ],
+            "derivatives": [
+              "der(15)",
+              "der(17)"
+            ]
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "46,XY,t(15;17)(q24.1;q21.2)",
+            "label": "Male t(15;17)",
+            "sex": "XY",
+            "copy_number": {},
+            "variants": {
+              "15a": "der(15)t(15;17)(q24.1;q21.2)",
+              "17a": "der(17)t(15;17)(q24.1;q21.2)"
+            },
+            "chromosomes_to_find": [
+              "15",
+              "17"
+            ]
+          }
+        },
+        {
+          "id": "variant-rara",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "kind": "acquired",
+          "case_title": "Variant RARA rearrangement",
+          "patient_case_label": "This patient's case: a RARA rearrangement that is not t(15;17).",
+          "primary_chromosome": [
+            "17"
+          ],
+          "homolog_affected": "RARA is fused to a partner other than PML",
+          "primary_locus": "17q21.2",
+          "specific_region": "RARA, with a partner that is not chromosome 15",
+          "abnormality_type": "variant translocation",
+          "structural_class": "RARA rearrangement",
+          "typical_configuration": "Not der(15) and der(17) from t(15;17)",
+          "whole_chromosome_count": "Often 46, sometimes with other changes",
+          "visual_change": "Chromosomes 15 and 17 are not the exchanged pair",
+          "material_missing": "None. Material is rearranged with a different partner.",
+          "material_added": "None",
+          "partner_chromosome": [
+            "17"
+          ],
+          "partner_note": "The partner of RARA varies and is not chromosome 15",
+          "example_notation": [
+            "The ISCN uses the actual partner of RARA, not t(15;17)"
+          ],
+          "mechanism": "Variant RARA fusion",
+          "derivative": null,
+          "genes": "RARA with a partner other than PML",
+          "do_not_alter": "Do not draw t(15;17) for this case.",
+          "student_should_notice": "Pair 15 and pair 17 are not the finding",
+          "correct_chromosome": [
+            "17"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "translocation",
+          "final_interpretation": "Variant RARA rearrangement, not PML::RARA from t(15;17)",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "NCBI Bookshelf",
+          "citation": "Cingam SR, Koshy NV. Acute promyelocytic leukemia. StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing. Bookshelf ID NBK459352. Most APL has a PML::RARA rearrangement; variant RARA partners are a minority. The teaching breakpoint in this lab follows ISCN 2020, t(15;17)(q24.1;q21.2).",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK459352/"
+        },
+        {
+          "label": "Clinical",
+          "citation": "Sanz MA, Fenaux P, Tallman MS, et al. Management of acute promyelocytic leukemia: updated recommendations from an expert panel of the European LeukemiaNet. Blood. 2019;133(15):1630-1643."
+        },
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Includes the 15q24.1 band used for PML."
+        }
+      ]
+    },
+    {
+      "id": "burkitt",
+      "disease_name": "Burkitt lymphoma",
+      "teaching_notes": "Burkitt lymphoma is the disease. The simple lab uses t(8;14) with IGH::MYC. t(2;8) and t(8;22) are different MYC rearrangements.",
+      "cytogenetic_cases": [
+        {
+          "kind": "acquired",
+          "role": "canonical",
+          "lab_level": "default",
+          "material_missing": "None. Material is exchanged.",
+          "material_added": "None. Each derivative carries material from the partner.",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "moved",
+            "place": "q"
+          },
+          "correct_arm": "q",
+          "correct_classification": "translocation",
+          "id": "t8-14",
+          "case_title": "t(8;14), IGH::MYC",
+          "patient_case_label": "This patient's case: t(8;14)(q24;q32), IGH::MYC.",
+          "primary_chromosome": [
+            "8",
+            "14"
+          ],
+          "homolog_affected": "One chromosome 8 and one chromosome 14",
+          "primary_locus": "8q24 and 14q32",
+          "specific_region": "MYC at 8q24 and IGH at 14q32",
+          "abnormality_type": "reciprocal translocation",
+          "structural_class": "Balanced reciprocal translocation",
+          "typical_configuration": "der(8) and der(14)",
+          "whole_chromosome_count": "46",
+          "visual_change": "One chromosome 8 and one chromosome 14 are derivative chromosomes",
+          "partner_chromosome": [
+            "8",
+            "14"
+          ],
+          "partner_note": "8 and 14 exchange pieces",
+          "example_notation": [
+            "46,XY,t(8;14)(q24;q32)",
+            "46,XX,t(8;14)(q24;q32)"
+          ],
+          "mechanism": "Reciprocal translocation joining MYC and IGH",
+          "derivative": "der(8) and der(14)",
+          "genes": "MYC and IGH; result IGH::MYC",
+          "do_not_alter": "Do not describe this as an abnormality of chromosome 8 alone. t(2;8) and t(8;22) are different cases.",
+          "student_should_notice": "Pieces of 8q and 14q have exchanged",
+          "correct_chromosome": [
+            "8",
+            "14"
+          ],
+          "final_interpretation": "t(8;14)(q24;q32) producing IGH::MYC",
+          "generation": {
+            "abnormality": "reciprocal_translocation",
+            "copy_state": "46 chromosomes",
+            "structural_alteration": "exchange 8q and 14q",
+            "breakpoints": [
+              {
+                "chromosome": "8",
+                "arm": "q",
+                "band": "24"
+              },
+              {
+                "chromosome": "14",
+                "arm": "q",
+                "band": "32"
+              }
+            ],
+            "derivatives": [
+              "der(8)",
+              "der(14)"
+            ]
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "46,XY,t(8;14)(q24;q32)",
+            "label": "Male t(8;14)",
+            "sex": "XY",
+            "copy_number": {},
+            "variants": {
+              "8a": "der(8)t(8;14)(q24;q32)",
+              "14a": "der(14)t(8;14)(q24;q32)"
+            },
+            "chromosomes_to_find": [
+              "8",
+              "14"
+            ]
+          }
+        },
+        {
+          "id": "t2-8",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "kind": "acquired",
+          "case_title": "t(2;8)",
+          "patient_case_label": "This patient's case: t(2;8), a MYC rearrangement with IGK.",
+          "primary_chromosome": [
+            "2",
+            "8"
+          ],
+          "homolog_affected": "One chromosome 2 and one chromosome 8",
+          "primary_locus": "2p and 8q24",
+          "specific_region": "IGK and MYC",
+          "abnormality_type": "reciprocal translocation",
+          "structural_class": "MYC rearrangement",
+          "typical_configuration": "der(2) and der(8) from t(2;8)",
+          "whole_chromosome_count": "46",
+          "visual_change": "Chromosome 14 is not the partner",
+          "material_missing": "None. Material is exchanged.",
+          "material_added": "None",
+          "partner_chromosome": [
+            "2",
+            "8"
+          ],
+          "partner_note": "2 and 8",
+          "example_notation": [
+            "46,XY,t(2;8)(p12;q24)",
+            "46,XX,t(2;8)(p12;q24)"
+          ],
+          "mechanism": "MYC rearrangement with an immunoglobulin light-chain locus on chromosome 2",
+          "genes": "MYC and IGK",
+          "do_not_alter": "Do not draw t(8;14) for this case.",
+          "student_should_notice": "The partner is chromosome 2, not chromosome 14",
+          "correct_chromosome": [
+            "2",
+            "8"
+          ],
+          "correct_arm": null,
+          "correct_classification": "translocation",
+          "final_interpretation": "Variant Burkitt translocation t(2;8)",
+          "karyotype_visibility": "clearly_visible",
+          "answers": null
+        },
+        {
+          "id": "t8-22",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "kind": "acquired",
+          "case_title": "t(8;22)",
+          "patient_case_label": "This patient's case: t(8;22), a MYC rearrangement with IGL.",
+          "primary_chromosome": [
+            "8",
+            "22"
+          ],
+          "homolog_affected": "One chromosome 8 and one chromosome 22",
+          "primary_locus": "8q24 and 22q11",
+          "specific_region": "MYC and IGL",
+          "abnormality_type": "reciprocal translocation",
+          "structural_class": "MYC rearrangement",
+          "typical_configuration": "der(8) and der(22) from t(8;22)",
+          "whole_chromosome_count": "46",
+          "visual_change": "Chromosome 14 is not the partner. This der(22) is not the Philadelphia chromosome.",
+          "material_missing": "None. Material is exchanged.",
+          "material_added": "None",
+          "partner_chromosome": [
+            "8",
+            "22"
+          ],
+          "partner_note": "8 and 22",
+          "example_notation": [
+            "46,XY,t(8;22)(q24;q11)",
+            "46,XX,t(8;22)(q24;q11)"
+          ],
+          "mechanism": "MYC rearrangement with an immunoglobulin light-chain locus on chromosome 22",
+          "genes": "MYC and IGL",
+          "do_not_alter": "Do not draw t(8;14), and do not call this der(22) a Philadelphia chromosome.",
+          "student_should_notice": "The partner is chromosome 22, not chromosome 14",
+          "correct_chromosome": [
+            "8",
+            "22"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "translocation",
+          "final_interpretation": "Variant Burkitt translocation t(8;22)",
+          "karyotype_visibility": "clearly_visible",
+          "answers": null
+        }
+      ],
+      "references": [
+        {
+          "label": "NCBI Bookshelf",
+          "citation": "Naing PT, Kaur A, Lynch DT. Burkitt lymphoma. StatPearls [Internet]. Treasure Island (FL): StatPearls Publishing. Bookshelf ID NBK538148. t(8;14) is the common MYC rearrangement, about 70% to 80%; t(2;8) and t(8;22) are the less common partners.",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK538148/"
+        },
+        {
+          "label": "WHO",
+          "citation": "Alaggio R, et al. The 5th edition of the World Health Organization classification of haematolymphoid tumours: lymphoid neoplasms. Leukemia. 2022;36:1720-1748."
+        },
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "del-1p36",
+      "disease_name": "1p36 deletion syndrome",
+      "teaching_notes": "1p36 deletion syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "del-1p36-deletion",
+          "role": "canonical",
+          "lab_level": "reference",
+          "case_title": "Deletion, size variable",
+          "patient_case_label": "This patient's case: terminal or interstitial deletion of 1p36.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "1"
+          ],
+          "homolog_affected": "One chromosome 1",
+          "primary_locus": "1p36",
+          "specific_region": "1p36",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Deletion size varies from cryptic to visible",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "One chromosome 1 may have a shortened p arm when the deletion is large",
+          "material_missing": "1p36",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for a simple deletion",
+          "example_notation": [
+            "Breakpoint notation depends on the deletion. A routine karyotype often looks normal."
+          ],
+          "mechanism": "Terminal or interstitial deletion of 1p36",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not build one shortened chromosome as every patient with this disease.",
+          "student_should_notice": "One chromosome 1 may have a shortened p arm when the deletion is large",
+          "correct_chromosome": [
+            "1"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 1p36. Visibility depends on deletion size.",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "del-1p36-other",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Unbalanced rearrangement or smaller deletion",
+          "patient_case_label": "This patient's case: a smaller deletion or an unbalanced rearrangement.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "1"
+          ],
+          "homolog_affected": "Chromosome 1 may look normal",
+          "primary_locus": "1p36",
+          "specific_region": "1p36",
+          "abnormality_type": "deletion or unbalanced rearrangement",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Not the large simple-deletion drawing",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The karyotype can look normal",
+          "material_missing": "1p36",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "A partner chromosome is involved only in the unbalanced-rearrangement form",
+          "example_notation": [
+            "46,XX or 46,XY may be the conventional karyotype"
+          ],
+          "mechanism": "Another mechanism that still affects 1p36",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw the large deletion for this case.",
+          "student_should_notice": "The chromosome pair can look normal",
+          "correct_chromosome": [
+            "1"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 1p36 that may not be visible, or that comes from an unbalanced rearrangement",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "del-8p",
+      "disease_name": "8p deletion syndrome",
+      "teaching_notes": "8p deletion syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "del-8p-deletion",
+          "role": "canonical",
+          "lab_level": "reference",
+          "case_title": "Deletion, size variable",
+          "patient_case_label": "This patient's case: deletion of 8p.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "8"
+          ],
+          "homolog_affected": "One chromosome 8",
+          "primary_locus": "8p",
+          "specific_region": "8p",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Deletion size varies from cryptic to visible",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "One chromosome 8 may have a shortened p arm when the deletion is large",
+          "material_missing": "8p",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for a simple deletion",
+          "example_notation": [
+            "Breakpoint notation depends on the deletion. A routine karyotype often looks normal."
+          ],
+          "mechanism": "Deletion of 8p",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not build one shortened chromosome as every patient with this disease.",
+          "student_should_notice": "One chromosome 8 may have a shortened p arm when the deletion is large",
+          "correct_chromosome": [
+            "8"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 8p23. Visibility depends on deletion size.",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "del-8p-other",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Unbalanced rearrangement or smaller deletion",
+          "patient_case_label": "This patient's case: a smaller deletion or an unbalanced rearrangement.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "8"
+          ],
+          "homolog_affected": "Chromosome 8 may look normal",
+          "primary_locus": "8p",
+          "specific_region": "8p23",
+          "abnormality_type": "deletion or unbalanced rearrangement",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Not the large simple-deletion drawing",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The karyotype can look normal",
+          "material_missing": "8p",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "A partner chromosome is involved only in the unbalanced-rearrangement form",
+          "example_notation": [
+            "46,XX or 46,XY may be the conventional karyotype"
+          ],
+          "mechanism": "Another mechanism that still affects 8p23",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw the large deletion for this case.",
+          "student_should_notice": "The chromosome pair can look normal",
+          "correct_chromosome": [
+            "8"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 8p23 that may not be visible, or that comes from an unbalanced rearrangement",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "del-9p",
+      "disease_name": "9p deletion syndrome",
+      "teaching_notes": "9p deletion syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "del-9p-deletion",
+          "role": "canonical",
+          "lab_level": "reference",
+          "case_title": "Deletion, size variable",
+          "patient_case_label": "This patient's case: terminal deletion of 9p.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "9"
+          ],
+          "homolog_affected": "One chromosome 9",
+          "primary_locus": "9p",
+          "specific_region": "9p",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Deletion size varies from cryptic to visible",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "One chromosome 9 may have a shortened p arm when the deletion is large",
+          "material_missing": "9p",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for a simple deletion",
+          "example_notation": [
+            "Breakpoint notation depends on the deletion. A routine karyotype often looks normal."
+          ],
+          "mechanism": "Terminal deletion of 9p",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not build one shortened chromosome as every patient with this disease.",
+          "student_should_notice": "One chromosome 9 may have a shortened p arm when the deletion is large",
+          "correct_chromosome": [
+            "9"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 9p. Visibility depends on deletion size.",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "del-9p-other",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Unbalanced rearrangement or smaller deletion",
+          "patient_case_label": "This patient's case: a smaller deletion or an unbalanced rearrangement.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "9"
+          ],
+          "homolog_affected": "Chromosome 9 may look normal",
+          "primary_locus": "9p",
+          "specific_region": "9p",
+          "abnormality_type": "deletion or unbalanced rearrangement",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Not the large simple-deletion drawing",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The karyotype can look normal",
+          "material_missing": "9p",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "A partner chromosome is involved only in the unbalanced-rearrangement form",
+          "example_notation": [
+            "46,XX or 46,XY may be the conventional karyotype"
+          ],
+          "mechanism": "Another mechanism that still affects 9p",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw the large deletion for this case.",
+          "student_should_notice": "The chromosome pair can look normal",
+          "correct_chromosome": [
+            "9"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 9p that may not be visible, or that comes from an unbalanced rearrangement",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "angelman",
+      "disease_name": "Angelman syndrome",
+      "teaching_notes": "Angelman syndrome has more than one mechanism. The laboratory uses the maternal 15q11-q13 deletion case. The chromosome region overlaps the Prader-Willi teaching region; parent of origin changes the consequence. Deletion FISH does not establish that origin.",
+      "cytogenetic_cases": [
+        {
+          "id": "as-no-single-karyotype",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "No single karyotype",
+          "patient_case_label": "This patient's case is not defined by one chromosome picture.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "15"
+          ],
+          "homolog_affected": "Depends on the mechanism",
+          "primary_locus": "15q11.2-q13",
+          "specific_region": "Maternally expressed UBE3A at 15q11.2-q13",
+          "abnormality_type": "imprinting or single-gene disorder",
+          "structural_class": "No one structural class",
+          "typical_configuration": "Deletion, paternal uniparental disomy, imprinting defect, or UBE3A variant",
+          "whole_chromosome_count": "Often 46",
+          "visual_change": "The conventional karyotype is often normal",
+          "material_missing": "Not always. Only the deletion case is missing chromosome material.",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY does not establish or exclude the diagnosis"
+          ],
+          "mechanism": "Absent maternal UBE3A function",
+          "derivative": null,
+          "genes": "UBE3A",
+          "do_not_alter": "Do not draw a deleted chromosome 15 as Angelman syndrome in general.",
+          "student_should_notice": "A normal karyotype does not exclude the disease",
+          "correct_chromosome": [
+            "15"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "other",
+          "final_interpretation": "Angelman syndrome has more than one cytogenetic and molecular mechanism",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null,
+          "representative_teaching_karyotype": {
+            "iscn": "46,XX",
+            "label": "Normal conventional karyotype, female",
+            "sex": "XX",
+            "copy_number": {},
+            "variants": {},
+            "chromosomes_to_find": [
+              "15"
+            ]
+          }
+        },
+        {
+          "id": "as-deletion",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "Maternal 15q11.2-q13 deletion",
+          "patient_case_label": "This patient's case: deletion of the maternal 15q11.2-q13 region.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "15"
+          ],
+          "homolog_affected": "The maternally inherited chromosome 15",
+          "primary_locus": "15q11.2-q13",
+          "specific_region": "Maternal copy of 15q11.2-q13, including UBE3A",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy, often a microdeletion",
+          "typical_configuration": "Interstitial deletion",
+          "whole_chromosome_count": "46",
+          "visual_change": "Often normal at routine resolution",
+          "material_missing": "Maternal 15q11.2-q13",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "The deletion is usually defined by FISH or a microarray, not by arm length"
+          ],
+          "mechanism": "Deletion of the maternal 15q11.2-q13 allele",
+          "derivative": null,
+          "genes": "UBE3A",
+          "do_not_alter": "Do not use this as the only Angelman karyotype.",
+          "student_should_notice": "The pair can look normal",
+          "correct_chromosome": [
+            "15"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "deletion",
+          "final_interpretation": "Representative case: maternal deletion of 15q11-q13. Deletion FISH shows the missing interval and does not establish parent of origin or exclude other Angelman mechanisms.",
+          "assigned_origin_context": "Parent-of-origin result, separate from deletion FISH: methylation analysis shows the missing 15q11-q13 copy is the maternal chromosome. Maternal deletion of this interval is the representative deletion mechanism of Angelman syndrome. Paternal deletion of the same interval is the representative deletion mechanism of Prader-Willi syndrome. Deletion FISH does not identify the parent. A normal deletion-FISH result does not exclude either condition, because non-deletion mechanisms also occur.",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": {
+            "change": "missing",
+            "place": "q"
+          },
+          "default_karyotype_activity": false,
+          "representative_teaching_karyotype": {
+            "iscn": "46,XX",
+            "label": "Conventional karyotype usually looks normal. The teaching abnormality is below routine G-band resolution.",
+            "sex": "XX",
+            "copy_number": {},
+            "variants": {},
+            "chromosomes_to_find": [
+              "15"
+            ]
+          }
+        },
+        {
+          "id": "as-upd",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Paternal uniparental disomy 15",
+          "patient_case_label": "This patient's case: paternal uniparental disomy 15.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "15"
+          ],
+          "homolog_affected": "Both chromosomes 15 are paternal",
+          "primary_locus": "15",
+          "specific_region": "UBE3A imprinting",
+          "abnormality_type": "uniparental disomy",
+          "structural_class": "Normal structure, abnormal parent of origin",
+          "typical_configuration": "Two paternal chromosomes 15",
+          "whole_chromosome_count": "46",
+          "visual_change": "Chromosome 15 looks normal",
+          "material_missing": "None",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY"
+          ],
+          "mechanism": "Two paternal copies of chromosome 15 and no maternal copy",
+          "derivative": null,
+          "genes": "UBE3A",
+          "do_not_alter": "Do not draw a deletion.",
+          "student_should_notice": "There is no missing segment",
+          "correct_chromosome": [
+            "15"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Angelman syndrome by paternal uniparental disomy 15",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        },
+        {
+          "id": "as-imprinting",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Imprinting defect",
+          "patient_case_label": "This patient's case: an imprinting defect at 15q11.2-q13.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "15"
+          ],
+          "homolog_affected": "Neither chromosome 15 needs to be deleted",
+          "primary_locus": "15q11.2-q13",
+          "specific_region": "Imprinting center",
+          "abnormality_type": "imprinting defect",
+          "structural_class": "Normal chromosome morphology",
+          "typical_configuration": "A maternal chromosome that carries a paternal imprint, or an imprinting-center change",
+          "whole_chromosome_count": "46",
+          "visual_change": "Chromosome 15 looks normal",
+          "material_missing": "None",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY"
+          ],
+          "mechanism": "Imprinting defect without a typical deletion or uniparental disomy",
+          "derivative": null,
+          "genes": "UBE3A",
+          "do_not_alter": "Do not draw a deletion.",
+          "student_should_notice": "There is no missing segment",
+          "correct_chromosome": [
+            "15"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "other",
+          "final_interpretation": "Angelman syndrome by an imprinting defect",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        },
+        {
+          "id": "as-ube3a",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "UBE3A sequence variant",
+          "patient_case_label": "This patient's case: a pathogenic variant in the maternal UBE3A copy.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "15"
+          ],
+          "homolog_affected": "Neither chromosome 15 needs to be deleted",
+          "primary_locus": "15q11.2",
+          "specific_region": "UBE3A",
+          "abnormality_type": "sequence variant",
+          "structural_class": "Normal chromosome morphology",
+          "typical_configuration": "Sequence change on the maternal allele",
+          "whole_chromosome_count": "46",
+          "visual_change": "Chromosome 15 looks normal",
+          "material_missing": "None",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY"
+          ],
+          "mechanism": "Pathogenic variant of maternal UBE3A",
+          "derivative": null,
+          "genes": "UBE3A",
+          "do_not_alter": "Do not draw a deletion.",
+          "student_should_notice": "There is no missing segment",
+          "correct_chromosome": [
+            "15"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "other",
+          "final_interpretation": "Angelman syndrome from a maternal UBE3A variant, with a normal karyotype",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "digeorge",
+      "disease_name": "DiGeorge / 22q11.2 deletion syndrome",
+      "teaching_notes": "22q11.2 deletion syndrome in this laboratory is the heterozygous 22q11.2 microdeletion. A conventional karyotype can look normal. A TBX1 sequence variant without the deletion remains a different case.",
+      "cytogenetic_cases": [
+        {
+          "id": "micro-22q11",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "22q11.2 microdeletion",
+          "patient_case_label": "This patient's case: the common 22q11.2 microdeletion.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "22"
+          ],
+          "homolog_affected": "One chromosome 22",
+          "primary_locus": "22q11.2",
+          "specific_region": "Recurrent proximal or distal 22q11.2 deletion",
+          "abnormality_type": "microdeletion",
+          "structural_class": "Partial monosomy below routine karyotype resolution",
+          "typical_configuration": "Interstitial microdeletion",
+          "whole_chromosome_count": "46",
+          "visual_change": "The chromosome 22 pair usually looks normal",
+          "material_missing": "22q11.2",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY. The deletion is usually not written from a routine karyotype."
+          ],
+          "mechanism": "Deletion of 22q11.2",
+          "derivative": null,
+          "genes": "TBX1 is within the commonly deleted region",
+          "do_not_alter": "Do not draw a shortened chromosome 22, and do not confuse this with the Philadelphia chromosome.",
+          "student_should_notice": "The karyotype can look normal",
+          "correct_chromosome": [
+            "22"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 22q11.2, usually not visible on a conventional karyotype",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": {
+            "change": "missing",
+            "place": "q"
+          },
+          "default_karyotype_activity": false,
+          "representative_teaching_karyotype": {
+            "iscn": "46,XX",
+            "label": "Conventional karyotype usually looks normal. The teaching abnormality is below routine G-band resolution.",
+            "sex": "XX",
+            "copy_number": {},
+            "variants": {},
+            "chromosomes_to_find": [
+              "22"
+            ]
+          }
+        },
+        {
+          "id": "tbx1-variant",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "TBX1 sequence variant",
+          "patient_case_label": "This patient's case: a TBX1 variant without a 22q11.2 deletion.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "22"
+          ],
+          "homolog_affected": "Neither chromosome 22 is structurally deleted",
+          "primary_locus": "22q11.21",
+          "specific_region": "TBX1",
+          "abnormality_type": "sequence variant",
+          "structural_class": "No dosage change of the chromosome",
+          "typical_configuration": "Normal chromosome morphology",
+          "whole_chromosome_count": "46",
+          "visual_change": "Chromosome 22 looks normal",
+          "material_missing": "None",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY"
+          ],
+          "mechanism": "Sequence variant in TBX1 rather than a deletion",
+          "derivative": null,
+          "genes": "TBX1",
+          "do_not_alter": "Do not draw a deletion.",
+          "student_should_notice": "There is no missing chromosome segment to see",
+          "correct_chromosome": [
+            "22"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "other",
+          "final_interpretation": "22q11.2 deletion syndrome phenotype from a TBX1 variant, with a normal karyotype",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "jacobsen",
+      "disease_name": "Jacobsen syndrome",
+      "teaching_notes": "Jacobsen syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "jacobsen-deletion",
+          "role": "canonical",
+          "lab_level": "reference",
+          "case_title": "Deletion, size variable",
+          "patient_case_label": "This patient's case: terminal deletion of 11q.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "11"
+          ],
+          "homolog_affected": "One chromosome 11",
+          "primary_locus": "11q",
+          "specific_region": "11q23-qter",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Deletion size varies from cryptic to visible",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "One chromosome 11 has a shortened q arm when the deletion is large",
+          "material_missing": "11q23-qter",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for a simple deletion",
+          "example_notation": [
+            "Breakpoint notation depends on the deletion. A routine karyotype often looks normal."
+          ],
+          "mechanism": "Terminal deletion of 11q",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not build one shortened chromosome as every patient with this disease.",
+          "student_should_notice": "One chromosome 11 has a shortened q arm when the deletion is large",
+          "correct_chromosome": [
+            "11"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 11q24. Visibility depends on deletion size.",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "jacobsen-other",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Unbalanced rearrangement or smaller deletion",
+          "patient_case_label": "This patient's case: a smaller deletion or an unbalanced rearrangement.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "11"
+          ],
+          "homolog_affected": "Chromosome 11 may look normal",
+          "primary_locus": "11q",
+          "specific_region": "11q24",
+          "abnormality_type": "deletion or unbalanced rearrangement",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Not the large simple-deletion drawing",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The karyotype can look normal",
+          "material_missing": "11q23-qter",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "A partner chromosome is involved only in the unbalanced-rearrangement form",
+          "example_notation": [
+            "46,XX or 46,XY may be the conventional karyotype"
+          ],
+          "mechanism": "Another mechanism that still affects 11q24",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw the large deletion for this case.",
+          "student_should_notice": "The chromosome pair can look normal",
+          "correct_chromosome": [
+            "11"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 11q24 that may not be visible, or that comes from an unbalanced rearrangement",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "miller-dieker",
+      "disease_name": "Miller-Dieker syndrome",
+      "teaching_notes": "Miller-Dieker syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "miller-dieker-deletion",
+          "role": "canonical",
+          "lab_level": "reference",
+          "case_title": "Deletion, size variable",
+          "patient_case_label": "This patient's case: deletion of 17p13.3.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "17"
+          ],
+          "homolog_affected": "One chromosome 17",
+          "primary_locus": "17p13.3",
+          "specific_region": "17p13.3",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Deletion size varies from cryptic to visible",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "A large deletion can shorten 17p; many are not visible at routine resolution",
+          "material_missing": "17p13.3",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for a simple deletion",
+          "example_notation": [
+            "Breakpoint notation depends on the deletion. A routine karyotype often looks normal."
+          ],
+          "mechanism": "Deletion of 17p13.3",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not build one shortened chromosome as every patient with this disease.",
+          "student_should_notice": "A large deletion can shorten 17p; many are not visible at routine resolution",
+          "correct_chromosome": [
+            "17"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 17p13.3. Visibility depends on deletion size.",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "miller-dieker-other",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Unbalanced rearrangement or smaller deletion",
+          "patient_case_label": "This patient's case: a smaller deletion or an unbalanced rearrangement.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "17"
+          ],
+          "homolog_affected": "Chromosome 17 may look normal",
+          "primary_locus": "17p13.3",
+          "specific_region": "17p13.3",
+          "abnormality_type": "deletion or unbalanced rearrangement",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Not the large simple-deletion drawing",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The karyotype can look normal",
+          "material_missing": "17p13.3",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "A partner chromosome is involved only in the unbalanced-rearrangement form",
+          "example_notation": [
+            "46,XX or 46,XY may be the conventional karyotype"
+          ],
+          "mechanism": "Another mechanism that still affects 17p13.3",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw the large deletion for this case.",
+          "student_should_notice": "The chromosome pair can look normal",
+          "correct_chromosome": [
+            "17"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 17p13.3 that may not be visible, or that comes from an unbalanced rearrangement",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "prader-willi",
+      "disease_name": "Prader-Willi syndrome",
+      "teaching_notes": "Prader-Willi syndrome has more than one mechanism. The laboratory uses the paternal 15q11-q13 deletion case. A normal deletion-FISH result does not exclude the syndrome, and the signal pattern does not prove paternal origin.",
+      "cytogenetic_cases": [
+        {
+          "id": "pws-no-single-karyotype",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "No single karyotype",
+          "patient_case_label": "This patient's case is not defined by one chromosome picture.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "15"
+          ],
+          "homolog_affected": "Depends on the mechanism",
+          "primary_locus": "15q11.2-q13",
+          "specific_region": "Paternally expressed region at 15q11.2-q13",
+          "abnormality_type": "imprinting disorder",
+          "structural_class": "No one structural class",
+          "typical_configuration": "Deletion, maternal uniparental disomy, or an imprinting defect",
+          "whole_chromosome_count": "Often 46",
+          "visual_change": "The conventional karyotype is often normal",
+          "material_missing": "Not always. Only the deletion case is missing chromosome material.",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY does not establish or exclude the diagnosis"
+          ],
+          "mechanism": "Absent paternal contribution at 15q11.2-q13",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw a deleted chromosome 15 as Prader-Willi syndrome in general.",
+          "student_should_notice": "A normal karyotype does not exclude the disease",
+          "correct_chromosome": [
+            "15"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "other",
+          "final_interpretation": "Prader-Willi syndrome has more than one cytogenetic and molecular mechanism",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null,
+          "representative_teaching_karyotype": {
+            "iscn": "46,XX",
+            "label": "Normal conventional karyotype, female",
+            "sex": "XX",
+            "copy_number": {},
+            "variants": {},
+            "chromosomes_to_find": [
+              "15"
+            ]
+          }
+        },
+        {
+          "id": "pws-deletion",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "Paternal 15q11.2-q13 deletion",
+          "patient_case_label": "This patient's case: deletion of the paternal 15q11.2-q13 region.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "15"
+          ],
+          "homolog_affected": "The paternally inherited chromosome 15",
+          "primary_locus": "15q11.2-q13",
+          "specific_region": "Paternal copy of 15q11.2-q13",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy, often a microdeletion",
+          "typical_configuration": "Interstitial deletion",
+          "whole_chromosome_count": "46",
+          "visual_change": "Often normal at routine resolution",
+          "material_missing": "Paternal 15q11.2-q13",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "The deletion is usually defined by FISH or a microarray, not by arm length"
+          ],
+          "mechanism": "Deletion of the paternal 15q11.2-q13 allele",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not use this as the only Prader-Willi karyotype.",
+          "student_should_notice": "The pair can look normal",
+          "correct_chromosome": [
+            "15"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "deletion",
+          "final_interpretation": "Representative case: paternal deletion of 15q11-q13. Deletion FISH shows the missing interval and does not establish parent of origin or exclude other Prader-Willi mechanisms.",
+          "assigned_origin_context": "Parent-of-origin result, separate from deletion FISH: methylation analysis shows the missing 15q11-q13 copy is the paternal chromosome. Paternal deletion of this interval is the representative deletion mechanism of Prader-Willi syndrome. Maternal deletion of the same interval is the representative deletion mechanism of Angelman syndrome. Deletion FISH does not identify the parent. A normal deletion-FISH result does not exclude either condition, because non-deletion mechanisms also occur.",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": {
+            "change": "missing",
+            "place": "q"
+          },
+          "default_karyotype_activity": false,
+          "representative_teaching_karyotype": {
+            "iscn": "46,XX",
+            "label": "Conventional karyotype usually looks normal. The teaching abnormality is below routine G-band resolution.",
+            "sex": "XX",
+            "copy_number": {},
+            "variants": {},
+            "chromosomes_to_find": [
+              "15"
+            ]
+          }
+        },
+        {
+          "id": "pws-upd",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Maternal uniparental disomy 15",
+          "patient_case_label": "This patient's case: maternal uniparental disomy 15.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "15"
+          ],
+          "homolog_affected": "Both chromosomes 15 are maternal",
+          "primary_locus": "15",
+          "specific_region": "15q11.2-q13 imprinting",
+          "abnormality_type": "uniparental disomy",
+          "structural_class": "Normal structure, abnormal parent of origin",
+          "typical_configuration": "Two maternal chromosomes 15",
+          "whole_chromosome_count": "46",
+          "visual_change": "Chromosome 15 looks normal",
+          "material_missing": "None",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY"
+          ],
+          "mechanism": "Two maternal copies of chromosome 15 and no paternal copy",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw a deletion.",
+          "student_should_notice": "There is no missing segment",
+          "correct_chromosome": [
+            "15"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Prader-Willi syndrome by maternal uniparental disomy 15",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        },
+        {
+          "id": "pws-imprinting",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Imprinting defect",
+          "patient_case_label": "This patient's case: an imprinting defect at 15q11.2-q13.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "15"
+          ],
+          "homolog_affected": "Neither chromosome 15 needs to be deleted",
+          "primary_locus": "15q11.2-q13",
+          "specific_region": "Imprinting center",
+          "abnormality_type": "imprinting defect",
+          "structural_class": "Normal chromosome morphology",
+          "typical_configuration": "A paternal chromosome that carries a maternal imprint, or an imprinting-center change",
+          "whole_chromosome_count": "46",
+          "visual_change": "Chromosome 15 looks normal",
+          "material_missing": "None",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY"
+          ],
+          "mechanism": "Imprinting defect without a typical deletion or uniparental disomy",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not draw a deletion.",
+          "student_should_notice": "There is no missing segment",
+          "correct_chromosome": [
+            "15"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "other",
+          "final_interpretation": "Prader-Willi syndrome by an imprinting defect",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "smith-magenis",
+      "disease_name": "Smith-Magenis syndrome",
+      "teaching_notes": "Smith-Magenis syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "smith-magenis-deletion",
+          "role": "canonical",
+          "lab_level": "reference",
+          "case_title": "Microdeletion",
+          "patient_case_label": "This patient's case: interstitial deletion of 17p11.2, often including RAI1.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "17"
+          ],
+          "homolog_affected": "One chromosome 17",
+          "primary_locus": "17p11.2",
+          "specific_region": "17p11.2",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Usually a microdeletion",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The chromosome 17 pair usually looks normal",
+          "material_missing": "17p11.2",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for a simple deletion",
+          "example_notation": [
+            "Breakpoint notation depends on the deletion. A routine karyotype often looks normal."
+          ],
+          "mechanism": "Interstitial deletion of 17p11.2, often including RAI1",
+          "derivative": null,
+          "genes": "RAI1",
+          "do_not_alter": "Do not build one shortened chromosome as every patient with this disease.",
+          "student_should_notice": "The chromosome 17 pair usually looks normal",
+          "correct_chromosome": [
+            "17"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 17p11.2. Visibility depends on deletion size.",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        },
+        {
+          "id": "smith-magenis-other",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "RAI1 sequence variant",
+          "patient_case_label": "This patient's case: a RAI1 variant without a visible deletion.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "17"
+          ],
+          "homolog_affected": "Chromosome 17 may look normal",
+          "primary_locus": "17p11.2",
+          "specific_region": "17p11.2",
+          "abnormality_type": "sequence variant",
+          "structural_class": "No dosage change required",
+          "typical_configuration": "Not the large simple-deletion drawing",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The karyotype can look normal",
+          "material_missing": "None",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY may be the conventional karyotype"
+          ],
+          "mechanism": "Sequence variant in RAI1",
+          "derivative": null,
+          "genes": "RAI1",
+          "do_not_alter": "Do not draw the large deletion for this case.",
+          "student_should_notice": "The chromosome pair can look normal",
+          "correct_chromosome": [
+            "17"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "other",
+          "final_interpretation": "Smith-Magenis syndrome from a RAI1 variant, with a normal karyotype",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "triple-x",
+      "disease_name": "Triple X syndrome",
+      "teaching_notes": "Triple X syndrome remains in the atlas. It is not in the first lab set, which already includes sex-chromosome aneuploidy through Turner syndrome and Klinefelter syndrome.",
+      "cytogenetic_cases": [
+        {
+          "id": "xxx",
+          "role": "canonical",
+          "lab_level": "reference",
+          "case_title": "47,XXX",
+          "patient_case_label": "This patient's case: 47,XXX. This case is in the atlas and is not part of the first lab set.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "X"
+          ],
+          "homolog_affected": "Three X chromosomes and no Y",
+          "primary_locus": "X",
+          "specific_region": null,
+          "abnormality_type": "trisomy",
+          "structural_class": "Sex-chromosome aneuploidy",
+          "typical_configuration": "Three X chromosomes",
+          "whole_chromosome_count": "47",
+          "visual_change": "Three separate X chromosomes",
+          "material_missing": "None",
+          "material_added": "One extra X chromosome",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "47,XXX"
+          ],
+          "mechanism": "Sex-chromosome nondisjunction producing 47,XXX",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not change the structure of the X chromosomes.",
+          "student_should_notice": "Three X chromosomes",
+          "correct_chromosome": [
+            "X"
+          ],
+          "correct_arm": null,
+          "correct_classification": "trisomy",
+          "final_interpretation": "Sex-chromosome aneuploidy: 47,XXX",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "extra",
+            "place": "whole"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "47,XXX",
+            "label": "47,XXX",
+            "sex": "XXX",
+            "copy_number": {
+              "X": 3,
+              "Y": 0
+            },
+            "variants": {},
+            "chromosomes_to_find": [
+              "X"
+            ]
+          }
+        },
+        {
+          "id": "mosaic-triple-x",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Mosaic 47,XXX",
+          "patient_case_label": "This patient's case: mosaic 47,XXX.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "X"
+          ],
+          "homolog_affected": "A 47,XXX line and another line",
+          "primary_locus": "X",
+          "specific_region": null,
+          "abnormality_type": "mosaic trisomy",
+          "structural_class": "Mosaic sex-chromosome complement",
+          "typical_configuration": "More than one cell line",
+          "whole_chromosome_count": "47 in the triple X line",
+          "visual_change": "One metaphase cannot show both lines",
+          "material_missing": "None",
+          "material_added": "An extra X in the 47,XXX line only",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "47,XXX/46,XX"
+          ],
+          "mechanism": "Mosaicism that includes a 47,XXX line",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not report one cell as the whole karyotype.",
+          "student_should_notice": "A second cell line has to be examined",
+          "correct_chromosome": [
+            "X"
+          ],
+          "correct_arm": null,
+          "correct_classification": "trisomy",
+          "final_interpretation": "Mosaic triple X",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "wagr",
+      "disease_name": "WAGR syndrome",
+      "teaching_notes": "WAGR syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "cytogenetic_cases": [
+        {
+          "id": "wagr-deletion",
+          "role": "canonical",
+          "lab_level": "reference",
+          "case_title": "Deletion, size variable",
+          "patient_case_label": "This patient's case: contiguous deletion at 11p13 including WT1 and PAX6.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "11"
+          ],
+          "homolog_affected": "One chromosome 11",
+          "primary_locus": "11p13",
+          "specific_region": "11p13",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Deletion size varies from cryptic to visible",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "A large deletion can change 11p; many are not visible at routine resolution",
+          "material_missing": "11p13",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for a simple deletion",
+          "example_notation": [
+            "Breakpoint notation depends on the deletion. A routine karyotype often looks normal."
+          ],
+          "mechanism": "Contiguous deletion at 11p13 including WT1 and PAX6",
+          "derivative": null,
+          "genes": "WT1 and PAX6",
+          "do_not_alter": "Do not build one shortened chromosome as every patient with this disease.",
+          "student_should_notice": "A large deletion can change 11p; many are not visible at routine resolution",
+          "correct_chromosome": [
+            "11"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 11p13. Visibility depends on deletion size.",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        },
+        {
+          "id": "wagr-other",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Unbalanced rearrangement or smaller deletion",
+          "patient_case_label": "This patient's case: a smaller deletion or an unbalanced rearrangement.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "11"
+          ],
+          "homolog_affected": "Chromosome 11 may look normal",
+          "primary_locus": "11p13",
+          "specific_region": "11p13",
+          "abnormality_type": "deletion or unbalanced rearrangement",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Not the large simple-deletion drawing",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "The karyotype can look normal",
+          "material_missing": "11p13",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "A partner chromosome is involved only in the unbalanced-rearrangement form",
+          "example_notation": [
+            "46,XX or 46,XY may be the conventional karyotype"
+          ],
+          "mechanism": "Another mechanism that still affects 11p13",
+          "derivative": null,
+          "genes": "WT1 and PAX6",
+          "do_not_alter": "Do not draw the large deletion for this case.",
+          "student_should_notice": "The chromosome pair can look normal",
+          "correct_chromosome": [
+            "11"
+          ],
+          "correct_arm": "p",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 11p13 that may not be visible, or that comes from an unbalanced rearrangement",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "williams",
+      "disease_name": "Williams syndrome",
+      "teaching_notes": "Williams syndrome in this laboratory is the 7q11.23 microdeletion, including the ELN region. A conventional karyotype can look normal. A larger atypical 7q deletion remains a different case.",
+      "cytogenetic_cases": [
+        {
+          "id": "micro-7q11",
+          "role": "canonical",
+          "lab_level": "default",
+          "case_title": "7q11.23 microdeletion",
+          "patient_case_label": "This patient's case: the common 7q11.23 microdeletion.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "7"
+          ],
+          "homolog_affected": "One chromosome 7",
+          "primary_locus": "7q11.23",
+          "specific_region": "The recurrent Williams deletion at 7q11.23",
+          "abnormality_type": "microdeletion",
+          "structural_class": "Partial monosomy below routine karyotype resolution",
+          "typical_configuration": "Interstitial microdeletion",
+          "whole_chromosome_count": "46",
+          "visual_change": "The chromosome 7 pair usually looks normal",
+          "material_missing": "7q11.23",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "46,XX or 46,XY. The deletion is usually not written from a routine karyotype."
+          ],
+          "mechanism": "Deletion of 7q11.23",
+          "derivative": null,
+          "genes": "ELN, within the deleted 7q11.23 interval",
+          "do_not_alter": "Do not draw a shortened chromosome 7.",
+          "student_should_notice": "The karyotype can look normal",
+          "correct_chromosome": [
+            "7"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "deletion",
+          "final_interpretation": "Partial monosomy 7q11.23, usually not visible on a conventional karyotype",
+          "karyotype_visibility": "usually_not_visible",
+          "answers": {
+            "change": "missing",
+            "place": "q"
+          },
+          "default_karyotype_activity": false,
+          "representative_teaching_karyotype": {
+            "iscn": "46,XX",
+            "label": "Conventional karyotype usually looks normal. The teaching abnormality is below routine G-band resolution.",
+            "sex": "XX",
+            "copy_number": {},
+            "variants": {},
+            "chromosomes_to_find": [
+              "7"
+            ]
+          }
+        },
+        {
+          "id": "atypical-7q",
+          "role": "alternate",
+          "lab_level": "reference",
+          "case_title": "Larger atypical 7q deletion",
+          "patient_case_label": "This patient's case: a larger deletion that includes 7q11.23.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "7"
+          ],
+          "homolog_affected": "One chromosome 7",
+          "primary_locus": "7q",
+          "specific_region": "Atypical deletion larger than the recurrent 7q11.23 interval",
+          "abnormality_type": "deletion",
+          "structural_class": "Partial monosomy",
+          "typical_configuration": "Deletion large enough that it may be visible",
+          "whole_chromosome_count": "Usually 46",
+          "visual_change": "One chromosome 7 may have a shortened q arm",
+          "material_missing": "A 7q segment that includes 7q11.23",
+          "material_added": "None",
+          "partner_chromosome": null,
+          "partner_note": "None for a simple deletion",
+          "example_notation": [
+            "Breakpoint notation depends on the deletion size"
+          ],
+          "mechanism": "Atypical deletion encompassing 7q11.23",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not use this drawing as the common Williams karyotype.",
+          "student_should_notice": "This is not the usual microdeletion",
+          "correct_chromosome": [
+            "7"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "deletion",
+          "final_interpretation": "Visible atypical partial monosomy 7q. Not the common teaching karyotype.",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "xyy",
+      "disease_name": "XYY syndrome",
+      "teaching_notes": "XYY syndrome remains in the atlas. It is not in the first lab set, which already includes sex-chromosome aneuploidy through Turner syndrome and Klinefelter syndrome.",
+      "cytogenetic_cases": [
+        {
+          "id": "xyy-free",
+          "role": "canonical",
+          "lab_level": "reference",
+          "case_title": "47,XYY",
+          "patient_case_label": "This patient's case: 47,XYY. This case is in the atlas and is not part of the first lab set.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "Y"
+          ],
+          "homolog_affected": "One X chromosome and two Y chromosomes",
+          "primary_locus": "Y",
+          "specific_region": null,
+          "abnormality_type": "sex-chromosome aneuploidy",
+          "structural_class": "Sex-chromosome aneuploidy",
+          "typical_configuration": "XYY",
+          "whole_chromosome_count": "47",
+          "visual_change": "Two Y chromosomes and one X chromosome",
+          "material_missing": "None",
+          "material_added": "One extra Y chromosome",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "47,XYY"
+          ],
+          "mechanism": "Sex-chromosome nondisjunction producing 47,XYY",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not change the structure of the Y chromosomes.",
+          "student_should_notice": "Two Y chromosomes",
+          "correct_chromosome": [
+            "X",
+            "Y"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Sex-chromosome aneuploidy: 47,XYY",
+          "karyotype_visibility": "clearly_visible",
+          "answers": {
+            "change": "extra",
+            "place": "whole"
+          },
+          "representative_teaching_karyotype": {
+            "iscn": "47,XYY",
+            "label": "47,XYY",
+            "sex": "XYY",
+            "copy_number": {
+              "X": 1,
+              "Y": 2
+            },
+            "variants": {},
+            "chromosomes_to_find": [
+              "Y"
+            ]
+          }
+        },
+        {
+          "id": "mosaic-xyy",
+          "role": "alternate",
+          "lab_level": "advanced",
+          "case_title": "Mosaic 47,XYY",
+          "patient_case_label": "This patient's case: mosaic 47,XYY.",
+          "kind": "constitutional",
+          "primary_chromosome": [
+            "Y"
+          ],
+          "homolog_affected": "A 47,XYY line and another line",
+          "primary_locus": "Y",
+          "specific_region": null,
+          "abnormality_type": "mosaic sex-chromosome aneuploidy",
+          "structural_class": "Mosaic sex-chromosome complement",
+          "typical_configuration": "More than one cell line",
+          "whole_chromosome_count": "47 in the XYY line",
+          "visual_change": "One metaphase cannot show both lines",
+          "material_missing": "None",
+          "material_added": "An extra Y in the 47,XYY line only",
+          "partner_chromosome": null,
+          "partner_note": "None",
+          "example_notation": [
+            "47,XYY/46,XY"
+          ],
+          "mechanism": "Mosaicism that includes a 47,XYY line",
+          "derivative": null,
+          "genes": null,
+          "do_not_alter": "Do not report one cell as the whole karyotype.",
+          "student_should_notice": "A second cell line has to be examined",
+          "correct_chromosome": [
+            "Y"
+          ],
+          "correct_arm": null,
+          "correct_classification": "other",
+          "final_interpretation": "Mosaic XYY",
+          "karyotype_visibility": "potentially_visible",
+          "answers": null
+        }
+      ]
+    },
+    {
+      "id": "cll-del13q",
+      "disease_name": "CLL with del(13q)",
+      "teaching_notes": "The teaching case is an acquired heterozygous deletion at 13q14. It is not offered as a basic G-band recognition exercise, and this signal pattern is the representative case rather than every CLL 13q result.",
+      "cytogenetic_cases": [
+        {
+          "role": "canonical",
+          "lab_level": "default",
+          "kind": "acquired",
+          "homolog_affected": "One chromosome 13",
+          "whole_chromosome_count": "46",
+          "material_added": "None",
+          "partner_note": "None",
+          "do_not_alter": "Do not treat every 13q14 loss as the same signal pattern or as a giant deletion.",
+          "student_should_notice": "The question is targeted loss of 13q14",
+          "correct_chromosome": [
+            "13"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "deletion",
+          "generation": {
+            "abnormality": "deletion",
+            "copy_state": "one copy of 13q14",
+            "structural_alteration": "delete 13q14 on one chromosome 13",
+            "breakpoints": [
+              {
+                "chromosome": "13",
+                "arm": "q",
+                "band": "14"
+              }
+            ],
+            "derivatives": []
+          },
+          "id": "del13q14",
+          "case_title": "13q14 deletion",
+          "patient_case_label": "This patient's case: heterozygous deletion of 13q14.",
+          "primary_chromosome": [
+            "13"
+          ],
+          "homolog": "One chromosome 13",
+          "primary_locus": "13q14",
+          "specific_region": "13q14",
+          "abnormality_type": "interstitial deletion",
+          "structural_class": "Partial monosomy 13q",
+          "typical_configuration": "Interstitial deletion",
+          "visual_change": "Not used as an obvious shortened chromosome 13",
+          "material_missing": "13q14",
+          "chromosomes": [
+            "13"
+          ],
+          "arm": "q",
+          "classification": "deletion",
+          "final_interpretation": "Acquired deletion of 13q14 in the representative CLL teaching case.",
+          "karyotype_visibility": "usually_not_visible",
+          "default_karyotype_activity": false,
+          "answers": {
+            "change": "missing",
+            "place": "q"
+          },
+          "example_notation": [
+            "46,XY. The teaching deletion is detected as loss of the 13q14 target, not as an obvious arm-length change."
+          ],
+          "mechanism": "Heterozygous interstitial deletion of 13q14",
+          "genes": null,
+          "doNot": "Do not treat every 13q14 loss as the same signal pattern or as a giant deletion.",
+          "notice": "The question is targeted loss of 13q14",
+          "representative_teaching_karyotype": {
+            "iscn": "46,XY",
+            "label": "Conventional karyotype is not the teaching method for this 13q14 deletion.",
+            "sex": "XY",
+            "copy_number": {},
+            "variants": {},
+            "chromosomes_to_find": [
+              "13"
+            ]
+          }
+        }
+      ],
+      "references": [
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "aml-runx1",
+      "disease_name": "AML with RUNX1::RUNX1T1",
+      "teaching_notes": "The canonical teaching abnormality is t(8;21)(q22;q22). RUNX1T1 is at 8q22. RUNX1 is at 21q22.",
+      "cytogenetic_cases": [
+        {
+          "role": "canonical",
+          "lab_level": "default",
+          "kind": "acquired",
+          "homolog_affected": "One chromosome 8 and one chromosome 21",
+          "whole_chromosome_count": "46",
+          "material_added": "8q material is on der(21), and 21q material is on der(8).",
+          "partner_note": "8 and 21 exchange long-arm material",
+          "do_not_alter": "Do not put RUNX1 on chromosome 8. RUNX1 is at 21q22. RUNX1T1 is at 8q22.",
+          "student_should_notice": "Both derivative chromosomes",
+          "correct_chromosome": [
+            "8",
+            "21"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "translocation",
+          "generation": {
+            "abnormality": "reciprocal_translocation",
+            "copy_state": "46 chromosomes",
+            "structural_alteration": "exchange 8q22 and 21q22",
+            "breakpoints": [
+              {
+                "chromosome": "8",
+                "arm": "q",
+                "band": "22"
+              },
+              {
+                "chromosome": "21",
+                "arm": "q",
+                "band": "22"
+              }
+            ],
+            "derivatives": [
+              "der(8)",
+              "der(21)"
+            ]
+          },
+          "id": "t8-21",
+          "case_title": "t(8;21)(q22;q22)",
+          "patient_case_label": "This patient's case: t(8;21)(q22;q22), producing RUNX1::RUNX1T1.",
+          "primary_chromosome": [
+            "8",
+            "21"
+          ],
+          "homolog": "One chromosome 8 and one chromosome 21",
+          "primary_locus": "8q22 and 21q22",
+          "specific_region": "RUNX1T1 at 8q22 and RUNX1 at 21q22",
+          "abnormality_type": "reciprocal translocation",
+          "structural_class": "Balanced reciprocal translocation",
+          "typical_configuration": "der(8) and der(21)",
+          "visual_change": "Chromosomes 8 and 21 are derivative chromosomes",
+          "material_missing": "None. Material is exchanged.",
+          "added": "8q material is on der(21), and 21q material is on der(8).",
+          "partner_chromosome": [
+            "8",
+            "21"
+          ],
+          "partnerNote": "8 and 21 exchange long-arm material",
+          "chromosomes": [
+            "8",
+            "21"
+          ],
+          "arm": "q",
+          "classification": "translocation",
+          "final_interpretation": "t(8;21)(q22;q22) producing RUNX1::RUNX1T1.",
+          "karyotype_visibility": "clearly_visible",
+          "default_karyotype_activity": true,
+          "answers": {
+            "change": "moved",
+            "place": "q"
+          },
+          "example_notation": [
+            "46,XY,t(8;21)(q22;q22)"
+          ],
+          "mechanism": "Reciprocal translocation joining RUNX1 and RUNX1T1",
+          "genes": "RUNX1 and RUNX1T1; result RUNX1::RUNX1T1",
+          "doNot": "Do not put RUNX1 on chromosome 8. RUNX1 is at 21q22. RUNX1T1 is at 8q22.",
+          "notice": "Both derivative chromosomes",
+          "representative_teaching_karyotype": {
+            "iscn": "46,XY,t(8;21)(q22;q22)",
+            "label": "Male t(8;21)",
+            "sex": "XY",
+            "copy_number": {},
+            "variants": {
+              "8a": "der(8)t(8;21)(q22;q22)",
+              "21a": "der(21)t(8;21)(q22;q22)"
+            },
+            "chromosomes_to_find": [
+              "8",
+              "21"
+            ]
+          }
+        }
+      ],
+      "references": [
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "aml-inv16",
+      "disease_name": "AML with CBFB::MYH11",
+      "teaching_notes": "The canonical teaching abnormality is the pericentric inversion inv(16)(p13.1q22). The breakpoints are on opposite arms, so the reversed segment includes the centromere. FISH asks whether CBFB is rearranged.",
+      "cytogenetic_cases": [
+        {
+          "role": "canonical",
+          "lab_level": "default",
+          "kind": "acquired",
+          "homolog_affected": "One chromosome 16",
+          "whole_chromosome_count": "46",
+          "material_added": "None",
+          "partner_note": "None",
+          "do_not_alter": "Do not teach this as a paracentric inversion. The centromere is inside the inverted segment.",
+          "student_should_notice": "Breakpoints on both arms",
+          "correct_chromosome": [
+            "16"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "inversion",
+          "generation": {
+            "abnormality": "inversion",
+            "copy_state": "46 chromosomes",
+            "structural_alteration": "reverse 16p13.1 through 16q22",
+            "breakpoints": [
+              {
+                "chromosome": "16",
+                "arm": "p",
+                "band": "13.1"
+              },
+              {
+                "chromosome": "16",
+                "arm": "q",
+                "band": "22"
+              }
+            ],
+            "derivatives": []
+          },
+          "id": "inv16",
+          "case_title": "inv(16)(p13.1q22)",
+          "patient_case_label": "This patient's case: inv(16)(p13.1q22), producing CBFB::MYH11.",
+          "primary_chromosome": [
+            "16"
+          ],
+          "homolog": "One chromosome 16",
+          "primary_locus": "16p13.1 and 16q22",
+          "specific_region": "MYH11 at 16p13.1 and CBFB at 16q22",
+          "abnormality_type": "pericentric inversion",
+          "structural_class": "Pericentric inversion",
+          "typical_configuration": "inv(16)(p13.1q22)",
+          "visual_change": "Band order across the centromere is reversed. The chromosome is not redrawn as a different shape.",
+          "material_missing": "None. Order is reversed.",
+          "chromosomes": [
+            "16"
+          ],
+          "arm": "q",
+          "classification": "inversion",
+          "final_interpretation": "Pericentric inv(16)(p13.1q22) producing CBFB::MYH11.",
+          "karyotype_visibility": "potentially_visible",
+          "default_karyotype_activity": true,
+          "answers": {
+            "change": "moved",
+            "place": "both"
+          },
+          "example_notation": [
+            "46,XY,inv(16)(p13.1q22)"
+          ],
+          "mechanism": "Pericentric inversion joining CBFB and MYH11",
+          "genes": "CBFB and MYH11; result CBFB::MYH11",
+          "doNot": "Do not teach this as a paracentric inversion. The centromere is inside the inverted segment.",
+          "notice": "Breakpoints on both arms",
+          "representative_teaching_karyotype": {
+            "iscn": "46,XY,inv(16)(p13.1q22)",
+            "label": "Male inv(16)",
+            "sex": "XY",
+            "copy_number": {},
+            "variants": {
+              "16a": "inv(16)(p13.1q22)"
+            },
+            "chromosomes_to_find": [
+              "16"
+            ]
+          }
+        }
+      ],
+      "references": [
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "kmt2a",
+      "disease_name": "KMT2A-rearranged acute leukemia",
+      "teaching_notes": "The teaching question is whether KMT2A at 11q23.3 is rearranged. Patients do not all share one partner, so this case does not assign one universal karyotype or one derivative.",
+      "cytogenetic_cases": [
+        {
+          "role": "canonical",
+          "lab_level": "default",
+          "kind": "acquired",
+          "homolog_affected": "One KMT2A locus",
+          "whole_chromosome_count": "46",
+          "material_added": "None",
+          "partner_note": "None",
+          "do_not_alter": "Do not assign one translocation partner to the whole disease category.",
+          "student_should_notice": "The locus can be rearranged with more than one partner",
+          "correct_chromosome": [
+            "11"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "other",
+          "generation": {
+            "abnormality": "rearrangement",
+            "copy_state": "46 chromosomes",
+            "structural_alteration": "none until a partner is specified",
+            "breakpoints": [
+              {
+                "chromosome": "11",
+                "arm": "q",
+                "band": "23.3"
+              }
+            ],
+            "derivatives": []
+          },
+          "id": "kmt2a-rearranged",
+          "case_title": "KMT2A rearrangement",
+          "patient_case_label": "This patient's case: rearrangement of KMT2A at 11q23.3. The partner is not identified by this assay.",
+          "primary_chromosome": [
+            "11"
+          ],
+          "homolog": "One KMT2A locus",
+          "primary_locus": "11q23.3",
+          "specific_region": "KMT2A",
+          "abnormality_type": "locus rearrangement",
+          "structural_class": "Rearrangement with more than one possible partner",
+          "typical_configuration": "Partner-dependent",
+          "visual_change": "No single derivative is the teaching picture",
+          "material_missing": "None",
+          "chromosomes": [
+            "11"
+          ],
+          "arm": "q",
+          "classification": "other",
+          "chromosome_activity": "locus",
+          "final_interpretation": "KMT2A at 11q23.3 is rearranged. The partner is a separate question.",
+          "karyotype_visibility": "usually_not_visible",
+          "default_karyotype_activity": false,
+          "answers": {
+            "change": "moved",
+            "place": "q"
+          },
+          "example_notation": [
+            "A single karyotype is not assigned to every KMT2A rearrangement."
+          ],
+          "mechanism": "Rearrangement of KMT2A. The partner varies.",
+          "genes": "KMT2A. The partner is not established by break-apart FISH.",
+          "doNot": "Do not assign one translocation partner to the whole disease category.",
+          "notice": "The locus can be rearranged with more than one partner",
+          "representative_teaching_karyotype": {
+            "iscn": "46,XY",
+            "label": "No single partner karyotype is the teaching case.",
+            "sex": "XY",
+            "copy_number": {},
+            "variants": {},
+            "chromosomes_to_find": [
+              "11"
+            ]
+          }
+        }
+      ],
+      "references": [
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "alk-alcl",
+      "disease_name": "ALK-positive anaplastic large cell lymphoma",
+      "teaching_notes": "t(2;5)(p23;q35), NPM1::ALK, is the canonical teaching variant. ALK can have other partners. The karyotype and derivative maps use t(2;5). FISH is an ALK break-apart assay and does not identify the partner.",
+      "cytogenetic_cases": [
+        {
+          "role": "canonical",
+          "lab_level": "default",
+          "kind": "acquired",
+          "homolog_affected": "One chromosome 2 and one chromosome 5",
+          "whole_chromosome_count": "46",
+          "material_added": "Distal 5q is on der(2). Distal 2p is on der(5).",
+          "partner_note": "Canonical partner only. Other ALK partners exist.",
+          "do_not_alter": "Do not imply every ALK-positive lymphoma has t(2;5).",
+          "student_should_notice": "The canonical variant is t(2;5), with breakpoints at 2p23 and 5q35. The break-apart question is whether ALK is rearranged.",
+          "correct_chromosome": [
+            "2",
+            "5"
+          ],
+          "correct_arm": "p;q",
+          "correct_classification": "translocation",
+          "generation": {
+            "abnormality": "reciprocal_translocation",
+            "copy_state": "46 chromosomes",
+            "structural_alteration": "exchange distal 2p and distal 5q",
+            "breakpoints": [
+              {
+                "chromosome": "2",
+                "arm": "p",
+                "band": "23"
+              },
+              {
+                "chromosome": "5",
+                "arm": "q",
+                "band": "35"
+              }
+            ],
+            "derivatives": [
+              "der(2)",
+              "der(5)"
+            ]
+          },
+          "id": "t2-5",
+          "case_title": "t(2;5)(p23;q35)",
+          "patient_case_label": "This patient's case: the canonical t(2;5)(p23;q35). ALK break-apart FISH asks whether ALK is rearranged, not whether the partner is NPM1.",
+          "primary_chromosome": [
+            "2",
+            "5"
+          ],
+          "homolog": "One chromosome 2 and one chromosome 5",
+          "primary_locus": "2p23",
+          "specific_region": "ALK at 2p23; canonical partner NPM1 at 5q35",
+          "abnormality_type": "reciprocal translocation",
+          "structural_class": "Balanced reciprocal translocation",
+          "typical_configuration": "der(2) and der(5) in the canonical variant",
+          "visual_change": "The canonical variant exchanges distal 2p and distal 5q",
+          "material_missing": "None. Material is exchanged.",
+          "added": "Distal 5q is on der(2). Distal 2p is on der(5).",
+          "partner_chromosome": [
+            "2",
+            "5"
+          ],
+          "partnerNote": "Canonical partner only. Other ALK partners exist.",
+          "chromosomes": [
+            "2",
+            "5"
+          ],
+          "arm": "p;q",
+          "classification": "translocation",
+          "final_interpretation": "Canonical variant t(2;5)(p23;q35), NPM1::ALK. Chromosome 2 breaks at p23 and chromosome 5 breaks at q35. Break-apart FISH shows ALK rearrangement and does not name NPM1.",
+          "karyotype_visibility": "clearly_visible",
+          "default_karyotype_activity": true,
+          "answers": {
+            "change": "moved",
+            "place": "p;q"
+          },
+          "example_notation": [
+            "46,XY,t(2;5)(p23;q35)"
+          ],
+          "mechanism": "Canonical reciprocal translocation joining NPM1 and ALK. Other ALK partners occur.",
+          "genes": "ALK at 2p23. Canonical partner NPM1 at 5q35; result NPM1::ALK. Break-apart FISH does not identify the partner.",
+          "doNot": "Do not imply every ALK-positive lymphoma has t(2;5).",
+          "notice": "The canonical variant is t(2;5), with breakpoints at 2p23 and 5q35. The break-apart question is whether ALK is rearranged.",
+          "representative_teaching_karyotype": {
+            "iscn": "46,XY,t(2;5)(p23;q35)",
+            "label": "Male canonical t(2;5)",
+            "sex": "XY",
+            "copy_number": {},
+            "variants": {
+              "2a": "der(2)t(2;5)(p23;q35)",
+              "5a": "der(5)t(2;5)(p23;q35)"
+            },
+            "chromosomes_to_find": [
+              "2",
+              "5"
+            ]
+          }
+        }
+      ],
+      "references": [
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+        }
+      ]
+    },
+    {
+      "id": "ewing",
+      "disease_name": "Ewing sarcoma",
+      "teaching_notes": "t(11;22)(q24;q12), EWSR1::FLI1, is the canonical teaching mechanism. Conventional karyotyping is not the primary activity. Chromosome analysis shows the canonical breakpoints. FISH is an EWSR1 break-apart assay and does not prove the partner is FLI1.",
+      "cytogenetic_cases": [
+        {
+          "role": "canonical",
+          "lab_level": "default",
+          "kind": "acquired",
+          "homolog_affected": "One chromosome 11 and one chromosome 22 in the canonical variant",
+          "whole_chromosome_count": "46",
+          "material_added": "11q material is on der(22). 22q material is on der(11).",
+          "partner_note": "Canonical partner only. EWSR1 has other partners.",
+          "do_not_alter": "Do not treat an EWSR1 break-apart result as proof that the partner is FLI1.",
+          "student_should_notice": "The canonical breakpoints are 11q24 and 22q12. The FISH question is whether EWSR1 is rearranged.",
+          "correct_chromosome": [
+            "11",
+            "22"
+          ],
+          "correct_arm": "q",
+          "correct_classification": "translocation",
+          "generation": {
+            "abnormality": "reciprocal_translocation",
+            "copy_state": "46 chromosomes",
+            "structural_alteration": "exchange 11q24 and 22q12",
+            "breakpoints": [
+              {
+                "chromosome": "11",
+                "arm": "q",
+                "band": "24"
+              },
+              {
+                "chromosome": "22",
+                "arm": "q",
+                "band": "12"
+              }
+            ],
+            "derivatives": [
+              "der(11)",
+              "der(22)"
+            ]
+          },
+          "id": "t11-22",
+          "case_title": "t(11;22)(q24;q12)",
+          "patient_case_label": "This patient's case: the canonical t(11;22)(q24;q12). EWSR1 break-apart FISH asks whether EWSR1 is rearranged.",
+          "primary_chromosome": [
+            "11",
+            "22"
+          ],
+          "homolog": "One chromosome 11 and one chromosome 22 in the canonical variant",
+          "primary_locus": "22q12",
+          "specific_region": "EWSR1 at 22q12; canonical partner FLI1 at 11q24",
+          "abnormality_type": "reciprocal translocation",
+          "structural_class": "Balanced reciprocal translocation",
+          "typical_configuration": "der(11) and der(22) in the canonical variant",
+          "visual_change": "The canonical translocation can be visible, but karyotype construction is not the teaching activity.",
+          "material_missing": "None. Material is exchanged.",
+          "added": "11q material is on der(22). 22q material is on der(11).",
+          "partner_chromosome": [
+            "11",
+            "22"
+          ],
+          "partnerNote": "Canonical partner only. EWSR1 has other partners.",
+          "chromosomes": [
+            "11",
+            "22"
+          ],
+          "arm": "q",
+          "classification": "translocation",
+          "final_interpretation": "Canonical variant t(11;22)(q24;q12), EWSR1::FLI1. Break-apart FISH shows EWSR1 rearrangement and does not name FLI1.",
+          "karyotype_visibility": "potentially_visible",
+          "default_karyotype_activity": false,
+          "answers": {
+            "change": "moved",
+            "place": "q"
+          },
+          "example_notation": [
+            "46,XY,t(11;22)(q24;q12)"
+          ],
+          "mechanism": "Canonical reciprocal translocation joining EWSR1 and FLI1. Other EWSR1 partners occur.",
+          "genes": "EWSR1 at 22q12. Canonical partner FLI1 at 11q24; result EWSR1::FLI1. Break-apart FISH does not identify the partner.",
+          "doNot": "Do not treat an EWSR1 break-apart result as proof that the partner is FLI1.",
+          "notice": "The canonical breakpoints are 11q24 and 22q12. The FISH question is whether EWSR1 is rearranged.",
+          "representative_teaching_karyotype": {
+            "iscn": "46,XY,t(11;22)(q24;q12)",
+            "label": "Canonical t(11;22), not the primary karyotype activity",
+            "sex": "XY",
+            "copy_number": {},
+            "variants": {
+              "11a": "der(11)t(11;22)(q24;q12)",
+              "22a": "der(22)t(11;22)(q24;q12)"
+            },
+            "chromosomes_to_find": [
+              "11",
+              "22"
+            ]
+          }
+        }
+      ],
+      "references": [
+        {
+          "label": "ISCN",
+          "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+        }
+      ]
+    }
+  ]
+}

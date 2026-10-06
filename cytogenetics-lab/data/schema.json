@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Cytogenetics teaching case",
+  "description": "Educational case record for the karyotyping laboratory application. Fields are optional unless needed by the modules listed in `modules`. Add new cases by creating a JSON file in data/cases/ and registering it in data/catalog.json. Do not put clinical content in application code.",
+  "type": "object",
+  "required": ["case_id", "title", "difficulty"],
+  "properties": {
+    "case_id": { "type": "string" },
+    "title": { "type": "string" },
+    "difficulty": { "enum": ["introductory", "intermediate", "advanced"] },
+    "case_type": { "enum": ["constitutional", "acquired", "technical", "interpretation"] },
+    "modules": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "karyotype",
+          "abnormality",
+          "iscn_interpretation",
+          "iscn_construction",
+          "disease",
+          "integrated",
+          "assembly",
+          "fish"
+        ]
+      }
+    },
+    "clinical_history": { "type": "string" },
+    "unknown_prompt": { "type": "string" },
+    "chromosome_count": { "type": "integer" },
+    "sex_chromosomes": { "type": "string" },
+    "chromosome_set": {
+      "type": "object",
+      "description": "Compact generator spec expanded at runtime. Prefer this over listing every image.",
+      "properties": {
+        "sex": { "type": "string" },
+        "copy_number": { "type": "object", "additionalProperties": { "type": "integer" } },
+        "variants": { "type": "object", "additionalProperties": { "type": "string" } }
+      }
+    },
+    "chromosome_images": {
+      "type": "array",
+      "description": "Optional explicit assets. When omitted, images are generated from chromosome_set + templates. Set placeholder to false only for authentic microscopy-derived images.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "identity": { "type": "string" },
+          "homolog": { "type": "string" },
+          "src": { "type": "string" },
+          "variant": { "type": "string" },
+          "placeholder": { "type": "boolean" }
+        }
+      }
+    },
+    "expected_chromosome_positions": {
+      "type": "object",
+      "additionalProperties": { "type": "array", "items": { "type": "string" } }
+    },
+    "abnormality_category": {
+      "enum": ["normal", "numerical", "structural", "numerical_and_structural"]
+    },
+    "abnormality_type": { "type": "array", "items": { "type": "string" } },
+    "abnormality_options": {
+      "type": "object",
+      "properties": {
+        "categories": { "type": "array", "items": { "type": "string" } },
+        "types": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "chromosomes_involved": { "type": "array", "items": { "type": "string" } },
+    "bands_involved": { "type": "array", "items": { "type": "string" } },
+    "arms_involved": { "type": "array", "items": { "type": "string" } },
+    "expected_iscn": { "type": "string" },
+    "accepted_iscn_variants": { "type": "array", "items": { "type": "string" } },
+    "iscn_prompt": { "type": "string" },
+    "plain_language_interpretation": { "type": "string" },
+    "interpretation_items": { "type": "object" },
+    "diagnosis": { "type": "string" },
+    "diagnosis_options": { "type": "array", "items": { "type": "string" } },
+    "explanation": { "type": "string" },
+    "hints": { "type": "array", "items": { "type": "string" } },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": { "type": "string" },
+          "citation": { "type": "string" }
+        }
+      }
+    },
+    "placeholder_assets": { "type": "boolean" },
+    "educational_use_only": { "type": "boolean" },
+    "fish": {
+      "type": "object",
+      "description": "FISH assay and nucleus records. Probes are referenced by probe_id from data/probes.json. Cutoffs belong to the case, never to the engine."
+    },
+    "assembly": {
+      "type": "object",
+      "description": "Individual-chromosome assembly spec. Segments come from data/chromosome-maps.json; abnormalities are curated transforms of that ordered map.",
+      "properties": {
+        "chromosome": { "type": ["string", "number"] },
+        "resolution": { "enum": ["region", "band", "subband"] },
+        "role": {
+          "enum": ["exercise", "dependency"],
+          "description": "exercise is a student-facing chromosome activity. dependency means the map exists for another engine, such as FISH probe localization, and is not a Chromosome Analysis case."
+        },
+        "include_anatomy": { "type": "boolean" },
+        "reference_normal": { "type": "boolean" },
+        "transform": { "type": "object" },
+        "nomenclature": {
+          "type": "object",
+          "properties": {
+            "highlight": { "type": "string" },
+            "expected": { "type": "string" },
+            "source": { "enum": ["normal", "abnormal"] }
+          }
+        }
+      }
+    }
+  }
+}

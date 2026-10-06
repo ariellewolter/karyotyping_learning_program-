@@ -1,0 +1,130 @@
+{
+  "case_id": "cml-t922",
+  "title": "Reciprocal translocation t(9;22)",
+  "difficulty": "advanced",
+  "case_type": "acquired",
+  "modules": ["karyotype", "assembly", "fish", "abnormality", "iscn_interpretation", "iscn_construction", "disease", "integrated"],
+  "clinical_history": "A 48-year-old man has fatigue, splenomegaly, and marked leukocytosis with a left shift. Bone marrow cytogenetic analysis is requested. This is an acquired (cancer) cytogenetics teaching case, not a constitutional study.",
+  "unknown_prompt": "An adult with leukocytosis and splenomegaly undergoes bone marrow karyotyping. Identify any structural rearrangement, write the ISCN, and name the associated neoplasm. Chromosome images are demonstration schematics.",
+  "chromosome_count": 46,
+  "sex_chromosomes": "XY",
+  "chromosome_set": {
+    "sex": "XY",
+    "variants": {
+      "9a": "der(9)t(9;22)(q34;q11.2)",
+      "22a": "der(22)t(9;22)(q34;q11.2)"
+    }
+  },
+  "assembly": {
+    "chromosome": "22",
+    "resolution": "band",
+    "include_anatomy": false,
+    "transform": {
+      "type": "translocation_derivative",
+      "keep_through": "22q11.2",
+      "attach_from": { "chromosome": "9", "from": "9q34" }
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "22q11.2",
+      "expected": "22q11.2"
+    }
+  },
+  "fish": {
+    "assay_type": "dual-fusion",
+    "specimen_type": "interphase",
+    "exercises": ["dual-fusion", "interphase", "probe-strategy"],
+    "synthetic_images": true,
+    "channels": ["dapi", "red", "green", "merge"],
+    "probe_ids": ["abl-9q34", "bcr-22q11"],
+    "include_strategy": true,
+    "include_schematic": true,
+    "count_fields": ["red", "green", "fusion"],
+    "signal_tolerance": 20,
+    "strategy_expected": "fusion between two defined loci",
+    "expected_interpretation": "reciprocal_fusion",
+    "interpretation_options": ["normal_2R2G", "reciprocal_fusion", "deletion", "unscorable_study"],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200, "cy": 170, "rx": 92, "ry": 96,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 158, "y": 148 },
+          { "id": "f2", "type": "fusion", "x": 214, "y": 124 },
+          { "id": "r1", "type": "red", "x": 246, "y": 176 },
+          { "id": "g1", "type": "green", "x": 186, "y": 204 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      }
+    ]
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": ["translocation", "reciprocal translocation"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": [
+      "trisomy",
+      "monosomy",
+      "deletion",
+      "duplication",
+      "translocation",
+      "reciprocal translocation",
+      "Robertsonian translocation",
+      "inversion",
+      "ring chromosome",
+      "isochromosome",
+      "derivative chromosome",
+      "marker chromosome",
+      "mosaicism"
+    ]
+  },
+  "chromosomes_involved": ["9", "22"],
+  "arms_involved": ["q", "q"],
+  "bands_involved": ["q34", "q11.2"],
+  "expected_iscn": "46,XY,t(9;22)(q34;q11.2)",
+  "accepted_iscn_variants": [
+    "46,XY,t(9;22)(q34;q11.2)",
+    "46,XY,t(9;22)(q34.1;q11.2)",
+    "46,XY,t(9;22)(q34;q11)"
+  ],
+  "iscn_prompt": "46,XY,t(9;22)(q34;q11.2)",
+  "plain_language_interpretation": "A male karyotype with 46 chromosomes and a reciprocal translocation between the long arms of chromosomes 9 and 22, with breakpoints at 9q34 and 22q11.2. The derivative chromosome 22 is the Philadelphia chromosome.",
+  "interpretation_items": {
+    "chromosome_count": "46",
+    "sex_chromosomes": "XY",
+    "numerical": "none",
+    "structural": "reciprocal translocation",
+    "chromosomes_involved": "9;22",
+    "arm": "q;q",
+    "band": "q34;q11.2"
+  },
+  "diagnosis": "Chronic myeloid leukemia / Philadelphia chromosome",
+  "diagnosis_options": [
+    "Chronic myeloid leukemia / Philadelphia chromosome",
+    "Acute promyelocytic leukemia",
+    "Burkitt lymphoma",
+    "Chronic lymphocytic leukemia",
+    "Constitutional Robertsonian translocation"
+  ],
+  "explanation": "The t(9;22)(q34;q11.2) reciprocal translocation generates der(9) and der(22). The small der(22) is the Philadelphia chromosome and juxtaposes BCR at 22q11.2 with ABL1 at 9q34, producing BCR::ABL1. This acquired abnormality is the cytogenetic hallmark of chronic myeloid leukemia and also occurs in a subset of ALL. It is not a Robertsonian translocation; Robertsonian rearrangements involve whole-arm exchanges between acrocentric chromosomes at q10. In ISCN the balanced translocation is written t(9;22)(q34;q11.2) after the sex-chromosome complement.",
+  "hints": [
+    "The count remains 46. Look at chromosomes 9 and 22 rather than searching for an extra G-group chromosome.",
+    "One chromosome 22 is unusually small (the Philadelphia chromosome, der(22)). One chromosome 9 q arm is altered.",
+    "Reciprocal translocations are written t(A;B)(breakpointA;breakpointB) with chromosomes in ascending numerical order."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    },
+    {
+      "label": "WHO",
+      "citation": "Khoury JD, et al. The 5th edition of the World Health Organization classification of haematolymphoid tumours: myeloid and histiocytic/dendritic neoplasms. Leukemia. 2022;36:1703-1719."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

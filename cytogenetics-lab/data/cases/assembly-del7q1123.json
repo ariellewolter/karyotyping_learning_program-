@@ -1,0 +1,44 @@
+{
+  "case_id": "assembly-del7q1123",
+  "title": "Chromosome 7 — 7q11.23 interval",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "One chromosome 7 is missing 7q11.23. The homolog is not drawn as a tiny chromosome 7. Locate the interval and assemble the deleted homolog.",
+  "assembly": {
+    "chromosome": "7",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "deletion",
+      "labels": [
+        "7q11.23"
+      ]
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "7q11.23",
+      "expected": "7q11.23",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "deletion"
+  ],
+  "chromosomes_involved": [
+    "7"
+  ],
+  "arms_involved": [
+    "q"
+  ],
+  "bands_involved": [
+    "q11.23"
+  ],
+  "expected_iscn": "46,XX",
+  "diagnosis": "Williams syndrome",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

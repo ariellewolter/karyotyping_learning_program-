@@ -1,0 +1,47 @@
+{
+  "case_id": "klinefelter-47xxy",
+  "title": "Sex chromosome aneuploidy — XXY",
+  "difficulty": "introductory",
+  "case_type": "constitutional",
+  "modules": ["karyotype", "abnormality", "iscn_construction", "disease"],
+  "clinical_history": "A 19-year-old man is evaluated for tall stature, gynecomastia, and small testes. Semen analysis shows azoospermia. Constitutional karyotyping is requested.",
+  "chromosome_count": 47,
+  "sex_chromosomes": "XXY",
+  "chromosome_set": { "sex": "XXY" },
+  "abnormality_category": "numerical",
+  "abnormality_type": ["trisomy"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy"]
+  },
+  "chromosomes_involved": ["X", "Y"],
+  "expected_iscn": "47,XXY",
+  "accepted_iscn_variants": ["47,XXY"],
+  "plain_language_interpretation": "A male karyotype with 47 chromosomes due to an extra X chromosome (sex-chromosome complement XXY).",
+  "diagnosis": "Klinefelter syndrome",
+  "diagnosis_options": [
+    "Klinefelter syndrome",
+    "47,XYY syndrome",
+    "Turner syndrome",
+    "Down syndrome (trisomy 21)",
+    "Normal male karyotype"
+  ],
+  "explanation": "The extra chromosome is a second X, producing XXY and a count of 47. ISCN writes this as 47,XXY rather than 46,XY,+X. Klinefelter syndrome is the corresponding clinical diagnosis in a phenotypic male: hypergonadotropic hypogonadism, infertility, and often tall stature. Distinguish this from 47,XYY, which has two Y chromosomes and a different phenotype.",
+  "hints": [
+    "The count is 47. Identify whether the extra chromosome is an autosome or a sex chromosome.",
+    "There are two X chromosomes and one Y. Place both X chromosomes in group C and the Y in group G.",
+    "Sex-chromosome complements such as XXY are written in the second ISCN field (47,XXY), not as 46,XY,+X."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    },
+    {
+      "label": "Clinical",
+      "citation": "Groth KA, Skakkebaek A, Host C, Gravholt CH, Bojesen A. Clinical review: Klinefelter syndrome—a clinical update. J Clin Endocrinol Metab. 2013;98(1):20-30."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

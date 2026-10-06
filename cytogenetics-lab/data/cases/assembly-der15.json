@@ -1,0 +1,49 @@
+{
+  "case_id": "assembly-der15",
+  "title": "Derivative chromosome 15 — t(15;17)",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "Assemble der(15): chromosome 15 retained through 15q24.1, then distal chromosome 17 from 17q21.2. The attached segments keep their chromosome 17 identity.",
+  "assembly": {
+    "chromosome": "15",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "translocation_derivative",
+      "keep_through": "15q24.1",
+      "attach_from": {
+        "chromosome": "17",
+        "from": "17q21.2"
+      }
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "15q24.1",
+      "expected": "15q24.1"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "reciprocal translocation",
+    "derivative chromosome"
+  ],
+  "chromosomes_involved": [
+    "15",
+    "17"
+  ],
+  "arms_involved": [
+    "q",
+    "q"
+  ],
+  "bands_involved": [
+    "q24.1",
+    "q21.2"
+  ],
+  "expected_iscn": "46,XY,t(15;17)(q24.1;q21.2)",
+  "diagnosis": "Acute promyelocytic leukemia",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

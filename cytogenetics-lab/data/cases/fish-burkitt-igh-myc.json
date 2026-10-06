@@ -1,0 +1,286 @@
+{
+  "case_id": "fish-burkitt-igh-myc",
+  "title": "Burkitt lymphoma — IGH::MYC dual-fusion",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Interphase nuclei hybridized with a red MYC probe at 8q24 and a green IGH probe at 14q32. This assay asks whether MYC and IGH are joined, which is the canonical t(8;14). It is not a MYC break-apart assay.",
+  "fish": {
+    "assay_type": "dual-fusion",
+    "specimen_type": "interphase",
+    "exercises": [
+      "dual-fusion",
+      "interphase",
+      "probe-localization",
+      "probe-type",
+      "probe-strategy"
+    ],
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "red",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "myc-8q24",
+      "igh-14q32"
+    ],
+    "include_probe_type": true,
+    "include_localization": true,
+    "include_strategy": true,
+    "include_schematic": true,
+    "schematic": {
+      "caption": "A reciprocal t(8;14) places MYC on der(14) beside IGH and places IGH material on der(8). Each derivative that carries both loci produces a fusion signal.",
+      "panels": [
+        {
+          "label": "8",
+          "probe": "MYC 8q24 red",
+          "color": "#e24b4b",
+          "h": 90
+        },
+        {
+          "label": "14",
+          "probe": "IGH 14q32 green",
+          "color": "#3dcc6d",
+          "h": 70
+        },
+        {
+          "label": "der(8)",
+          "probe": "IGH on 8",
+          "color": "#3dcc6d",
+          "h": 90
+        },
+        {
+          "label": "der(14)",
+          "probe": "MYC on 14",
+          "color": "#e24b4b",
+          "h": 70
+        }
+      ]
+    },
+    "count_fields": [
+      "red",
+      "green",
+      "fusion"
+    ],
+    "signal_tolerance": 20,
+    "localization": {
+      "probe_id": "myc-8q24",
+      "expected": "8q24",
+      "chromosome": "8"
+    },
+    "strategy_expected": "fusion between two defined loci",
+    "probe_type_expected": {
+      "type": "dual-fusion",
+      "target": "two loci on different chromosomes",
+      "detects": "fusion between two defined loci",
+      "normal_pattern": "2 red and 2 green signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "1 red, 1 green, and 2 fusion",
+      "normal_counts": {
+        "red": 2,
+        "green": 2,
+        "fusion": 0
+      },
+      "abnormal_counts": {
+        "red": 1,
+        "green": 1,
+        "fusion": 2
+      },
+      "minimum_percent_scorable": 60,
+      "note": "For these MYC and IGH probes, the abnormal teaching pattern is two fusion signals plus one remaining red and one remaining green, defined for t(8;14). A MYC break-apart assay would not identify chromosome 14."
+    },
+    "expected_interpretation": "igh_myc_fusion",
+    "interpretation_options": [
+      "normal_2R2G",
+      "igh_myc_fusion",
+      "myc_breakapart_only",
+      "unscorable_study"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 2
+        },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 2
+        },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 230,
+            "y": 146
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 176,
+            "y": 198
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 236,
+            "y": 186
+          }
+        ],
+        "expected_counts": {
+          "red": 2,
+          "green": 2,
+          "fusion": 0
+        },
+        "expected_classification": "2R2G"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": null,
+          "green": null,
+          "fusion": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "Red marks MYC on chromosome 8. Green marks IGH on chromosome 14.",
+    "Fusion signals are evidence that those two loci are joined, which is the t(8;14) question."
+  ],
+  "explanation": "The canonical Burkitt teaching case is t(8;14)(q24;q32), joining MYC and IGH. Dual-fusion FISH shows that partnership. A break-apart probe at MYC alone would also be abnormal in variant Burkitt translocations and would not teach chromosome 14.",
+  "plain_language_interpretation": "Fusion of the 8q24 and 14q32 probes supports the canonical IGH::MYC rearrangement.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

@@ -1,0 +1,46 @@
+{
+  "case_id": "assembly-del4p",
+  "title": "Abnormal chromosome 4 — terminal 4p deletion",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "Compare the chromosome 4 homologs, locate distal 4p, and assemble the homolog that is missing 4p16. This is the Wolf-Hirschhorn teaching deletion. Demonstration map only.",
+  "assembly": {
+    "chromosome": "4",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "deletion",
+      "labels": [
+        "4p16"
+      ],
+      "from": "4p16",
+      "to": "4p16"
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "4p16",
+      "expected": "4p16",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "deletion"
+  ],
+  "chromosomes_involved": [
+    "4"
+  ],
+  "arms_involved": [
+    "p"
+  ],
+  "bands_involved": [
+    "p16"
+  ],
+  "expected_iscn": "46,XX,del(4)(p16)",
+  "diagnosis": "Wolf-Hirschhorn syndrome",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

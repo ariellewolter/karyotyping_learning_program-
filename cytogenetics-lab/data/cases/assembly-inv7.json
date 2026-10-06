@@ -1,0 +1,54 @@
+{
+  "case_id": "assembly-inv7",
+  "title": "Abnormal chromosome 7 — paracentric inversion",
+  "difficulty": "advanced",
+  "case_type": "constitutional",
+  "modules": ["assembly"],
+  "clinical_history": "Identify anatomy on this inverted chromosome 7, then reconstruct the abnormal map. A defined interval on 7q has been inverted. This is a curated teaching transformation, not a randomly generated inversion.",
+  "assembly": {
+    "chromosome": "7",
+    "resolution": "band",
+    "include_anatomy": true,
+    "transform": {
+      "type": "inversion",
+      "from": "7q22.1",
+      "to": "7q34"
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "7q22.1",
+      "expected": "7q22.1",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": ["inversion"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["deletion", "duplication", "inversion", "translocation"]
+  },
+  "chromosomes_involved": ["7"],
+  "arms_involved": ["q"],
+  "bands_involved": ["q22", "q34"],
+  "expected_iscn": "46,XX,inv(7)(q22q34)",
+  "accepted_iscn_variants": ["46,XX,inv(7)(q22q34)", "46,XY,inv(7)(q22q34)", "46,XX,inv(7)(q22.1q34)"],
+  "hints": [
+    "An inversion keeps all segments but reverses order and orientation inside the inverted interval.",
+    "This inversion is paracentric: both breakpoints are on 7q, so the centromere is not inside the inverted span.",
+    "ISCN writes inv(7)(q22q34) without a semicolon between breakpoints on the same chromosome."
+  ],
+  "anatomy_hints": [
+    "The p arm and centromere match the reference. Look on the long arm for a stretch whose band order is reversed.",
+    "Name the rearrangement class and the two q-arm bands that bound the reversed interval."
+  ],
+  "explanation": "The teaching map reverses the ordered segments from 7q22.1 through 7q34 and marks them as reverse orientation. The p arm and centromere are unchanged. That is a paracentric inversion, written inv(7)(q22q34).",
+  "plain_language_interpretation": "Paracentric inversion of chromosome 7q between q22 and q34.",
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

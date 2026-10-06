@@ -1,0 +1,49 @@
+{
+  "case_id": "assembly-der22-t1122",
+  "title": "Derivative chromosome 22 — t(11;22)",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "der(22) keeps chromosome 22 through 22q12 and adds chromosome 11 from 11q24. The added segment stays chromosome 11 material.",
+  "assembly": {
+    "chromosome": "22",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "translocation_derivative",
+      "keep_through": "22q12",
+      "attach_from": {
+        "chromosome": "11",
+        "from": "11q24"
+      }
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "22q12",
+      "expected": "22q12"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "reciprocal translocation",
+    "derivative chromosome"
+  ],
+  "chromosomes_involved": [
+    "11",
+    "22"
+  ],
+  "arms_involved": [
+    "q",
+    "q"
+  ],
+  "bands_involved": [
+    "q24",
+    "q12"
+  ],
+  "expected_iscn": "46,XY,t(11;22)(q24;q12)",
+  "diagnosis": "Ewing sarcoma",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

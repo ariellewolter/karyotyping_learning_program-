@@ -1,0 +1,60 @@
+{
+  "case_id": "trisomy21-47xx",
+  "title": "Numerical abnormality — extra chromosome 21",
+  "difficulty": "introductory",
+  "case_type": "constitutional",
+  "modules": ["karyotype", "abnormality", "iscn_construction", "disease", "integrated"],
+  "clinical_history": "A term newborn is evaluated for hypotonia, upslanting palpebral fissures, epicanthal folds, a single palmar crease, and a murmur consistent with an atrioventricular septal defect. Peripheral-blood chromosome analysis is requested.",
+  "unknown_prompt": "A neonate with hypotonia and distinctive facial features is referred for constitutional chromosome analysis. Examine the demonstration karyotype material, construct the karyotype, and report your cytogenetic interpretation.",
+  "chromosome_count": 47,
+  "sex_chromosomes": "XX",
+  "chromosome_set": {
+    "sex": "XX",
+    "copy_number": { "21": 3 }
+  },
+  "abnormality_category": "numerical",
+  "abnormality_type": ["trisomy"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy"]
+  },
+  "chromosomes_involved": ["21"],
+  "expected_iscn": "47,XX,+21",
+  "accepted_iscn_variants": ["47,XX,+21"],
+  "plain_language_interpretation": "A female karyotype with 47 chromosomes due to an extra chromosome 21 (trisomy 21).",
+  "interpretation_items": {
+    "chromosome_count": "47",
+    "sex_chromosomes": "XX",
+    "numerical": "trisomy",
+    "structural": "none",
+    "chromosomes_involved": "21",
+    "arm": "none",
+    "band": "none"
+  },
+  "diagnosis": "Down syndrome (trisomy 21)",
+  "diagnosis_options": [
+    "Down syndrome (trisomy 21)",
+    "Edwards syndrome (trisomy 18)",
+    "Patau syndrome (trisomy 13)",
+    "Turner syndrome",
+    "Cri-du-chat syndrome"
+  ],
+  "explanation": "Free trisomy 21 produces a count of 47 and is written 47,XX,+21 (or 47,XY,+21 in a male). The extra chromosome is a small acrocentric of group G. Most liveborn Down syndrome is free trisomy 21; a minority is caused by Robertsonian translocation or mosaicism, which would be written differently. Constitutional trisomy 21 is associated with Down syndrome, including characteristic dysmorphic features, intellectual disability, and congenital heart disease. This teaching case is free trisomy 21, not a translocation form.",
+  "hints": [
+    "Count first. This cell line does not have 46 chromosomes.",
+    "The extra chromosome is a small acrocentric. Compare it with pairs 21 and 22 (group G) rather than with group D.",
+    "In ISCN, an extra whole chromosome is written with a plus sign and the chromosome number after the sex-chromosome complement, for example +21."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    },
+    {
+      "label": "Clinical",
+      "citation": "Bull MJ; Committee on Genetics. Health supervision for children with Down syndrome. Pediatrics. 2011;128(2):393-406."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

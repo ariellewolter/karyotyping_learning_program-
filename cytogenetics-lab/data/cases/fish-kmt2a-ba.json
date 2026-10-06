@@ -1,0 +1,225 @@
+{
+  "case_id": "fish-kmt2a-ba",
+  "title": "fish-kmt2a-ba",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "A split means KMT2A is rearranged. The assay does not name the partner.",
+  "fish": {
+    "assay_type": "break-apart",
+    "specimen_type": "interphase",
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "red",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "kmt2a-5prime",
+      "kmt2a-3prime"
+    ],
+    "include_probe_type": true,
+    "include_strategy": true,
+    "include_localization": true,
+    "localization": {
+      "probe_id": "kmt2a-5prime",
+      "expected": "11q23.3",
+      "chromosome": "11"
+    },
+    "count_fields": [
+      "red",
+      "green",
+      "fusion",
+      "split"
+    ],
+    "signal_tolerance": 20,
+    "strategy_expected": "rearrangement of a particular locus",
+    "probe_type_expected": {
+      "type": "break-apart",
+      "target": "flanks of one locus",
+      "detects": "rearrangement of a particular locus",
+      "normal_pattern": "2 fusion signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "1 fusion, 1 red, and 1 green",
+      "normal_counts": {
+        "red": 0,
+        "green": 0,
+        "fusion": 2,
+        "split": 0
+      },
+      "abnormal_counts": {
+        "red": 1,
+        "green": 1,
+        "fusion": 1,
+        "split": 1
+      },
+      "minimum_percent_scorable": 60,
+      "note": "A split means KMT2A is rearranged. The assay does not name the partner."
+    },
+    "expected_interpretation": "locus rearranged",
+    "interpretation_options": [
+      "locus intact",
+      "locus rearranged",
+      "partner identified by this break-apart assay",
+      "unscorable study"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 160,
+            "y": 156
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 226,
+            "y": 132
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 242,
+            "y": 190
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 1,
+          "split": 1
+        },
+        "expected_classification": "1F1R1G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 160,
+            "y": 156
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 226,
+            "y": 132
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 242,
+            "y": 190
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 1,
+          "split": 1
+        },
+        "expected_classification": "1F1R1G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 168,
+            "y": 150
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 230,
+            "y": 176
+          }
+        ],
+        "expected_counts": {
+          "red": 0,
+          "green": 0,
+          "fusion": 2,
+          "split": 0
+        },
+        "expected_classification": "2F"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 160,
+            "y": 156
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 226,
+            "y": 132
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 242,
+            "y": 190
+          }
+        ],
+        "expected_counts": {
+          "red": null,
+          "green": null,
+          "fusion": null,
+          "split": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "A split means KMT2A is rearranged. The assay does not name the partner."
+  ],
+  "explanation": "A split means KMT2A is rearranged. The assay does not name the partner.",
+  "plain_language_interpretation": "A split means KMT2A is rearranged. The assay does not name the partner.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

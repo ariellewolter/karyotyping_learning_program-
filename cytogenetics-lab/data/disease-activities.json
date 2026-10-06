@@ -1,0 +1,113 @@
+{
+  "down-syndrome": {
+    "fish": "fish-down-cep21"
+  },
+  "edwards-syndrome": {
+    "fish": "fish-edwards-cep18"
+  },
+  "patau-syndrome": {
+    "fish": "fish-patau-cep13"
+  },
+  "turner": {
+    "fish": "fish-turner-xy"
+  },
+  "klinefelter": {
+    "fish": "fish-klinefelter-xy"
+  },
+  "cri-du-chat": {
+    "assemblies": [
+      "assembly-del5p"
+    ],
+    "fish": "fish-cri-del5p"
+  },
+  "wolf-hirschhorn": {
+    "assemblies": [
+      "assembly-del4p"
+    ],
+    "fish": "fish-wolf-del4p"
+  },
+  "cml": {
+    "assemblies": [
+      "assembly-der22",
+      "assembly-der9"
+    ],
+    "fish": "fish-dualfusion-bcrabl"
+  },
+  "apl": {
+    "assemblies": [
+      "assembly-der15",
+      "assembly-der17"
+    ],
+    "fish": "fish-apl-pml-rara"
+  },
+  "burkitt": {
+    "assemblies": [
+      "assembly-der14",
+      "assembly-der8"
+    ],
+    "fish": "fish-burkitt-igh-myc"
+  },
+  "digeorge": {
+    "assemblies": [
+      "assembly-del22q11"
+    ],
+    "fish": "fish-digeorge-del"
+  },
+  "williams": {
+    "assemblies": [
+      "assembly-del7q1123"
+    ],
+    "fish": "fish-williams-del"
+  },
+  "prader-willi": {
+    "assemblies": [
+      "assembly-del15q11"
+    ],
+    "fish": "fish-pws-del"
+  },
+  "angelman": {
+    "assemblies": [
+      "assembly-del15q11"
+    ],
+    "fish": "fish-as-del"
+  },
+  "cll-del13q": {
+    "assemblies": [
+      "assembly-del13q14"
+    ],
+    "fish": "fish-cll-13q"
+  },
+  "aml-runx1": {
+    "assemblies": [
+      "assembly-der8-t821",
+      "assembly-der21-t821"
+    ],
+    "fish": "fish-aml-runx1"
+  },
+  "aml-inv16": {
+    "assemblies": [
+      "assembly-inv16"
+    ],
+    "fish": "fish-aml-inv16"
+  },
+  "kmt2a": {
+    "assemblies": [
+      "assembly-kmt2a-locus"
+    ],
+    "fish": "fish-kmt2a-ba"
+  },
+  "alk-alcl": {
+    "assemblies": [
+      "assembly-der2-t25",
+      "assembly-der5-t25"
+    ],
+    "fish": "fish-alk-ba"
+  },
+  "ewing": {
+    "assemblies": [
+      "assembly-der11-t1122",
+      "assembly-der22-t1122"
+    ],
+    "fish": "fish-ewing-ba"
+  }
+}

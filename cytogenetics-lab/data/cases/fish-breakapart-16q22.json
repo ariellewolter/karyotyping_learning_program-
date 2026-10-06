@@ -1,0 +1,84 @@
+{
+  "case_id": "fish-breakapart-16q22",
+  "title": "Break-apart FISH — 16q22 locus",
+  "difficulty": "intermediate",
+  "case_type": "technical",
+  "modules": ["fish"],
+  "clinical_history": "A break-apart probe pair flanks a single locus at 16q22. Intact copies remain adjacent (fusion); a rearrangement within the locus splits red from green. Demonstration graphics; the gene name is stored in this case file, not in the analysis engine.",
+  "fish": {
+    "assay_type": "break-apart",
+    "specimen_type": "interphase",
+    "exercises": ["break-apart", "interphase", "probe-type", "quality"],
+    "synthetic_images": true,
+    "channels": ["dapi", "red", "green", "merge"],
+    "probe_ids": ["ba-5prime", "ba-3prime"],
+    "include_probe_type": true,
+    "count_fields": ["red", "green", "fusion", "split"],
+    "signal_tolerance": 20,
+    "normal_relationship": "adjacent_or_overlapping",
+    "abnormal_relationship": "spatially_separated",
+    "expected_interpretation": "rearranged",
+    "interpretation_options": ["intact", "rearranged", "unscorable_study"],
+    "probe_type_expected": {
+      "type": "break-apart",
+      "target": "flanks of one locus",
+      "detects": "rearrangement of a particular locus",
+      "normal_pattern": "2 fusion signals"
+    },
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200, "cy": 170, "rx": 90, "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 168, "y": 150 },
+          { "id": "r1", "type": "red", "x": 232, "y": 138 },
+          { "id": "g1", "type": "green", "x": 248, "y": 186 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 1, "split": 1 },
+        "expected_classification": "1F1R1G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200, "cy": 172, "rx": 88, "ry": 90,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 164, "y": 156 },
+          { "id": "r1", "type": "red", "x": 226, "y": 132 },
+          { "id": "g1", "type": "green", "x": 242, "y": 190 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 1, "split": 1 },
+        "expected_classification": "1F1R1G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200, "cy": 168, "rx": 70, "ry": 48,
+        "scorable": false,
+        "artifact_type": "truncated_nucleus",
+        "artifact_reason": "The nuclear outline is incomplete at the field edge.",
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 180, "y": 160 }
+        ],
+        "expected_counts": { "red": null, "green": null, "fusion": null },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "A break-apart pair sits on opposite sides of one locus. Intact copies look like fusion (yellow/overlapping) signals.",
+    "A split is a red and a green signal that are no longer adjacent.",
+    "1F1R1G means one intact copy and one rearranged copy."
+  ],
+  "explanation": "The analysis engine only knows that two probes flank one locus. This case places that locus at 16q22. An intact chromosome keeps the flanks together (fusion). A break between them separates red from green.",
+  "plain_language_interpretation": "Scorable nuclei show one fusion and one red-green split, consistent with rearrangement of the targeted 16q22 locus.",
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Break-apart FISH patterns."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

@@ -1,0 +1,229 @@
+{
+  "case_id": "fish-williams-del",
+  "title": "fish-williams-del",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Red is the 7q11.23 target and green is the chromosome 7 control.",
+  "fish": {
+    "assay_type": "deletion",
+    "specimen_type": "interphase",
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "red",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "eln-7q11.23",
+      "williams-7q36"
+    ],
+    "include_probe_type": true,
+    "include_strategy": true,
+    "include_localization": true,
+    "localization": {
+      "probe_id": "eln-7q11.23",
+      "expected": "7q11.23",
+      "chromosome": "7"
+    },
+    "count_fields": [
+      "red",
+      "green"
+    ],
+    "signal_tolerance": 22,
+    "strategy_expected": "loss of a specific locus",
+    "probe_type_expected": {
+      "type": "locus-specific",
+      "target": "a defined chromosomal band",
+      "detects": "loss of a specific locus",
+      "normal_pattern": "2 red and 2 green signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "1 red and 2 green",
+      "normal_counts": {
+        "red": 2,
+        "green": 2
+      },
+      "abnormal_counts": {
+        "red": 1,
+        "green": 2
+      },
+      "minimum_percent_scorable": 60,
+      "note": "Red is the 7q11.23 target and green is the chromosome 7 control."
+    },
+    "expected_interpretation": "7q11.23 deletion detected",
+    "interpretation_options": [
+      "normal target and control",
+      "7q11.23 deletion detected",
+      "parent of origin or partner proven by this pattern",
+      "unscorable study"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 168,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 210,
+            "y": 140
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 236,
+            "y": 188
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 2
+        },
+        "expected_classification": "1R2G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 168,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 210,
+            "y": 140
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 236,
+            "y": 188
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 2
+        },
+        "expected_classification": "1R2G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 230,
+            "y": 146
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 176,
+            "y": 198
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 236,
+            "y": 186
+          }
+        ],
+        "expected_counts": {
+          "red": 2,
+          "green": 2
+        },
+        "expected_classification": "2R2G"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 230,
+            "y": 146
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 176,
+            "y": 198
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 236,
+            "y": 186
+          }
+        ],
+        "expected_counts": {
+          "red": null,
+          "green": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "Red is the 7q11.23 target. Green is the 7q36 control."
+  ],
+  "explanation": "Red is the 7q11.23 target and green is the chromosome 7 control.",
+  "plain_language_interpretation": "Red is the 7q11.23 target and green is the chromosome 7 control.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

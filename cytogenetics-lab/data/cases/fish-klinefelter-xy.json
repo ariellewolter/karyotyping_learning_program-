@@ -1,0 +1,206 @@
+{
+  "case_id": "fish-klinefelter-xy",
+  "title": "Klinefelter syndrome — X and Y enumeration",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Interphase nuclei from the canonical 47,XXY teaching case. Interpret the combined X and Y signal counts. A single Y signal is also present in a normal male cell.",
+  "fish": {
+    "assay_type": "enumeration",
+    "specimen_type": "interphase",
+    "exercises": [
+      "enumeration",
+      "interphase",
+      "probe-type",
+      "probe-strategy"
+    ],
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "red",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "cepx",
+      "cepy"
+    ],
+    "include_probe_type": true,
+    "include_strategy": true,
+    "count_fields": [
+      "green",
+      "red"
+    ],
+    "signal_tolerance": 22,
+    "strategy_expected": "chromosome enumeration",
+    "probe_type_expected": {
+      "type": "centromeric",
+      "target": "a centromere",
+      "detects": "chromosome enumeration",
+      "normal_pattern": "1 green and 1 red signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "2 green and 1 red",
+      "normal_counts": {
+        "green": 1,
+        "red": 1
+      },
+      "abnormal_counts": {
+        "green": 2,
+        "red": 1
+      },
+      "minimum_percent_scorable": 60,
+      "note": "This teaching case treats scorable nuclei matching 2 green and 1 red as the abnormal enumeration pattern. The cutoff belongs to this assay and is not a universal FISH rule."
+    },
+    "expected_interpretation": "xxy",
+    "interpretation_options": [
+      "normal_female_xx",
+      "normal_male_xy",
+      "monosomy_x",
+      "xxy"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 196,
+            "y": 150
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 176,
+            "y": 196
+          }
+        ],
+        "expected_counts": {
+          "green": 2,
+          "red": 1
+        },
+        "expected_classification": "XXY"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 196,
+            "y": 150
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 176,
+            "y": 196
+          }
+        ],
+        "expected_counts": {
+          "green": 2,
+          "red": 1
+        },
+        "expected_classification": "XXY"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 176,
+            "y": 196
+          }
+        ],
+        "expected_counts": {
+          "green": 1,
+          "red": 1
+        },
+        "expected_classification": "XY"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 174,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 226,
+            "y": 178
+          }
+        ],
+        "expected_counts": {
+          "green": null,
+          "red": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "One green and one red is the normal male pattern.",
+    "Two green and one red is two X signals plus one Y signal."
+  ],
+  "explanation": "The canonical Klinefelter teaching case is 47,XXY. The assay is scored by the sex-chromosome signal pattern, not by selecting the syndrome name on this step.",
+  "plain_language_interpretation": "Two X signals and one Y signal support an XXY sex-chromosome pattern.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

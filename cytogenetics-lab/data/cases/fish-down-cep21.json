@@ -1,0 +1,198 @@
+{
+  "case_id": "fish-down-cep21",
+  "title": "Down syndrome — chromosome 21 enumeration",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Interphase nuclei from the canonical free-trisomy-21 teaching case, hybridized with a chromosome 21 centromere probe. This is the disease assay. The separate chromosome 21 enumeration skill remains a technical exercise without this clinical question.",
+  "fish": {
+    "assay_type": "enumeration",
+    "specimen_type": "interphase",
+    "exercises": [
+      "enumeration",
+      "interphase",
+      "probe-type",
+      "probe-strategy"
+    ],
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "cep21"
+    ],
+    "include_probe_type": true,
+    "include_strategy": true,
+    "count_fields": [
+      "green"
+    ],
+    "signal_tolerance": 22,
+    "strategy_expected": "chromosome enumeration",
+    "probe_type_expected": {
+      "type": "centromeric",
+      "target": "a centromere",
+      "detects": "chromosome enumeration",
+      "normal_pattern": "2 green signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "3 green signals",
+      "normal_counts": {
+        "green": 2
+      },
+      "abnormal_counts": {
+        "green": 3
+      },
+      "minimum_percent_scorable": 60,
+      "note": "This teaching case treats scorable nuclei matching 3 green signals as the abnormal enumeration pattern. The cutoff belongs to this assay and is not a universal FISH rule."
+    },
+    "expected_interpretation": "trisomy_21",
+    "interpretation_options": [
+      "disomy_21",
+      "trisomy_21",
+      "monosomy_21",
+      "unscorable_study"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 168,
+            "y": 148
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 214,
+            "y": 132
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 228,
+            "y": 188
+          }
+        ],
+        "expected_counts": {
+          "green": 3
+        },
+        "expected_classification": "3G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 168,
+            "y": 148
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 214,
+            "y": 132
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 228,
+            "y": 188
+          }
+        ],
+        "expected_counts": {
+          "green": 3
+        },
+        "expected_classification": "3G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 174,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 226,
+            "y": 178
+          }
+        ],
+        "expected_counts": {
+          "green": 2
+        },
+        "expected_classification": "2G"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 174,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 226,
+            "y": 178
+          }
+        ],
+        "expected_counts": {
+          "green": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "Each green signal is one chromosome 21 centromere.",
+    "Two green signals are the disomic pattern. Three green signals are the trisomic pattern.",
+    "Do not score a nucleus whose outline overlaps another nucleus."
+  ],
+  "explanation": "The canonical Down syndrome teaching case is free trisomy 21. Enumeration FISH confirms gain of chromosome 21 material by signal count. It does not build a G-banded karyotype.",
+  "plain_language_interpretation": "Scorable nuclei with three chromosome 21 signals support a trisomy 21 pattern.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

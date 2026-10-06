@@ -1,0 +1,286 @@
+{
+  "case_id": "fish-apl-pml-rara",
+  "title": "Acute promyelocytic leukemia — PML::RARA dual-fusion",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Interphase nuclei hybridized with a red PML probe at 15q24.1 and a green RARA probe at 17q21.2. PML originates on chromosome 15. RARA originates on chromosome 17.",
+  "fish": {
+    "assay_type": "dual-fusion",
+    "specimen_type": "interphase",
+    "exercises": [
+      "dual-fusion",
+      "interphase",
+      "probe-localization",
+      "probe-type",
+      "probe-strategy"
+    ],
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "red",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "pml-15q24.1",
+      "rara-17q21.2"
+    ],
+    "include_probe_type": true,
+    "include_localization": true,
+    "include_strategy": true,
+    "include_schematic": true,
+    "schematic": {
+      "caption": "A reciprocal t(15;17) places part of RARA on der(15) and part of PML on der(17). Each derivative that carries both loci produces a fusion signal.",
+      "panels": [
+        {
+          "label": "15",
+          "probe": "PML 15q24.1 red",
+          "color": "#e24b4b",
+          "h": 88
+        },
+        {
+          "label": "17",
+          "probe": "RARA 17q21.2 green",
+          "color": "#3dcc6d",
+          "h": 78
+        },
+        {
+          "label": "der(15)",
+          "probe": "RARA on 15",
+          "color": "#3dcc6d",
+          "h": 88
+        },
+        {
+          "label": "der(17)",
+          "probe": "PML on 17",
+          "color": "#e24b4b",
+          "h": 78
+        }
+      ]
+    },
+    "count_fields": [
+      "red",
+      "green",
+      "fusion"
+    ],
+    "signal_tolerance": 20,
+    "localization": {
+      "probe_id": "pml-15q24.1",
+      "expected": "15q24.1",
+      "chromosome": "15"
+    },
+    "strategy_expected": "fusion between two defined loci",
+    "probe_type_expected": {
+      "type": "dual-fusion",
+      "target": "two loci on different chromosomes",
+      "detects": "fusion between two defined loci",
+      "normal_pattern": "2 red and 2 green signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "1 red, 1 green, and 2 fusion",
+      "normal_counts": {
+        "red": 2,
+        "green": 2,
+        "fusion": 0
+      },
+      "abnormal_counts": {
+        "red": 1,
+        "green": 1,
+        "fusion": 2
+      },
+      "minimum_percent_scorable": 60,
+      "note": "For these PML and RARA probes, the abnormal teaching pattern is two fusion signals plus one remaining red and one remaining green. That pattern is defined here and is not borrowed from another fusion assay."
+    },
+    "expected_interpretation": "pml_rara_fusion",
+    "interpretation_options": [
+      "normal_2R2G",
+      "pml_rara_fusion",
+      "deletion",
+      "unscorable_study"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 2
+        },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 2
+        },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 230,
+            "y": 146
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 176,
+            "y": 198
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 236,
+            "y": 186
+          }
+        ],
+        "expected_counts": {
+          "red": 2,
+          "green": 2,
+          "fusion": 0
+        },
+        "expected_classification": "2R2G"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": null,
+          "green": null,
+          "fusion": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "Red marks PML on chromosome 15. Green marks RARA on chromosome 17.",
+    "The abnormal pattern for this probe pair is 2 fusion, 1 red, and 1 green."
+  ],
+  "explanation": "The canonical APL finding is t(15;17)(q24.1;q21.2), producing PML::RARA. Dual-fusion signals are evidence of that partnership. The expected counts are stored on this case.",
+  "plain_language_interpretation": "Fusion signals joining 15q24.1 and 17q21.2 support the canonical PML::RARA rearrangement.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

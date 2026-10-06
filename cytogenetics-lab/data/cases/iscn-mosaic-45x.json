@@ -1,0 +1,54 @@
+{
+  "case_id": "iscn-mosaic-45x",
+  "title": "Mosaic sex chromosome complement",
+  "difficulty": "advanced",
+  "case_type": "constitutional",
+  "modules": ["iscn_interpretation", "iscn_construction", "abnormality"],
+  "clinical_history": "A 16-year-old girl with short stature has two cell lines reported on constitutional blood karyotype. Use the ISCN string to interpret mosaicism. This case is nomenclature-focused and does not include a full cut-out karyotype.",
+  "chromosome_count": 45,
+  "sex_chromosomes": "X/XX",
+  "abnormality_category": "numerical",
+  "abnormality_type": ["monosomy", "mosaicism"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy", "mosaicism"]
+  },
+  "chromosomes_involved": ["X"],
+  "expected_iscn": "45,X[12]/46,XX[18]",
+  "accepted_iscn_variants": [
+    "45,X[12]/46,XX[18]",
+    "45,X/46,XX"
+  ],
+  "iscn_prompt": "45,X[12]/46,XX[18]",
+  "plain_language_interpretation": "Mosaicism with two cell lines: 12 cells are 45,X and 18 cells are 46,XX. A slash separates cell lines. Numbers in square brackets are clone sizes, not chromosome counts.",
+  "interpretation_items": {
+    "chromosome_count": "45 and 46 (two cell lines)",
+    "sex_chromosomes": "X and XX",
+    "numerical": "monosomy",
+    "structural": "none",
+    "chromosomes_involved": "X",
+    "arm": "none",
+    "band": "none"
+  },
+  "diagnosis": "Turner syndrome (mosaic 45,X/46,XX)",
+  "diagnosis_options": [
+    "Turner syndrome (mosaic 45,X/46,XX)",
+    "Turner syndrome (non-mosaic 45,X)",
+    "Normal female karyotype",
+    "Klinefelter syndrome"
+  ],
+  "explanation": "ISCN writes mosaicism by listing cell lines separated by a slash, conventionally with the abnormal line first when one line is normal, or by decreasing abnormality/clone size according to laboratory style. Clone sizes in square brackets count cells, not chromosomes. 45,X[12]/46,XX[18] means twelve 45,X cells and eighteen 46,XX cells. This mosaic complement is still classified with Turner syndrome clinically, but the ISCN must show both lines.",
+  "hints": [
+    "A slash in ISCN separates cell lines (mosaicism), not chromosomes.",
+    "The number in square brackets is the number of cells in that clone, not the chromosome count.",
+    "Write each cell line with its own count and sex-chromosome complement."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Section on mosaicism and clone size notation."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

@@ -1,0 +1,52 @@
+{
+  "case_id": "fish-locus-9q34",
+  "title": "Probe localization — 9q34",
+  "difficulty": "introductory",
+  "case_type": "technical",
+  "modules": ["fish", "assembly"],
+  "clinical_history": "Place the ABL1 FISH probe on the chromosome 9 map. Band numbering follows the same ordered segments used in chromosome assembly. Demonstration ideogram.",
+  "fish": {
+    "assay_type": "probe_localization",
+    "specimen_type": "metaphase",
+    "exercises": ["probe-localization", "probe-type", "metaphase"],
+    "synthetic_images": true,
+    "channels": ["dapi", "red", "merge"],
+    "probe_ids": ["abl-9q34"],
+    "include_probe_type": true,
+    "include_localization": true,
+    "count_fields": [],
+    "localization": {
+      "probe_id": "abl-9q34",
+      "expected": "9q34",
+      "chromosome": "9"
+    },
+    "probe_type_expected": {
+      "type": "locus-specific",
+      "target": "a defined chromosomal band",
+      "detects": "presence, copy number, or partner of a specific locus",
+      "normal_pattern": "two red signals on the two chromosomes 9"
+    },
+    "nuclei": []
+  },
+  "assembly": {
+    "chromosome": "9",
+    "resolution": "band",
+    "include_anatomy": false,
+    "transform": { "type": "none" }
+  },
+  "hints": [
+    "9q34 is on the long arm of chromosome 9, distal (toward qter).",
+    "Numbering increases from the centromere toward the telomere, so q34 is farther from cen than q21.",
+    "A locus-specific probe marks a band; a centromeric probe marks copy number of a whole chromosome."
+  ],
+  "explanation": "The probe object stores chromosome 9, arm q, and band 34, matching segment 9q34 in chromosome-maps.json. FISH localization reuses that map rather than a separate drawing.",
+  "plain_language_interpretation": "The red probe belongs at 9q34 on the chromosome 9 ideogram.",
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Band designation."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

@@ -1,0 +1,35 @@
+{
+  "case_id": "assembly-chr7-anatomy",
+  "title": "Chromosome 7 — anatomy and region assembly",
+  "difficulty": "introductory",
+  "case_type": "technical",
+  "modules": ["assembly"],
+  "clinical_history": "Use this demonstration ideogram to learn p/q orientation and reconstruct chromosome 7 at region-level resolution. Numbering begins at the centromere and increases toward each telomere.",
+  "assembly": {
+    "chromosome": "7",
+    "resolution": "region",
+    "include_anatomy": true,
+    "transform": { "type": "none" },
+    "nomenclature": {
+      "highlight": "7q2",
+      "expected": "7q2"
+    }
+  },
+  "abnormality_category": "normal",
+  "abnormality_type": [],
+  "hints": [
+    "The short arm (p) is at the top, ending at pter. The long arm (q) is below the centromere.",
+    "On each arm, band numbers increase as you move away from the centromere toward the telomere.",
+    "At this resolution, 7p2 is the distal short arm and 7p1 is the proximal short arm."
+  ],
+  "explanation": "A standard human chromosome is drawn pter → p arm → centromere → q arm → qter. Region-level labels such as 7p2 and 7q3 name the chromosome, the arm, and the region. Finer bands (7q22) and sub-bands (7q22.1) nest inside that hierarchy.",
+  "plain_language_interpretation": "A normal chromosome 7 reconstructed from major p-arm regions, the centromere, and major q-arm regions.",
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Band designation and ideogram orientation."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

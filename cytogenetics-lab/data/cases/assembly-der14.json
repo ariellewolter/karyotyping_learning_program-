@@ -1,0 +1,49 @@
+{
+  "case_id": "assembly-der14",
+  "title": "Derivative chromosome 14 — t(8;14)",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "Assemble der(14): chromosome 14 retained through 14q32, then distal chromosome 8 from 8q24. The attached 8q24 segment keeps its chromosome 8 identity.",
+  "assembly": {
+    "chromosome": "14",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "translocation_derivative",
+      "keep_through": "14q32",
+      "attach_from": {
+        "chromosome": "8",
+        "from": "8q24"
+      }
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "14q32",
+      "expected": "14q32"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "reciprocal translocation",
+    "derivative chromosome"
+  ],
+  "chromosomes_involved": [
+    "8",
+    "14"
+  ],
+  "arms_involved": [
+    "q",
+    "q"
+  ],
+  "bands_involved": [
+    "q24",
+    "q32"
+  ],
+  "expected_iscn": "46,XY,t(8;14)(q24;q32)",
+  "diagnosis": "Burkitt lymphoma",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

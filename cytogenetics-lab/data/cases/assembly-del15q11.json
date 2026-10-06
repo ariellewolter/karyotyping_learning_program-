@@ -1,0 +1,48 @@
+{
+  "case_id": "assembly-del15q11",
+  "title": "Chromosome 15 — 15q11-q13 interval",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "Schematic map of one chromosome 15. The 15q11-q13 interval is drawn large enough to name and remove. It is a small fraction of the long arm, not a large G-band loss. A routine karyotype of this deletion is usually normal. This map does not show which parent contributed the chromosome.",
+  "assembly": {
+    "chromosome": "15",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "deletion",
+      "labels": [
+        "15q11",
+        "15q12",
+        "15q13"
+      ]
+    },
+    "reference_normal": true,
+    "schematic_note": "Schematic chromosome 15. The 15q11-q13 interval is enlarged only enough to identify and delete. Routine G-banding usually does not show this microdeletion as a short chromosome. The conventional teaching karyotype remains 46,XX.",
+    "nomenclature": {
+      "highlight": "15q12",
+      "expected": "15q12",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "deletion"
+  ],
+  "chromosomes_involved": [
+    "15"
+  ],
+  "arms_involved": [
+    "q"
+  ],
+  "bands_involved": [
+    "q11",
+    "q13"
+  ],
+  "expected_iscn": "46,XX",
+  "diagnosis": "15q11-q13 deletion",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

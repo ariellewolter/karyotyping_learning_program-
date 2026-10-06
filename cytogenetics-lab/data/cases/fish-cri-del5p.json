@@ -1,0 +1,230 @@
+{
+  "case_id": "fish-cri-del5p",
+  "title": "Cri-du-chat syndrome — distal 5p deletion FISH",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Interphase nuclei hybridized with a red distal-5p target and a green 5q35 control. The canonical karyotype is del(5)(p). Score target loss against the control; do not assign a narrower breakpoint than the teaching case states.",
+  "fish": {
+    "assay_type": "deletion",
+    "specimen_type": "interphase",
+    "exercises": [
+      "deletion",
+      "interphase",
+      "probe-strategy",
+      "probe-type"
+    ],
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "red",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "cdc-5p",
+      "cdc-5q35"
+    ],
+    "include_probe_type": true,
+    "include_strategy": true,
+    "count_fields": [
+      "red",
+      "green"
+    ],
+    "signal_tolerance": 22,
+    "strategy_expected": "loss of a specific locus",
+    "probe_type_expected": {
+      "type": "locus-specific",
+      "target": "a defined chromosomal band",
+      "detects": "loss of a specific locus",
+      "normal_pattern": "2 red and 2 green signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "1 red and 2 green",
+      "normal_counts": {
+        "red": 2,
+        "green": 2
+      },
+      "abnormal_counts": {
+        "red": 1,
+        "green": 2
+      },
+      "minimum_percent_scorable": 60,
+      "note": "Red is the target and green is the control. Loss of one target with both controls retained is the abnormal pattern for this assay."
+    },
+    "expected_interpretation": "distal_5p_deletion",
+    "interpretation_options": [
+      "normal_target_and_control",
+      "distal_5p_deletion",
+      "control_loss",
+      "unscorable_study"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 168,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 210,
+            "y": 140
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 236,
+            "y": 188
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 2
+        },
+        "expected_classification": "1R2G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 160,
+            "y": 160
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 204,
+            "y": 132
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 232,
+            "y": 180
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 2
+        },
+        "expected_classification": "1R2G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 230,
+            "y": 146
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 176,
+            "y": 198
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 236,
+            "y": 186
+          }
+        ],
+        "expected_counts": {
+          "red": 2,
+          "green": 2
+        },
+        "expected_classification": "2R2G"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 230,
+            "y": 146
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 176,
+            "y": 198
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 236,
+            "y": 186
+          }
+        ],
+        "expected_counts": {
+          "red": null,
+          "green": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "Red is the distal 5p target. Green is the 5q control.",
+    "A deletion-positive scorable nucleus loses one target and keeps both controls."
+  ],
+  "explanation": "Two target signals plus two controls are the normal pattern. One target and two controls support deletion of one distal 5p region. The canonical ISCN remains 46,XX,del(5)(p).",
+  "plain_language_interpretation": "Loss of one distal 5p target, with the control signals retained, supports the canonical 5p deletion.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

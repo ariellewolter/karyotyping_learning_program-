@@ -1,0 +1,45 @@
+{
+  "case_id": "assembly-inv16",
+  "title": "Chromosome 16 — pericentric inversion",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "The breakpoints are 16p13.1 and 16q22, so the reversed segment includes the centromere. This is not the paracentric inversion skill.",
+  "assembly": {
+    "chromosome": "16",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "inversion",
+      "from": "16p13.1",
+      "to": "16q22"
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "16q22",
+      "expected": "16q22",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "inversion"
+  ],
+  "chromosomes_involved": [
+    "16"
+  ],
+  "arms_involved": [
+    "p",
+    "q"
+  ],
+  "bands_involved": [
+    "p13.1",
+    "q22"
+  ],
+  "expected_iscn": "46,XY,inv(16)(p13.1q22)",
+  "diagnosis": "AML with CBFB::MYH11",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

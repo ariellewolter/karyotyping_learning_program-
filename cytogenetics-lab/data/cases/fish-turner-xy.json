@@ -1,0 +1,183 @@
+{
+  "case_id": "fish-turner-xy",
+  "title": "Turner syndrome — X and Y enumeration",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Interphase nuclei from the canonical 45,X teaching case. Green is the X centromere and red is the Y centromere. A female complement has no Y signal; that absence alone is not the abnormality.",
+  "fish": {
+    "assay_type": "enumeration",
+    "specimen_type": "interphase",
+    "exercises": [
+      "enumeration",
+      "interphase",
+      "probe-type",
+      "probe-strategy"
+    ],
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "red",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "cepx",
+      "cepy"
+    ],
+    "include_probe_type": true,
+    "include_strategy": true,
+    "count_fields": [
+      "green",
+      "red"
+    ],
+    "signal_tolerance": 22,
+    "strategy_expected": "chromosome enumeration",
+    "probe_type_expected": {
+      "type": "centromeric",
+      "target": "a centromere",
+      "detects": "chromosome enumeration",
+      "normal_pattern": "2 green and 0 red signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "1 green and 0 red",
+      "normal_counts": {
+        "green": 2,
+        "red": 0
+      },
+      "abnormal_counts": {
+        "green": 1,
+        "red": 0
+      },
+      "minimum_percent_scorable": 60,
+      "note": "This teaching case treats scorable nuclei matching 1 green and 0 red as the abnormal enumeration pattern. The cutoff belongs to this assay and is not a universal FISH rule."
+    },
+    "expected_interpretation": "monosomy_x",
+    "interpretation_options": [
+      "normal_female_xx",
+      "normal_male_xy",
+      "monosomy_x",
+      "xxy"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 160,
+            "y": 150
+          }
+        ],
+        "expected_counts": {
+          "green": 1,
+          "red": 0
+        },
+        "expected_classification": "X"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 160,
+            "y": 150
+          }
+        ],
+        "expected_counts": {
+          "green": 1,
+          "red": 0
+        },
+        "expected_classification": "X"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 196,
+            "y": 150
+          }
+        ],
+        "expected_counts": {
+          "green": 2,
+          "red": 0
+        },
+        "expected_classification": "XX"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 174,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 226,
+            "y": 178
+          }
+        ],
+        "expected_counts": {
+          "green": null,
+          "red": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "Green counts X. Red counts Y.",
+    "Two green and no red is a normal female pattern.",
+    "One green and no red is one X and no Y, the monosomy X pattern."
+  ],
+  "explanation": "The canonical Turner teaching case is 45,X. The abnormal pattern is a single X signal. Zero Y signals also occur in a normal female cell, so the X count is required.",
+  "plain_language_interpretation": "One X signal and no Y signal, against a two-X no-Y normal female pattern, supports monosomy X.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

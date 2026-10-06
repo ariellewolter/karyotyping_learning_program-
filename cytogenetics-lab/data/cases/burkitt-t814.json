@@ -1,0 +1,74 @@
+{
+  "case_id": "burkitt-t814",
+  "title": "Reciprocal translocation t(8;14)",
+  "difficulty": "advanced",
+  "case_type": "acquired",
+  "modules": ["abnormality", "iscn_interpretation", "iscn_construction", "disease"],
+  "clinical_history": "A 12-year-old patient presents with a rapidly enlarging jaw mass. Biopsy shows a high-grade B-cell lymphoma with a starry-sky pattern. Tumor cytogenetics is requested.",
+  "chromosome_count": 46,
+  "sex_chromosomes": "XY",
+  "chromosome_set": {
+    "sex": "XY",
+    "variants": {
+      "8a": "der(8)t(8;14)(q24;q32)",
+      "14a": "der(14)t(8;14)(q24;q32)"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": ["translocation", "reciprocal translocation"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": [
+      "deletion",
+      "translocation",
+      "reciprocal translocation",
+      "inversion",
+      "derivative chromosome"
+    ]
+  },
+  "chromosomes_involved": ["8", "14"],
+  "arms_involved": ["q", "q"],
+  "bands_involved": ["q24", "q32"],
+  "expected_iscn": "46,XY,t(8;14)(q24;q32)",
+  "accepted_iscn_variants": [
+    "46,XY,t(8;14)(q24;q32)",
+    "46,XY,t(8;14)(q24.21;q32.33)"
+  ],
+  "iscn_prompt": "46,XY,t(8;14)(q24;q32)",
+  "plain_language_interpretation": "A male karyotype with 46 chromosomes and a reciprocal translocation between 8q24 and 14q32, corresponding to MYC::IGH rearrangement.",
+  "interpretation_items": {
+    "chromosome_count": "46",
+    "sex_chromosomes": "XY",
+    "numerical": "none",
+    "structural": "reciprocal translocation",
+    "chromosomes_involved": "8;14",
+    "arm": "q;q",
+    "band": "q24;q32"
+  },
+  "diagnosis": "Burkitt lymphoma",
+  "diagnosis_options": [
+    "Burkitt lymphoma",
+    "Chronic myeloid leukemia / Philadelphia chromosome",
+    "Acute promyelocytic leukemia",
+    "Follicular lymphoma",
+    "Mantle cell lymphoma"
+  ],
+  "explanation": "Burkitt lymphoma classically carries t(8;14)(q24;q32), placing MYC at 8q24 under control of the IGH enhancer at 14q32. Variant translocations involve IGK t(2;8) or IGL t(8;22). Follicular lymphoma is associated with t(14;18)(q32;q21) (IGH::BCL2) and mantle cell lymphoma with t(11;14)(q13;q32) (IGH::CCND1); those are different breakpoints and partner chromosomes. This teaching case uses the classic t(8;14) form.",
+  "hints": [
+    "This is a lymphoid neoplasm of childhood or adolescence, not a myeloproliferative neoplasm.",
+    "MYC is at 8q24; IGH is at 14q32. The classic Burkitt translocation joins those two bands.",
+    "Chromosomes in a translocation are listed in numerical order: t(8;14), not t(14;8)."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    },
+    {
+      "label": "WHO",
+      "citation": "Alaggio R, et al. The 5th edition of the World Health Organization classification of haematolymphoid tumours: lymphoid neoplasms. Leukemia. 2022;36:1720-1748."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

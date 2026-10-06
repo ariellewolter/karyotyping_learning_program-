@@ -1,0 +1,41 @@
+{
+  "case_id": "assembly-kmt2a-locus",
+  "title": "Chromosome 11 — KMT2A at 11q23.3",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "Locate 11q23.3 on chromosome 11. This activity does not build a partner derivative, because KMT2A has more than one partner.",
+  "assembly": {
+    "chromosome": "11",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "none"
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "11q23.3",
+      "expected": "11q23.3",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "rearrangement"
+  ],
+  "chromosomes_involved": [
+    "11"
+  ],
+  "arms_involved": [
+    "q"
+  ],
+  "bands_involved": [
+    "q23.3"
+  ],
+  "expected_iscn": "46,XY",
+  "diagnosis": "KMT2A-rearranged acute leukemia",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

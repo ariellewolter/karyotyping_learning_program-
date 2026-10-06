@@ -1,0 +1,57 @@
+{
+  "case_id": "turner-45x",
+  "title": "Numerical abnormality — missing sex chromosome",
+  "difficulty": "introductory",
+  "case_type": "constitutional",
+  "modules": ["karyotype", "abnormality", "iscn_construction", "disease", "integrated"],
+  "clinical_history": "A 14-year-old girl is referred for short stature and delayed puberty. Examination notes a low posterior hairline and a history of coarctation of the aorta repaired in infancy. Constitutional karyotyping is requested.",
+  "unknown_prompt": "An adolescent with short stature and delayed puberty is referred for constitutional chromosome analysis. Construct the karyotype and provide the ISCN and most closely associated condition.",
+  "chromosome_count": 45,
+  "sex_chromosomes": "X",
+  "chromosome_set": { "sex": "X" },
+  "abnormality_category": "numerical",
+  "abnormality_type": ["monosomy"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy"]
+  },
+  "chromosomes_involved": ["X"],
+  "expected_iscn": "45,X",
+  "accepted_iscn_variants": ["45,X"],
+  "plain_language_interpretation": "A karyotype with 45 chromosomes and a single X chromosome (monosomy X). ISCN does not use the obsolete token XO.",
+  "interpretation_items": {
+    "chromosome_count": "45",
+    "sex_chromosomes": "X",
+    "numerical": "monosomy",
+    "structural": "none",
+    "chromosomes_involved": "X",
+    "arm": "none",
+    "band": "none"
+  },
+  "diagnosis": "Turner syndrome",
+  "diagnosis_options": [
+    "Turner syndrome",
+    "Klinefelter syndrome",
+    "Triple X syndrome",
+    "Swyer syndrome",
+    "Noonan syndrome"
+  ],
+  "explanation": "The ISCN for non-mosaic monosomy X is 45,X. Do not write 45,XO; the letter O is not used. Only one sex chromosome is present, so the count is 45. This constitutional finding is associated with Turner syndrome (short stature, ovarian dysgenesis, and increased risk of left-sided cardiac anomalies such as coarctation). Many clinical patients are mosaic (for example 45,X/46,XX), which is written with a slash between cell lines; this teaching case is the non-mosaic 45,X line.",
+  "hints": [
+    "Count the chromosomes. A missing chromosome produces a count of 45 rather than 46.",
+    "Inspect the sex-chromosome slots. There is a single X and no Y.",
+    "ISCN writes a single X as 45,X. Do not add the letter O."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    },
+    {
+      "label": "Clinical",
+      "citation": "Gravholt CH, et al. Clinical practice guidelines for the care of girls and women with Turner syndrome. Eur J Endocrinol. 2017;177(3):G1-G70."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

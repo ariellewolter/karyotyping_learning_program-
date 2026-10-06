@@ -1,0 +1,45 @@
+{
+  "name": "cytogenetics-lab-instruction",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "main": "electron/main.js",
+  "description": "Educational karyotyping and ISCN laboratory platform. Not for clinical diagnosis.",
+  "scripts": {
+    "start": "python3 serve.py",
+    "desktop": "electron .",
+    "package": "electron-builder --win",
+    "postinstall": "node electron/ensure-binary.js",
+    "templates": "python3 scripts/generate_templates.py"
+  },
+  "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "edu.odu.cytogenetics.lab",
+    "productName": "Cytogenetics Laboratory",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "index.html",
+      "css/**/*",
+      "js/**/*",
+      "data/**/*",
+      "assets/**/*",
+      "electron/main.js",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

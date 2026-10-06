@@ -1,0 +1,62 @@
+{
+  "case_id": "assembly-del5p",
+  "title": "Abnormal chromosome 5 — terminal p-arm deletion",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": ["assembly", "abnormality", "iscn_construction", "disease"],
+  "clinical_history": "Identify pter, p, centromere, q, and qter on this abnormal chromosome 5, then assemble or compare the map. Distal short-arm material is missing (cri-du-chat). Demonstration segments; not a clinical specimen.",
+  "assembly": {
+    "chromosome": "5",
+    "resolution": "band",
+    "include_anatomy": true,
+    "transform": {
+      "type": "deletion",
+      "from": "5p15.2",
+      "to": "5p15.1",
+      "labels": ["5p15.2", "5p15.1"]
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "5p15.2",
+      "expected": "5p15.2",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": ["deletion"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["deletion", "duplication", "inversion", "translocation"]
+  },
+  "chromosomes_involved": ["5"],
+  "arms_involved": ["p"],
+  "bands_involved": ["p15.2"],
+  "expected_iscn": "46,XX,del(5)(p15.2)",
+  "accepted_iscn_variants": ["46,XX,del(5)(p15.2)", "46,XX,del(5p)", "46,XX,del(5)(p15)"],
+  "diagnosis": "Cri-du-chat syndrome",
+  "diagnosis_options": [
+    "Cri-du-chat syndrome",
+    "Wolf-Hirschhorn syndrome",
+    "DiGeorge / 22q11.2 deletion syndrome",
+    "Williams syndrome"
+  ],
+  "hints": [
+    "The short-arm telomeric segments of chromosome 5 are missing from the piece set.",
+    "A terminal p-arm deletion shortens p without changing chromosome count.",
+    "ISCN writes del(5)(p15.2) after the sex-chromosome complement."
+  ],
+  "anatomy_hints": [
+    "Compare short-arm length on the two maps. pter is still the top of the remaining p arm.",
+    "The change is confined to one arm. Name the class of rearrangement and the distal p-arm band where the maps diverge."
+  ],
+  "explanation": "The abnormal chromosome is produced by deleting distal 5p segments from the normal ordered map. The remaining segments still run pter→cen→qter, but pter now begins at a more proximal p-arm band. That transformation corresponds to del(5)(p15.2) and, constitutionally, cri-du-chat syndrome.",
+  "plain_language_interpretation": "Chromosome 5 with a terminal deletion of 5p involving band p15.",
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

@@ -1,0 +1,79 @@
+{
+  "case_id": "criduchat-del5p",
+  "title": "Terminal deletion of 5p",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": ["karyotype", "assembly", "abnormality", "iscn_interpretation", "iscn_construction", "disease", "integrated"],
+  "clinical_history": "A 4-month-old infant is referred because of a high-pitched cry, microcephaly, hypertelorism, and developmental delay. High-resolution constitutional chromosome analysis is requested.",
+  "unknown_prompt": "An infant with a high-pitched cry, microcephaly, and developmental delay is referred for constitutional cytogenetic analysis. Examine chromosome 5 carefully, then complete the karyotype, ISCN, and clinical correlation.",
+  "chromosome_count": 46,
+  "sex_chromosomes": "XX",
+  "chromosome_set": {
+    "sex": "XX",
+    "variants": { "5a": "del(5)(p15.2)" }
+  },
+  "assembly": {
+    "chromosome": "5",
+    "resolution": "band",
+    "include_anatomy": false,
+    "transform": { "type": "deletion", "labels": ["5p15.2", "5p15.1"] },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "5p15.2",
+      "expected": "5p15.2",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": ["deletion"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy", "deletion", "duplication", "translocation", "inversion"]
+  },
+  "chromosomes_involved": ["5"],
+  "arms_involved": ["p"],
+  "bands_involved": ["p15.2"],
+  "expected_iscn": "46,XX,del(5)(p15.2)",
+  "accepted_iscn_variants": [
+    "46,XX,del(5)(p15.2)",
+    "46,XX,del(5p)",
+    "46,XX,del(5)(p15)"
+  ],
+  "iscn_prompt": "46,XX,del(5)(p15.2)",
+  "plain_language_interpretation": "A female karyotype with 46 chromosomes and a terminal deletion of the short arm of chromosome 5 with a breakpoint at band p15.2.",
+  "interpretation_items": {
+    "chromosome_count": "46",
+    "sex_chromosomes": "XX",
+    "numerical": "none",
+    "structural": "deletion",
+    "chromosomes_involved": "5",
+    "arm": "p",
+    "band": "p15.2"
+  },
+  "diagnosis": "Cri-du-chat syndrome",
+  "diagnosis_options": [
+    "Cri-du-chat syndrome",
+    "Wolf-Hirschhorn syndrome",
+    "DiGeorge / 22q11.2 deletion syndrome",
+    "Down syndrome (trisomy 21)",
+    "Williams syndrome"
+  ],
+  "explanation": "One chromosome 5 has a shortened p arm; the total count remains 46, so this is a structural rather than a numerical abnormality. ISCN writes a terminal deletion as del(5)(p15.2) after the sex-chromosome complement. The corresponding constitutional syndrome is cri-du-chat (5p deletion) syndrome. Wolf-Hirschhorn syndrome is a 4p deletion and should not be selected from p-arm morphology of chromosome 5 alone. In this demonstration set the deleted homolog is drawn with a truncated p arm; authentic cases are confirmed by banding and often by FISH or microarray.",
+  "hints": [
+    "The chromosome count is still 46, so look for a structural change rather than an extra or missing whole chromosome.",
+    "Compare the two chromosomes in pair 5. Group B chromosomes are large submetacentrics; a shortened p arm is the key finding.",
+    "Terminal deletions are written del(chromosome)(arm and band), for example del(5)(p15.2)."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    },
+    {
+      "label": "Clinical",
+      "citation": "Nguyen JM, Qualmann KJ, Okashah R, Reilly A, Alexeyev MF, Campbell DJ. 5p deletions: current knowledge and future directions. Am J Med Genet C Semin Med Genet. 2015;169(3):224-238."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

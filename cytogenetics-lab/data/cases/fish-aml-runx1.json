@@ -1,0 +1,279 @@
+{
+  "case_id": "fish-aml-runx1",
+  "title": "AML — RUNX1::RUNX1T1 dual-fusion",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Red is RUNX1T1 at 8q22. Green is RUNX1 at 21q22. The abnormal pattern for this probe pair is stored on this case.",
+  "fish": {
+    "assay_type": "dual-fusion",
+    "specimen_type": "interphase",
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "red",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "runx1t1-8q22",
+      "runx1-21q22"
+    ],
+    "include_probe_type": true,
+    "include_strategy": true,
+    "include_localization": true,
+    "include_schematic": true,
+    "localization": {
+      "probe_id": "runx1-21q22",
+      "expected": "21q22",
+      "chromosome": "21"
+    },
+    "schematic": {
+      "caption": "t(8;21) places RUNX1 on der(8) and RUNX1T1 material on der(21). Each derivative that carries both loci produces a fusion signal. These counts belong to this assay.",
+      "panels": [
+        {
+          "label": "8",
+          "probe": "RUNX1T1 8q22 red",
+          "color": "#e24b4b",
+          "h": 90
+        },
+        {
+          "label": "21",
+          "probe": "RUNX1 21q22 green",
+          "color": "#3dcc6d",
+          "h": 60
+        },
+        {
+          "label": "der(8)",
+          "probe": "RUNX1 on 8",
+          "color": "#3dcc6d",
+          "h": 90
+        },
+        {
+          "label": "der(21)",
+          "probe": "RUNX1T1 on 21",
+          "color": "#e24b4b",
+          "h": 70
+        }
+      ]
+    },
+    "count_fields": [
+      "red",
+      "green",
+      "fusion"
+    ],
+    "signal_tolerance": 20,
+    "strategy_expected": "fusion between two defined loci",
+    "probe_type_expected": {
+      "type": "dual-fusion",
+      "target": "two loci on different chromosomes",
+      "detects": "fusion between two defined loci",
+      "normal_pattern": "2 red and 2 green signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "1 red, 1 green, and 2 fusion",
+      "normal_counts": {
+        "red": 2,
+        "green": 2,
+        "fusion": 0
+      },
+      "abnormal_counts": {
+        "red": 1,
+        "green": 1,
+        "fusion": 2
+      },
+      "minimum_percent_scorable": 60,
+      "note": "For these RUNX1 and RUNX1T1 probes, the abnormal teaching pattern is two fusions plus one remaining red and one remaining green."
+    },
+    "expected_interpretation": "RUNX1::RUNX1T1 fusion",
+    "interpretation_options": [
+      "normal 2 red and 2 green",
+      "RUNX1::RUNX1T1 fusion",
+      "deletion",
+      "unscorable study"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 2
+        },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 2
+        },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 160,
+            "y": 150
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 230,
+            "y": 146
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 176,
+            "y": 198
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 236,
+            "y": 186
+          }
+        ],
+        "expected_counts": {
+          "red": 2,
+          "green": 2,
+          "fusion": 0
+        },
+        "expected_classification": "2R2G"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r3",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g4",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": null,
+          "green": null,
+          "fusion": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "RUNX1T1 is on chromosome 8. RUNX1 is on chromosome 21.",
+    "Use the signal pattern defined for this probe pair."
+  ],
+  "explanation": "The canonical AML teaching rearrangement is t(8;21)(q22;q22), producing RUNX1::RUNX1T1.",
+  "plain_language_interpretation": "Fusion of the 8q22 and 21q22 probes supports the canonical RUNX1::RUNX1T1 rearrangement.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

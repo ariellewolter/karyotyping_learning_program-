@@ -1,0 +1,41 @@
+{
+  "case_id": "normal-46xx",
+  "title": "Normal female karyotype",
+  "difficulty": "introductory",
+  "case_type": "constitutional",
+  "modules": ["karyotype", "abnormality", "iscn_construction"],
+  "clinical_history": "Demonstration metaphase prepared for laboratory teaching. The recorded sex is female. No clinical abnormality is provided.",
+  "chromosome_count": 46,
+  "sex_chromosomes": "XX",
+  "chromosome_set": { "sex": "XX" },
+  "abnormality_category": "normal",
+  "abnormality_type": [],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy"]
+  },
+  "expected_iscn": "46,XX",
+  "accepted_iscn_variants": ["46,XX"],
+  "plain_language_interpretation": "A normal female diploid karyotype: 46 chromosomes with two X chromosomes and no reported numerical or structural abnormality.",
+  "diagnosis": "No cytogenetic abnormality identified (normal female karyotype)",
+  "diagnosis_options": [
+    "No cytogenetic abnormality identified (normal female karyotype)",
+    "No cytogenetic abnormality identified (normal male karyotype)",
+    "Turner syndrome",
+    "Triple X syndrome"
+  ],
+  "explanation": "A standard female karyotype is 46,XX. Two X chromosomes occupy C-group positions. There is no Y chromosome in group G. Write the chromosome count first, then the sex-chromosome complement, with no further tokens when the study is normal.",
+  "hints": [
+    "A normal female cell has 46 chromosomes and two X chromosomes; there should be no Y.",
+    "X chromosomes are medium-sized submetacentric chromosomes and are placed with group C (pairs 6–12).",
+    "If a small acrocentric chromosome is left after pairs 21 and 22 are filled, re-examine group G rather than assuming a Y is present."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

@@ -1,0 +1,44 @@
+{
+  "case_id": "assembly-del13q14",
+  "title": "Chromosome 13 — 13q14 interval",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "The representative acquired case deletes 13q14 on one chromosome 13. Do not treat every 13q14 loss as an obviously shortened chromosome.",
+  "assembly": {
+    "chromosome": "13",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "deletion",
+      "labels": [
+        "13q14"
+      ]
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "13q14",
+      "expected": "13q14",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "deletion"
+  ],
+  "chromosomes_involved": [
+    "13"
+  ],
+  "arms_involved": [
+    "q"
+  ],
+  "bands_involved": [
+    "q14"
+  ],
+  "expected_iscn": "46,XY",
+  "diagnosis": "CLL with del(13q)",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

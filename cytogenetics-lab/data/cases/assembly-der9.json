@@ -1,0 +1,65 @@
+{
+  "case_id": "assembly-der9",
+  "title": "Derivative chromosome 9 — t(9;22)",
+  "difficulty": "advanced",
+  "case_type": "acquired",
+  "modules": ["assembly", "abnormality", "iscn_construction", "disease"],
+  "clinical_history": "Identify anatomy on der(9) from t(9;22), then reconstruct it from 9pter through 9q34 plus distal 22q. This is the reciprocal partner of the Philadelphia chromosome. Demonstration map only.",
+  "assembly": {
+    "chromosome": "9",
+    "resolution": "band",
+    "include_anatomy": true,
+    "transform": {
+      "type": "translocation_derivative",
+      "keep_through": "9q34",
+      "attach_from": { "chromosome": "22", "from": "22q11.2" }
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "9q34",
+      "expected": "9q34",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": ["translocation", "reciprocal translocation", "derivative chromosome"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["deletion", "translocation", "reciprocal translocation", "derivative chromosome"]
+  },
+  "chromosomes_involved": ["9", "22"],
+  "arms_involved": ["q", "q"],
+  "bands_involved": ["q34", "q11.2"],
+  "expected_iscn": "46,XY,t(9;22)(q34;q11.2)",
+  "accepted_iscn_variants": [
+    "46,XY,t(9;22)(q34;q11.2)",
+    "46,XX,t(9;22)(q34;q11.2)",
+    "46,XY,der(9)t(9;22)(q34;q11.2)"
+  ],
+  "diagnosis": "Chronic myeloid leukemia / Philadelphia chromosome",
+  "diagnosis_options": [
+    "Chronic myeloid leukemia / Philadelphia chromosome",
+    "Acute promyelocytic leukemia",
+    "Burkitt lymphoma",
+    "Constitutional Robertsonian translocation"
+  ],
+  "hints": [
+    "der(9) keeps 9pter through 9q34, then continues with 22q11.2→22qter.",
+    "The centromere of this derivative is still a chromosome 9 centromere.",
+    "The balanced study is written t(9;22)(q34;q11.2); der(22) is the small Philadelphia chromosome."
+  ],
+  "anatomy_hints": [
+    "The centromere matches chromosome 9. Distal long-arm bands do not.",
+    "Name the rearrangement class and the two chromosomes whose q-arm bands meet on this map."
+  ],
+  "explanation": "The derivative is assembled by truncating the chromosome 9 map after 9q34 and appending distal 22q segments. Together with der(22), that models the reciprocal t(9;22) of chronic myeloid leukemia.",
+  "plain_language_interpretation": "der(9)t(9;22)(q34;q11.2), the reciprocal partner of the Philadelphia chromosome.",
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

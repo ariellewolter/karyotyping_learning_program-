@@ -1,0 +1,50 @@
+{
+  "case_id": "assembly-der2-t25",
+  "title": "Derivative chromosome 2 — t(2;5)",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "der(2) keeps chromosome 2 from 2p23 through 2qter and replaces the distal short arm with 5q35. The added segment stays chromosome 5 material.",
+  "assembly": {
+    "chromosome": "2",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "translocation_derivative",
+      "keep_from": "2p23",
+      "attach_from": {
+        "chromosome": "5",
+        "from": "5q35",
+        "to": "5q35"
+      }
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "2p23",
+      "expected": "2p23"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "reciprocal translocation",
+    "derivative chromosome"
+  ],
+  "chromosomes_involved": [
+    "2",
+    "5"
+  ],
+  "arms_involved": [
+    "p",
+    "q"
+  ],
+  "bands_involved": [
+    "p23",
+    "q35"
+  ],
+  "expected_iscn": "46,XY,t(2;5)(p23;q35)",
+  "diagnosis": "ALK-positive anaplastic large cell lymphoma",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

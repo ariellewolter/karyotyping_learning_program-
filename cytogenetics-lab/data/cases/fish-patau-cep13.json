@@ -1,0 +1,197 @@
+{
+  "case_id": "fish-patau-cep13",
+  "title": "Patau syndrome — chromosome 13 enumeration",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Interphase nuclei from the canonical trisomy-13 teaching case, hybridized with a chromosome 13 centromere probe.",
+  "fish": {
+    "assay_type": "enumeration",
+    "specimen_type": "interphase",
+    "exercises": [
+      "enumeration",
+      "interphase",
+      "probe-type",
+      "probe-strategy"
+    ],
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "cep13"
+    ],
+    "include_probe_type": true,
+    "include_strategy": true,
+    "count_fields": [
+      "green"
+    ],
+    "signal_tolerance": 22,
+    "strategy_expected": "chromosome enumeration",
+    "probe_type_expected": {
+      "type": "centromeric",
+      "target": "a centromere",
+      "detects": "chromosome enumeration",
+      "normal_pattern": "2 green signals"
+    },
+    "case_specific_cutoff": {
+      "pattern": "3 green signals",
+      "normal_counts": {
+        "green": 2
+      },
+      "abnormal_counts": {
+        "green": 3
+      },
+      "minimum_percent_scorable": 60,
+      "note": "This teaching case treats scorable nuclei matching 3 green signals as the abnormal enumeration pattern. The cutoff belongs to this assay and is not a universal FISH rule."
+    },
+    "expected_interpretation": "trisomy_13",
+    "interpretation_options": [
+      "disomy_13",
+      "trisomy_13",
+      "monosomy_13",
+      "unscorable_study"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 168,
+            "y": 148
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 214,
+            "y": 132
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 228,
+            "y": 188
+          }
+        ],
+        "expected_counts": {
+          "green": 3
+        },
+        "expected_classification": "3G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 168,
+            "y": 148
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 214,
+            "y": 132
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 228,
+            "y": 188
+          }
+        ],
+        "expected_counts": {
+          "green": 3
+        },
+        "expected_classification": "3G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 174,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 226,
+            "y": 178
+          }
+        ],
+        "expected_counts": {
+          "green": 2
+        },
+        "expected_classification": "2G"
+      },
+      {
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "nucleus_id": "n4",
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 174,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 226,
+            "y": 178
+          }
+        ],
+        "expected_counts": {
+          "green": null
+        },
+        "expected_classification": "unscorable"
+      }
+    ]
+  },
+  "hints": [
+    "Count chromosome 13 centromere signals.",
+    "Three green signals are the trisomic pattern for this assay."
+  ],
+  "explanation": "The canonical Patau syndrome teaching case is trisomy 13. This enumeration assay asks whether chromosome 13 signal number is disomic or trisomic.",
+  "plain_language_interpretation": "Scorable nuclei with three chromosome 13 signals support a trisomy 13 pattern.",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

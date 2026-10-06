@@ -1,0 +1,51 @@
+{
+  "case_id": "assembly-der5-t25",
+  "title": "Derivative chromosome 5 — t(2;5)",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "der(5) keeps chromosome 5 through 5q35 and adds distal 2p from 2p23 out to 2pter. The breakpoint end of that short-arm piece sits at the junction.",
+  "assembly": {
+    "chromosome": "5",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "translocation_derivative",
+      "keep_through": "5q35",
+      "attach_from": {
+        "chromosome": "2",
+        "from": "2p25",
+        "to": "2p23",
+        "orientation": "reverse"
+      }
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "5q35",
+      "expected": "5q35"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "reciprocal translocation",
+    "derivative chromosome"
+  ],
+  "chromosomes_involved": [
+    "2",
+    "5"
+  ],
+  "arms_involved": [
+    "p",
+    "q"
+  ],
+  "bands_involved": [
+    "p23",
+    "q35"
+  ],
+  "expected_iscn": "46,XY,t(2;5)(p23;q35)",
+  "diagnosis": "ALK-positive anaplastic large cell lymphoma",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

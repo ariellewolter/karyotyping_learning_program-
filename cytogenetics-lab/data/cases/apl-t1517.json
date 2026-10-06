@@ -1,0 +1,78 @@
+{
+  "case_id": "apl-t1517",
+  "title": "Reciprocal translocation t(15;17)",
+  "difficulty": "advanced",
+  "case_type": "acquired",
+  "modules": ["abnormality", "iscn_interpretation", "iscn_construction", "disease"],
+  "clinical_history": "A 34-year-old woman presents with bruising, pancytopenia, and laboratory evidence of disseminated intravascular coagulation. Bone marrow is packed with abnormal promyelocytes. Cancer cytogenetics is requested.",
+  "chromosome_count": 46,
+  "sex_chromosomes": "XX",
+  "chromosome_set": {
+    "sex": "XX",
+    "variants": {
+      "15a": "der(15)t(15;17)(q24;q21)",
+      "17a": "der(17)t(15;17)(q24;q21)"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": ["translocation", "reciprocal translocation"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": [
+      "deletion",
+      "duplication",
+      "translocation",
+      "reciprocal translocation",
+      "inversion",
+      "isochromosome",
+      "derivative chromosome"
+    ]
+  },
+  "chromosomes_involved": ["15", "17"],
+  "arms_involved": ["q", "q"],
+  "bands_involved": ["q24", "q21"],
+  "expected_iscn": "46,XX,t(15;17)(q24;q21)",
+  "accepted_iscn_variants": [
+    "46,XX,t(15;17)(q24;q21)",
+    "46,XX,t(15;17)(q24.1;q21.2)",
+    "46,XX,t(15;17)(q22;q21)",
+    "46,XX,t(15;17)(q22;q12)"
+  ],
+  "iscn_prompt": "46,XX,t(15;17)(q24;q21)",
+  "plain_language_interpretation": "A female karyotype with 46 chromosomes and a reciprocal translocation between 15q and 17q. Breakpoints are written here as q24 and q21 (PML::RARA). Older maps used 15q22; that historical form is accepted as a variant in this exercise.",
+  "interpretation_items": {
+    "chromosome_count": "46",
+    "sex_chromosomes": "XX",
+    "numerical": "none",
+    "structural": "reciprocal translocation",
+    "chromosomes_involved": "15;17",
+    "arm": "q;q",
+    "band": "q24;q21"
+  },
+  "diagnosis": "Acute promyelocytic leukemia",
+  "diagnosis_options": [
+    "Acute promyelocytic leukemia",
+    "Chronic myeloid leukemia / Philadelphia chromosome",
+    "Burkitt lymphoma",
+    "Acute myeloid leukemia with t(8;21)",
+    "Constitutional balanced translocation"
+  ],
+  "explanation": "The t(15;17) translocation fuses PML with RARA and defines acute promyelocytic leukemia. It is a medical emergency because of coagulopathy; identification of the rearrangement (or PML::RARA) directs ATRA-based therapy. ISCN 2020 maps the 15q breakpoint to 15q24.1 rather than the older 15q22. This laboratory accepts both the contemporary t(15;17)(q24;q21) form and the historical q22;q21 form.",
+  "hints": [
+    "This is an acquired myeloid neoplasm, not a constitutional syndrome of childhood.",
+    "The rearrangement involves chromosomes 15 and 17, both q-arm breakpoints.",
+    "Write a reciprocal translocation as t(15;17) followed by the breakpoint bands in the same order as the chromosomes."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Includes updated 15q24.1 mapping for PML."
+    },
+    {
+      "label": "Clinical",
+      "citation": "Sanz MA, Fenaux P, Tallman MS, et al. Management of acute promyelocytic leukemia: updated recommendations from an expert panel of the European LeukemiaNet. Blood. 2019;133(15):1630-1643."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

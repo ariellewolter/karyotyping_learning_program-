@@ -1,0 +1,44 @@
+{
+  "case_id": "assembly-del22q11",
+  "title": "Chromosome 22 — 22q11.2 interval",
+  "difficulty": "intermediate",
+  "case_type": "constitutional",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "One chromosome 22 is missing the 22q11.2 interval. The chromosome is not drawn as a dramatically shortened 22. Name the interval and assemble the homolog that lacks it.",
+  "assembly": {
+    "chromosome": "22",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "deletion",
+      "labels": [
+        "22q11.2"
+      ]
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "22q11.2",
+      "expected": "22q11.2",
+      "source": "normal"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "deletion"
+  ],
+  "chromosomes_involved": [
+    "22"
+  ],
+  "arms_involved": [
+    "q"
+  ],
+  "bands_involved": [
+    "q11.2"
+  ],
+  "expected_iscn": "46,XX",
+  "diagnosis": "22q11.2 deletion syndrome",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

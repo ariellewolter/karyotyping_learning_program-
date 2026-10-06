@@ -1,0 +1,49 @@
+{
+  "case_id": "assembly-der8-t821",
+  "title": "Derivative chromosome 8 — t(8;21)",
+  "difficulty": "intermediate",
+  "case_type": "acquired",
+  "modules": [
+    "assembly"
+  ],
+  "clinical_history": "der(8) keeps chromosome 8 through 8q22 and adds 21q22. The added segment stays chromosome 21 material.",
+  "assembly": {
+    "chromosome": "8",
+    "resolution": "subband",
+    "include_anatomy": true,
+    "transform": {
+      "type": "translocation_derivative",
+      "keep_through": "8q22",
+      "attach_from": {
+        "chromosome": "21",
+        "from": "21q22"
+      }
+    },
+    "reference_normal": true,
+    "nomenclature": {
+      "highlight": "8q22",
+      "expected": "8q22"
+    }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": [
+    "reciprocal translocation",
+    "derivative chromosome"
+  ],
+  "chromosomes_involved": [
+    "8",
+    "21"
+  ],
+  "arms_involved": [
+    "q",
+    "q"
+  ],
+  "bands_involved": [
+    "q22",
+    "q22"
+  ],
+  "expected_iscn": "46,XY,t(8;21)(q22;q22)",
+  "diagnosis": "AML with RUNX1::RUNX1T1",
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

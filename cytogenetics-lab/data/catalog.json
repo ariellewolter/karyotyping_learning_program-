@@ -1,0 +1,958 @@
+{
+  "version": "1.0.0",
+  "title": "Cytogenetics laboratory case catalog",
+  "disclaimer": "For education only. Not intended for clinical diagnosis.",
+  "cases": [
+    {
+      "case_id": "normal-46xy",
+      "path": "data/cases/normal-46xy.json",
+      "title": "Normal male karyotype",
+      "difficulty": "introductory",
+      "case_type": "constitutional",
+      "modules": [
+        "karyotype",
+        "abnormality",
+        "iscn_interpretation",
+        "iscn_construction"
+      ],
+      "exercise_types": [
+        "chromosome_identification",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_interpretation",
+        "iscn_construction"
+      ]
+    },
+    {
+      "case_id": "normal-46xx",
+      "path": "data/cases/normal-46xx.json",
+      "title": "Normal female karyotype",
+      "difficulty": "introductory",
+      "case_type": "constitutional",
+      "modules": [
+        "karyotype",
+        "abnormality",
+        "iscn_construction"
+      ],
+      "exercise_types": [
+        "chromosome_identification",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_construction"
+      ]
+    },
+    {
+      "case_id": "trisomy21-47xx",
+      "path": "data/cases/trisomy21-47xx.json",
+      "title": "Numerical abnormality — extra chromosome 21",
+      "difficulty": "introductory",
+      "case_type": "constitutional",
+      "modules": [
+        "karyotype",
+        "abnormality",
+        "iscn_construction",
+        "disease",
+        "integrated"
+      ],
+      "exercise_types": [
+        "chromosome_identification",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_construction",
+        "disease_association",
+        "integrated"
+      ]
+    },
+    {
+      "case_id": "turner-45x",
+      "path": "data/cases/turner-45x.json",
+      "title": "Numerical abnormality — missing sex chromosome",
+      "difficulty": "introductory",
+      "case_type": "constitutional",
+      "modules": [
+        "karyotype",
+        "abnormality",
+        "iscn_construction",
+        "disease",
+        "integrated"
+      ],
+      "exercise_types": [
+        "chromosome_identification",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_construction",
+        "disease_association",
+        "integrated"
+      ]
+    },
+    {
+      "case_id": "klinefelter-47xxy",
+      "path": "data/cases/klinefelter-47xxy.json",
+      "title": "Sex chromosome aneuploidy — XXY",
+      "difficulty": "introductory",
+      "case_type": "constitutional",
+      "modules": [
+        "karyotype",
+        "abnormality",
+        "iscn_construction",
+        "disease"
+      ],
+      "exercise_types": [
+        "chromosome_identification",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_construction",
+        "disease_association"
+      ]
+    },
+    {
+      "case_id": "criduchat-del5p",
+      "path": "data/cases/criduchat-del5p.json",
+      "title": "Terminal deletion of 5p",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "karyotype",
+        "assembly",
+        "abnormality",
+        "iscn_interpretation",
+        "iscn_construction",
+        "disease",
+        "integrated"
+      ],
+      "exercise_types": [
+        "chromosome_identification",
+        "chromosome_assembly",
+        "banding",
+        "structural_abnormalities",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_interpretation",
+        "iscn_construction",
+        "disease_association",
+        "integrated"
+      ]
+    },
+    {
+      "case_id": "cml-t922",
+      "path": "data/cases/cml-t922.json",
+      "title": "Reciprocal translocation t(9;22)",
+      "difficulty": "advanced",
+      "case_type": "acquired",
+      "modules": [
+        "karyotype",
+        "assembly",
+        "fish",
+        "abnormality",
+        "iscn_interpretation",
+        "iscn_construction",
+        "disease",
+        "integrated"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "structural_abnormalities",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_interpretation",
+        "iscn_construction",
+        "disease_association",
+        "integrated",
+        "dual-fusion",
+        "interphase",
+        "probe-strategy",
+        "integrated_fish"
+      ],
+      "fish_exercises": [
+        "dual-fusion",
+        "interphase",
+        "probe-strategy"
+      ]
+    },
+    {
+      "case_id": "apl-t1517",
+      "path": "data/cases/apl-t1517.json",
+      "title": "Reciprocal translocation t(15;17)",
+      "difficulty": "advanced",
+      "case_type": "acquired",
+      "modules": [
+        "abnormality",
+        "iscn_interpretation",
+        "iscn_construction",
+        "disease"
+      ],
+      "exercise_types": [
+        "abnormality_identification",
+        "iscn_interpretation",
+        "iscn_construction",
+        "disease_association"
+      ]
+    },
+    {
+      "case_id": "burkitt-t814",
+      "path": "data/cases/burkitt-t814.json",
+      "title": "Reciprocal translocation t(8;14)",
+      "difficulty": "advanced",
+      "case_type": "acquired",
+      "modules": [
+        "abnormality",
+        "iscn_interpretation",
+        "iscn_construction",
+        "disease"
+      ],
+      "exercise_types": [
+        "abnormality_identification",
+        "iscn_interpretation",
+        "iscn_construction",
+        "disease_association"
+      ]
+    },
+    {
+      "case_id": "iscn-mosaic-45x",
+      "path": "data/cases/iscn-mosaic-45x.json",
+      "title": "Mosaic sex chromosome complement",
+      "difficulty": "advanced",
+      "case_type": "constitutional",
+      "modules": [
+        "iscn_interpretation",
+        "iscn_construction",
+        "abnormality"
+      ],
+      "exercise_types": [
+        "iscn_interpretation",
+        "iscn_construction",
+        "abnormality_identification"
+      ]
+    },
+    {
+      "case_id": "assembly-chr7-anatomy",
+      "path": "data/cases/assembly-chr7-anatomy.json",
+      "title": "Chromosome 7 — anatomy and region assembly",
+      "difficulty": "introductory",
+      "case_type": "technical",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "anatomy",
+        "chromosome_assembly",
+        "banding"
+      ]
+    },
+    {
+      "case_id": "assembly-chr7-bands",
+      "path": "data/cases/assembly-chr7-bands.json",
+      "title": "Chromosome 7 — band assembly and 7q22.1",
+      "difficulty": "intermediate",
+      "case_type": "technical",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "banding",
+        "band_identification"
+      ]
+    },
+    {
+      "case_id": "assembly-del5p",
+      "path": "data/cases/assembly-del5p.json",
+      "title": "Abnormal chromosome 5 — terminal p-arm deletion",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "assembly",
+        "abnormality",
+        "iscn_construction",
+        "disease"
+      ],
+      "exercise_types": [
+        "anatomy",
+        "chromosome_assembly",
+        "structural_abnormalities",
+        "abnormality_identification",
+        "iscn_construction",
+        "disease_association"
+      ]
+    },
+    {
+      "case_id": "assembly-inv7",
+      "path": "data/cases/assembly-inv7.json",
+      "title": "Abnormal chromosome 7 — paracentric inversion",
+      "difficulty": "advanced",
+      "case_type": "constitutional",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "anatomy",
+        "chromosome_assembly",
+        "structural_abnormalities"
+      ]
+    },
+    {
+      "case_id": "assembly-der22",
+      "path": "data/cases/assembly-der22.json",
+      "title": "Derivative chromosome 22 — t(9;22)",
+      "difficulty": "advanced",
+      "case_type": "acquired",
+      "modules": [
+        "assembly",
+        "abnormality",
+        "iscn_construction",
+        "disease"
+      ],
+      "exercise_types": [
+        "anatomy",
+        "chromosome_assembly",
+        "structural_abnormalities",
+        "abnormality_identification",
+        "iscn_construction",
+        "disease_association"
+      ]
+    },
+    {
+      "case_id": "assembly-der9",
+      "path": "data/cases/assembly-der9.json",
+      "title": "Derivative chromosome 9 — t(9;22)",
+      "difficulty": "advanced",
+      "case_type": "acquired",
+      "modules": [
+        "assembly",
+        "abnormality",
+        "iscn_construction",
+        "disease"
+      ],
+      "exercise_types": [
+        "anatomy",
+        "chromosome_assembly",
+        "structural_abnormalities",
+        "abnormality_identification",
+        "iscn_construction",
+        "disease_association"
+      ]
+    },
+    {
+      "case_id": "fish-enum-cep21",
+      "path": "data/cases/fish-enum-cep21.json",
+      "title": "Enumeration FISH — CEP 21",
+      "difficulty": "introductory",
+      "case_type": "technical",
+      "modules": [
+        "fish"
+      ],
+      "fish_exercises": [
+        "enumeration",
+        "interphase",
+        "quality"
+      ],
+      "exercise_types": [
+        "enumeration",
+        "interphase",
+        "quality"
+      ]
+    },
+    {
+      "case_id": "fish-breakapart-16q22",
+      "path": "data/cases/fish-breakapart-16q22.json",
+      "title": "Break-apart FISH — 16q22 locus",
+      "difficulty": "intermediate",
+      "case_type": "technical",
+      "modules": [
+        "fish"
+      ],
+      "fish_exercises": [
+        "break-apart",
+        "interphase",
+        "probe-type",
+        "quality"
+      ],
+      "exercise_types": [
+        "break-apart",
+        "interphase",
+        "probe-type",
+        "quality"
+      ]
+    },
+    {
+      "case_id": "fish-dualfusion-bcrabl",
+      "path": "data/cases/fish-dualfusion-bcrabl.json",
+      "title": "Dual-fusion FISH — t(9;22)",
+      "difficulty": "advanced",
+      "case_type": "acquired",
+      "modules": [
+        "fish",
+        "abnormality",
+        "iscn_construction",
+        "disease"
+      ],
+      "fish_exercises": [
+        "dual-fusion",
+        "interphase",
+        "probe-localization",
+        "probe-type",
+        "probe-strategy"
+      ],
+      "exercise_types": [
+        "dual-fusion",
+        "interphase",
+        "probe-localization",
+        "probe-type",
+        "probe-strategy",
+        "abnormality_identification",
+        "iscn_construction",
+        "disease_association"
+      ]
+    },
+    {
+      "case_id": "fish-locus-9q34",
+      "path": "data/cases/fish-locus-9q34.json",
+      "title": "Probe localization — 9q34",
+      "difficulty": "introductory",
+      "case_type": "technical",
+      "modules": [
+        "fish"
+      ],
+      "fish_exercises": [
+        "probe-localization",
+        "probe-type"
+      ],
+      "exercise_types": [
+        "probe-localization",
+        "probe-type"
+      ]
+    },
+    {
+      "case_id": "assembly-del4p",
+      "path": "data/cases/assembly-del4p.json",
+      "title": "Abnormal chromosome 4 — terminal 4p deletion",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der15",
+      "path": "data/cases/assembly-der15.json",
+      "title": "Derivative chromosome 15 — t(15;17)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der17",
+      "path": "data/cases/assembly-der17.json",
+      "title": "Derivative chromosome 17 — t(15;17)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der14",
+      "path": "data/cases/assembly-der14.json",
+      "title": "Derivative chromosome 14 — t(8;14)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der8",
+      "path": "data/cases/assembly-der8.json",
+      "title": "Derivative chromosome 8 — t(8;14)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "fish-down-cep21",
+      "path": "data/cases/fish-down-cep21.json",
+      "title": "Down syndrome — chromosome 21 enumeration",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "enumeration",
+        "interphase",
+        "probe-type",
+        "probe-strategy"
+      ]
+    },
+    {
+      "case_id": "fish-edwards-cep18",
+      "path": "data/cases/fish-edwards-cep18.json",
+      "title": "Edwards syndrome — chromosome 18 enumeration",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "enumeration",
+        "interphase",
+        "probe-type",
+        "probe-strategy"
+      ]
+    },
+    {
+      "case_id": "fish-patau-cep13",
+      "path": "data/cases/fish-patau-cep13.json",
+      "title": "Patau syndrome — chromosome 13 enumeration",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "enumeration",
+        "interphase",
+        "probe-type",
+        "probe-strategy"
+      ]
+    },
+    {
+      "case_id": "fish-turner-xy",
+      "path": "data/cases/fish-turner-xy.json",
+      "title": "Turner syndrome — X and Y enumeration",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "enumeration",
+        "interphase",
+        "probe-type",
+        "probe-strategy"
+      ]
+    },
+    {
+      "case_id": "fish-klinefelter-xy",
+      "path": "data/cases/fish-klinefelter-xy.json",
+      "title": "Klinefelter syndrome — X and Y enumeration",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "enumeration",
+        "interphase",
+        "probe-type",
+        "probe-strategy"
+      ]
+    },
+    {
+      "case_id": "fish-cri-del5p",
+      "path": "data/cases/fish-cri-del5p.json",
+      "title": "Cri-du-chat syndrome — distal 5p deletion FISH",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "deletion",
+        "interphase",
+        "probe-strategy",
+        "probe-type"
+      ]
+    },
+    {
+      "case_id": "fish-wolf-del4p",
+      "path": "data/cases/fish-wolf-del4p.json",
+      "title": "Wolf-Hirschhorn syndrome — 4p16 deletion FISH",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "deletion",
+        "interphase",
+        "probe-strategy",
+        "probe-type",
+        "probe-localization"
+      ]
+    },
+    {
+      "case_id": "fish-apl-pml-rara",
+      "path": "data/cases/fish-apl-pml-rara.json",
+      "title": "Acute promyelocytic leukemia — PML::RARA dual-fusion",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "dual-fusion",
+        "interphase",
+        "probe-localization",
+        "probe-type",
+        "probe-strategy"
+      ]
+    },
+    {
+      "case_id": "fish-burkitt-igh-myc",
+      "path": "data/cases/fish-burkitt-igh-myc.json",
+      "title": "Burkitt lymphoma — IGH::MYC dual-fusion",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "dual-fusion",
+        "interphase",
+        "probe-localization",
+        "probe-type",
+        "probe-strategy"
+      ]
+    },
+    {
+      "case_id": "assembly-del22q11",
+      "path": "data/cases/assembly-del22q11.json",
+      "title": "Chromosome 22 — 22q11.2 interval",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-del7q1123",
+      "path": "data/cases/assembly-del7q1123.json",
+      "title": "Chromosome 7 — 7q11.23 interval",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-del15q11",
+      "path": "data/cases/assembly-del15q11.json",
+      "title": "Chromosome 15 — 15q11-q13 interval",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-del13q14",
+      "path": "data/cases/assembly-del13q14.json",
+      "title": "Chromosome 13 — 13q14 interval",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der8-t821",
+      "path": "data/cases/assembly-der8-t821.json",
+      "title": "Derivative chromosome 8 — t(8;21)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der21-t821",
+      "path": "data/cases/assembly-der21-t821.json",
+      "title": "Derivative chromosome 21 — t(8;21)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-inv16",
+      "path": "data/cases/assembly-inv16.json",
+      "title": "Chromosome 16 — pericentric inversion",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-kmt2a-locus",
+      "path": "data/cases/assembly-kmt2a-locus.json",
+      "title": "Chromosome 11 — KMT2A at 11q23.3",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der2-t25",
+      "path": "data/cases/assembly-der2-t25.json",
+      "title": "Derivative chromosome 2 — t(2;5)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der5-t25",
+      "path": "data/cases/assembly-der5-t25.json",
+      "title": "Derivative chromosome 5 — t(2;5)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der11-t1122",
+      "path": "data/cases/assembly-der11-t1122.json",
+      "title": "Derivative chromosome 11 — t(11;22)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "assembly-der22-t1122",
+      "path": "data/cases/assembly-der22-t1122.json",
+      "title": "Derivative chromosome 22 — t(11;22)",
+      "difficulty": "intermediate",
+      "case_type": "acquired",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "chromosome_assembly",
+        "band_identification",
+        "anatomy"
+      ]
+    },
+    {
+      "case_id": "fish-digeorge-del",
+      "path": "data/cases/fish-digeorge-del.json",
+      "title": "fish-digeorge-del",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    },
+    {
+      "case_id": "fish-williams-del",
+      "path": "data/cases/fish-williams-del.json",
+      "title": "fish-williams-del",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    },
+    {
+      "case_id": "fish-pws-del",
+      "path": "data/cases/fish-pws-del.json",
+      "title": "fish-pws-del",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    },
+    {
+      "case_id": "fish-as-del",
+      "path": "data/cases/fish-as-del.json",
+      "title": "fish-as-del",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    },
+    {
+      "case_id": "fish-cll-13q",
+      "path": "data/cases/fish-cll-13q.json",
+      "title": "fish-cll-13q",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    },
+    {
+      "case_id": "fish-aml-runx1",
+      "path": "data/cases/fish-aml-runx1.json",
+      "title": "AML — RUNX1::RUNX1T1 dual-fusion",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    },
+    {
+      "case_id": "fish-aml-inv16",
+      "path": "data/cases/fish-aml-inv16.json",
+      "title": "fish-aml-inv16",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    },
+    {
+      "case_id": "fish-kmt2a-ba",
+      "path": "data/cases/fish-kmt2a-ba.json",
+      "title": "fish-kmt2a-ba",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    },
+    {
+      "case_id": "fish-alk-ba",
+      "path": "data/cases/fish-alk-ba.json",
+      "title": "fish-alk-ba",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    },
+    {
+      "case_id": "fish-ewing-ba",
+      "path": "data/cases/fish-ewing-ba.json",
+      "title": "fish-ewing-ba",
+      "difficulty": "intermediate",
+      "case_type": "constitutional",
+      "modules": [
+        "fish"
+      ],
+      "exercise_types": [
+        "fish"
+      ]
+    }
+  ]
+}
