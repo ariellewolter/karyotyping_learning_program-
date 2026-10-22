@@ -11,9 +11,9 @@
     "include_anatomy": true,
     "transform": {
       "type": "deletion",
-      "from": "5p15.2",
+      "from": "5p15.3",
       "to": "5p15.1",
-      "labels": ["5p15.2", "5p15.1"]
+      "labels": ["5p15.3", "5p15.2", "5p15.1"]
     },
     "reference_normal": true,
     "nomenclature": {

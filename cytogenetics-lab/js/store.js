@@ -1,5 +1,5 @@
 import { resetKaryotype } from "./karyotype.js";
-import { initAssembly } from "./banding.js?v=20261006j";
+import { initAssembly } from "./banding.js?v=20261006l";
 import { fishFlow, initFish } from "./fish.js?v=20261006j";
 import { seedFrom } from "./util.js";
 

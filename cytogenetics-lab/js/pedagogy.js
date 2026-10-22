@@ -30,6 +30,16 @@ export function instructionSteps(steps, disease, mode, skillId) {
   return { steps: out, titles };
 }
 
+/** Skill sessions have no disease. Their lesson must win over the generic step card. */
+export function lessonForContext(disease, step, skillId) {
+  const applied = applyStep(step);
+  if (!disease && skillId) {
+    const skill = skillLesson(skillId, applied);
+    if (skill) return skill;
+  }
+  return lessonFor(disease, applied);
+}
+
 export function lessonFor(disease, step) {
   const item = canonicalCase(disease);
   const id = disease?.id;
@@ -73,6 +83,10 @@ export function lessonFor(disease, step) {
     const chr = (item?.primary_chromosome || [])[0] || "the affected chromosome";
     return { id: "aneuploidy", title: "Homologs and copy number", html: aneuploidyCard(chr) };
   }
+  const base = String(step || "").replace(/_\d+$/, "");
+  if (base === "nomenclature") {
+    return { id: "locus-address", title: "How to read a band address", html: locusAddressCard() };
+  }
   if (cls === "deletion" && (step === "inspect" || step === "comparison" || step === "find")) {
     const chr = (item?.primary_chromosome || [])[0] || "";
     return { id: "deletion", title: "A deletion changes one homolog", html: deletionCard(chr, item?.correct_arm || "p") };
@@ -115,6 +129,11 @@ export function hintFor(disease, step, level, skillId, mode) {
       "Homologs belong in the same numbered place.",
       "An extra whole chromosome still belongs with its own number.",
     ],
+    "cri-du-chat:nomenclature": [
+      "The gold mark is one slice of band 5p15, not the whole band.",
+      "From the centromere toward pter, the 5p15 slices are .1, then .2, then .3 at the tip.",
+      "The marked slice sits between the pter-most slice and the slice closest to the centromere.",
+    ],
     "anatomy:anatomy": [
       "pter is the top end. qter is the bottom end.",
       "The centromere separates the short arm (p) from the long arm (q).",
@@ -124,8 +143,8 @@ export function hintFor(disease, step, level, skillId, mode) {
       "Band numbers increase from the centromere toward each telomere.",
     ],
     "band_identification:nomenclature": [
-      "Read the address outward: chromosome, arm, region, band, sub-band.",
-      "In 7q22.1 the arm is q, the region is 2, the band is 2, and the sub-band is 1.",
+      "Read chromosome, arm, region, then band. Add a sub-band only if that band is split into separate slices.",
+      "Sub-bands are numbered from the centromere toward the telomere.",
     ],
     "structural_abnormalities:assemble": [
       "Both breakpoints are on the same arm, so the centromere stays outside the reversed segment.",
@@ -195,7 +214,7 @@ function skillLesson(skillId, step) {
     return { id: "skill-assembly", title: "How a chromosome is ordered", html: assemblySkillCard() };
   }
   if (skillId === "band_identification" && step === "nomenclature") {
-    return { id: "skill-locus", title: "How to read 7q22.1", html: locusSkillCard() };
+    return { id: "skill-locus", title: "How to read 7q22.1", html: locusSkillCard("7q22.1") };
   }
   if (skillId === "structural_abnormalities" && (step === "assemble" || step === "comparison")) {
     return { id: "skill-inversion", title: "Paracentric inversion", html: inversionSkillCard() };
@@ -241,17 +260,35 @@ function assemblySkillCard() {
     <p>The next screen hides the band names. Use orientation and the stain pattern.</p>`;
 }
 
-function locusSkillCard() {
+function locusAddressCard() {
+  return locusSkillCard();
+}
+
+function locusSkillCard(address = "5p15.2") {
+  if (address === "7q22.1") {
+    return `
+      <p>The gold mark on this chromosome is <strong>7q22.1</strong>. Read that address from the outside in:</p>
+      <ol class="comp-list">
+        <li><strong>7</strong> — chromosome 7, the chromosome on the screen</li>
+        <li><strong>q</strong> — the long arm, below the centromere</li>
+        <li><strong>2</strong> — region 2 of that arm</li>
+        <li><strong>2</strong> — band 2 inside that region, written together as q22</li>
+        <li><strong>.1</strong> — the first sub-band of 7q22</li>
+      </ol>
+      <p>This map splits 7q22 into three slices. Sub-bands are numbered from the centromere toward qter, so <strong>7q22.1</strong> is the slice closest to the centromere, then <strong>7q22.2</strong>, then <strong>7q22.3</strong>.</p>
+      <p>The next screen keeps the gold mark and hides the names. Name that same slice.</p>`;
+  }
   return `
-    <p>A cytogenetic address is nested. Read 7q22.1 from the outside in:</p>
+    <p>A cytogenetic address is nested. Read from the outside in, for example <strong>5p15.2</strong>:</p>
     <ol class="comp-list">
-      <li><strong>7</strong> — chromosome 7</li>
-      <li><strong>q</strong> — long arm</li>
-      <li><strong>2</strong> — region 2 of that arm</li>
-      <li><strong>2</strong> — band 2 inside that region</li>
-      <li><strong>1</strong> — sub-band 1 of that band</li>
+      <li><strong>5</strong> — chromosome</li>
+      <li><strong>p</strong> — short arm</li>
+      <li><strong>1</strong> — region 1 of that arm</li>
+      <li><strong>5</strong> — band 5 inside that region (written together as p15)</li>
+      <li><strong>.2</strong> — sub-band, only when that band is split on the map</li>
     </ol>
-    <p>The next screen marks a locus and hides the address. Name it from that hierarchy.</p>`;
+    <p>Sub-bands are numbered from the centromere toward the telomere. On 5p15, <strong>5p15.1</strong> is closest to the centromere, then <strong>5p15.2</strong>, then <strong>5p15.3</strong> at pter.</p>
+    <p>The next screen keeps the gold mark and hides the names. Use that order; do not guess a sub-band for a band that is not split.</p>`;
 }
 
 function inversionSkillCard() {
@@ -262,7 +299,7 @@ function inversionSkillCard() {
 
 function normalKaryotypeCard() {
   return `
-    <p>Homologs are the two copies of one chromosome. Pair them by relative size, centromere position, and band pattern, then place the pairs in conventional order from large to small.</p>
+    <p>Homologs are the two copies of one chromosome. Pair them by relative size, centromere position, and band pattern. Both copies go in that chromosome's numbered box: two chromosomes in box 1, two in box 2, and so on.</p>
     <p>X sits with the C group. Y sits with the G group. This skill is a normal karyotype: do not look for a disease abnormality.</p>
     ${denverCard()}`;
 }
@@ -277,7 +314,8 @@ function enumerationSkillCard() {
   return `
     <p>Enumeration FISH asks one question: how many copies of this chromosome or target are in the nucleus?</p>
     ${oneStrategy("Enumeration")}
-    <p>A normal example has two discrete signals, one for each copy. Count only signals you can assign to one nucleus. The next screen is the set to score. Signal names are not printed on those nuclei.</p>`;
+    <p>Two separate signals means two copies. Three signals means three copies. Count only signals you can assign to one nucleus. If two nuclear outlines overlap, mark that nucleus unscorable and leave the count blank.</p>
+    <p>The next screen asks for that count and whether the nucleus is scorable. The nuclei are not labeled.</p>`;
 }
 
 function breakApartSkillCard() {
@@ -539,8 +577,8 @@ function cmlSignalCard() {
 
 function aneuploidyCard(chr) {
   return `
-    <p>Homologs are the two copies of one chromosome number. They sit together.</p>
-    <p>A whole extra or missing chromosome changes the count. It does not have to change the banding of that chromosome.</p>
+    <p>Homologs are the two copies of one chromosome number. They sit together in that number's box.</p>
+    <p>A whole extra or missing chromosome changes the count. It does not have to change the banding of that chromosome. Every copy still goes in the same numbered box.</p>
     <p>For this case, watch chromosome ${chr}.</p>
     ${denverCard()}`;
 }
@@ -550,12 +588,29 @@ function copyCard(chr) {
 }
 
 function karyotypeCard() {
-  return `<p>Each chromosome is placed by number. Partners sit together. The p arm points up. An abnormal homolog still belongs with its own number.</p>${denverCard()}`;
+  return `<p>Each chromosome is placed by number. Both copies go in that number's box, and the p arm points up. An abnormal homolog still belongs with its own number. Three copies of one chromosome all go in that same box.</p>${denverCard()}`;
+}
+
+export function centromereKeyHtml() {
+  const fig = (y, name, text) => `
+    <figure class="cen-fig">
+      <svg viewBox="0 0 36 88" width="28" height="72" aria-hidden="true">
+        <rect x="10" y="4" width="16" height="80" rx="8" fill="#d8d3e6"/>
+        <rect x="12" y="${y}" width="12" height="10" rx="5" fill="#6e6588"/>
+      </svg>
+      <figcaption><strong>${name}.</strong> ${text}</figcaption>
+    </figure>`;
+  return `<div class="cen-key" aria-label="Centromere positions">
+    ${fig(36, "Metacentric", "The centromere is near the middle, so the arms are about the same length. Groups A and F.")}
+    ${fig(24, "Submetacentric", "The centromere is off center, so one arm is clearly longer. Groups B, C, and E.")}
+    ${fig(8, "Acrocentric", "The centromere is near the top, so the short arm is very small. Groups D and G.")}
+  </div>`;
 }
 
 function denverCard() {
   return `
     <p>Build the set one Denver group at a time. Size, centromere position, and band pattern decide the group.</p>
+    ${centromereKeyHtml()}
     <ul class="comp-list">
       <li>A — large metacentric chromosomes: 1–3</li>
       <li>B — large submetacentric chromosomes: 4–5</li>

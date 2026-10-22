@@ -5,23 +5,15 @@
  * Never present these drawings as authentic clinical specimens.
  */
 
-import { applyTransform, cloneSegments } from "./banding.js?v=20261006j";
+import { applyTransform, cloneSegments } from "./banding.js?v=20261006k";
+import { relativeLuminance, stainHex } from "./ideogram.js?v=20261015a";
 
 let boundMaps = null;
+let clipSerial = 0;
 
 export function bindChromosomeMaps(maps) {
   boundMaps = maps || null;
 }
-
-const STAIN = {
-  0: "#f3eef8",
-  1: "#c9c0d8",
-  2: "#9a90b0",
-  3: "#675d80",
-  4: "#322b44",
-  5: "#4a3a72",
-  6: "#c4b093",
-};
 
 export function sexCopyNumber(sex) {
   const s = String(sex || "XY").toUpperCase();
@@ -100,8 +92,9 @@ export function renderChromosome(chr, options = {}) {
     const alt = options.hideIdentity
       ? "Demonstration chromosome graphic"
       : `Chromosome ${chr.identity}${chr.placeholder ? " (demonstration graphic)" : ""}`;
-    const h = options.scale ? Math.round(170 * options.scale) : 170;
-    return `<img class="chr-img" draggable="false" alt="${alt}" src="${escapeAttr(chr.src)}" style="max-height:${h}px" />`;
+    const rel = Number(chr.template?.relativeLength) || 8.44;
+    const h = Math.max(28, Math.round((rel / 8.44) * 210 * (options.scale || 1)));
+    return `<img class="chr-img" draggable="false" alt="${alt}" src="${escapeAttr(chr.src)}" style="height:${h}px;width:auto" />`;
   }
   if (!chr.template) {
     return `<div class="chr-missing" title="Missing template"></div>`;
@@ -185,7 +178,8 @@ function applyVariant(template, variant) {
   const deletion = String(v).match(/^del\([^)]+\)\(([pq])/);
   if (deletion) {
     if (deletion[1] === "p") {
-      t.p = t.p.slice(Math.max(0, t.p.length - 2));
+      // Arm templates run centromere → telomere. Drop the distal bands, as on q.
+      t.p = t.p.slice(0, Math.max(1, t.p.length - 2));
       t.cen = Math.min(0.18, t.cen * 0.55);
       t.relativeLength *= 0.88;
     } else {
@@ -284,22 +278,27 @@ export function schematicForVariant(template, variant) {
   return applyVariant(template, variant);
 }
 
+function drawHeight(template, scale) {
+  const length = Number(template.relativeLength) || 1;
+  return Math.max(8, Math.round((length / 8.44) * 210 * scale));
+}
+
 function schematicSVG(chr, options) {
   const template = applyVariant(chr.template, chr.variant);
   const scale = options.scale || 1;
-  const jitter = (hash(chr.id) % 1000) / 1000;
-  const height = options.height || Math.max(52, Math.round((template.relativeLength / 8.44) * 188 * (0.97 + jitter * 0.05) * scale));
-  const cw = Math.max(8, Math.round(10 * Math.min(scale, 2.3)));
+  const height = options.height || drawHeight(template, scale);
+  const cw = Math.max(11, Math.round(13 * Math.min(scale, 2.3)));
   const gap = Math.max(3, Math.round(4 * Math.min(scale, 2)));
   const padX = Math.max(3, Math.round(3.2 * Math.min(scale, 2)));
   const padY = Math.max(8, Math.round(7 * Math.min(scale, 1.8)));
-  const rotate = ((hash(chr.id + "r") % 11) - 5) * 0.45;
   const totalH = height;
-  const pH = Math.max(10, Math.round(totalH * template.cen));
-  const qH = Math.max(12, totalH - pH);
-  const satPad = template.morphology === "acrocentric" ? Math.round(14 * Math.min(scale, 1.7)) : 0;
+  const pShare = Math.max(2, Math.min(totalH - 2, Math.round(totalH * template.cen)));
+  const stalk = stalkWeight(template);
+  const satPad = stalk ? Math.min(Math.max(0, pShare - 2), Math.max(3, Math.round(pShare * 0.45))) : 0;
+  const pH = pShare - satPad;
+  const qH = totalH - pShare;
   const cenY = padY + satPad + pH;
-  const svgH = padY * 2 + satPad + totalH + 6;
+  const svgH = padY * 2 + totalH + 6;
   const leftX = padX;
   const rightX = padX + cw + gap;
   const svgW = rightX + cw + padX;
@@ -308,22 +307,39 @@ function schematicSVG(chr, options) {
   const right = chromatidPath(rightX, cenY, pH, qH, cw);
   const bandsLeft = bandRects(leftX, cenY, pH, qH, cw, template);
   const bandsRight = bandRects(rightX, cenY, pH, qH, cw, template);
-  const sat = template.morphology === "acrocentric"
-    ? `<circle cx="${svgW / 2 - 5 * Math.min(scale, 1.8)}" cy="${padY + 3}" r="${2.1 * Math.min(scale, 1.6)}" fill="#d8d0e6" stroke="#3a3450" stroke-width="${stroke}"/>
-       <circle cx="${svgW / 2 + 5 * Math.min(scale, 1.8)}" cy="${padY + 3}" r="${2.1 * Math.min(scale, 1.6)}" fill="#d8d0e6" stroke="#3a3450" stroke-width="${stroke}"/>
-       <path d="M${svgW / 2 - 5 * Math.min(scale, 1.8)} ${padY + 6} L${leftX + cw / 2} ${cenY - pH + 2}" stroke="#8a7a60" stroke-width="${stroke}"/>
-       <path d="M${svgW / 2 + 5 * Math.min(scale, 1.8)} ${padY + 6} L${rightX + cw / 2} ${cenY - pH + 2}" stroke="#8a7a60" stroke-width="${stroke}"/>`
+  const clipL = `chrL${clipSerial}`;
+  const clipR = `chrR${clipSerial}`;
+  clipSerial += 1;
+  const stalkY = padY + satPad;
+  const satR = Math.max(1.2, Math.min(satPad * 0.32, (1.5 + stalk * 0.28) * Math.min(scale, 1.6)));
+  const satDx = Math.min(cw * 0.42, 5 * Math.min(scale, 1.8));
+  const satCy = padY + Math.max(satR + 0.4, satPad * 0.46);
+  const sat = stalk && satPad
+    ? `<circle cx="${svgW / 2 - satDx}" cy="${satCy}" r="${satR}" fill="#d8d0e6" stroke="#3a3450" stroke-width="${stroke}"/>
+       <circle cx="${svgW / 2 + satDx}" cy="${satCy}" r="${satR}" fill="#d8d0e6" stroke="#3a3450" stroke-width="${stroke}"/>
+       <path d="M${svgW / 2 - satDx} ${satCy + satR * 0.55} L${leftX + cw / 2} ${stalkY}" stroke="#8a7a60" stroke-width="${stroke}"/>
+       <path d="M${svgW / 2 + satDx} ${satCy + satR * 0.55} L${rightX + cw / 2} ${stalkY}" stroke="#8a7a60" stroke-width="${stroke}"/>`
     : "";
 
   return `<svg class="chr-svg" viewBox="0 0 ${svgW} ${svgH}" width="${svgW}" height="${svgH}" aria-hidden="true">
-    <g transform="rotate(${rotate} ${svgW / 2} ${svgH / 2})">
+    <defs>
+      <clipPath id="${clipL}"><path d="${left}"/></clipPath>
+      <clipPath id="${clipR}"><path d="${right}"/></clipPath>
+    </defs>
+    <g>
       ${sat}
-      <path d="${left}" fill="#ece7f4" stroke="#3a3450" stroke-width="${stroke}"/>
-      <path d="${right}" fill="#ece7f4" stroke="#3a3450" stroke-width="${stroke}"/>
-      ${bandsLeft}${bandsRight}
+      <path d="${left}" fill="#f7f4fb" stroke="#241c33" stroke-width="${stroke}"/>
+      <path d="${right}" fill="#f7f4fb" stroke="#241c33" stroke-width="${stroke}"/>
+      <g clip-path="url(#${clipL})">${bandsLeft}</g>
+      <g clip-path="url(#${clipR})">${bandsRight}</g>
       <ellipse cx="${svgW / 2}" cy="${cenY}" rx="${cw * 0.85}" ry="${Math.max(3, 2.6 * Math.min(scale, 1.8))}" fill="#d8d3e6" stroke="#3a3450" stroke-width="${stroke}"/>
     </g>
   </svg>`;
+}
+
+function stalkWeight(template) {
+  const stalk = (template.p || []).find((band) => band[1] === 6);
+  return stalk ? stalk[0] : 0;
 }
 
 function chromatidPath(x, cenY, pH, qH, w) {
@@ -361,13 +377,20 @@ function armBands(x, y0, armH, w, bands, upward) {
   let y = y0;
   let html = "";
   const seq = upward ? [...bands].reverse() : bands;
-  for (const [weight, stain] of seq) {
-    const h = (weight / total) * armH;
-    if (stain > 0) {
-      html += `<rect x="${x + 0.8}" y="${y + 0.3}" width="${w - 1.6}" height="${Math.max(0.8, h - 0.4)}" fill="${STAIN[stain] || STAIN[2]}" opacity="0.92"/>`;
+  const rows = seq.map(([weight, stain]) => {
+    const fill = stainHex(stain);
+    return { h: (weight / total) * armH, fill };
+  });
+  rows.forEach((row, index) => {
+    html += `<rect x="${x}" y="${y}" width="${w}" height="${Math.max(0.8, row.h)}" fill="${row.fill}"/>`;
+    const next = rows[index + 1];
+    if (next && Math.abs(relativeLuminance(row.fill) - relativeLuminance(next.fill)) < 0.22) {
+      const yy = y + row.h;
+      const line = (relativeLuminance(row.fill) + relativeLuminance(next.fill)) / 2 > 0.55 ? "#241c33" : "#f6f1e8";
+      html += `<line x1="${x}" y1="${yy}" x2="${x + w}" y2="${yy}" stroke="${line}" stroke-width="0.8"/>`;
     }
-    y += h;
-  }
+    y += row.h;
+  });
   return html;
 }
 

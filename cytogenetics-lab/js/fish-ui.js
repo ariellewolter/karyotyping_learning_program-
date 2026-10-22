@@ -23,7 +23,8 @@ import {
   updateMark,
 } from "./fish.js?v=20261006j";
 import { nucleusSVG } from "./fish-microscopy.js?v=20261006e";
-import { ideogramSVG } from "./ideogram.js?v=20261006j";
+import { ideogramSVG } from "./ideogram.js?v=20261015a";
+import { parseBandLabel, resolutionForLocus } from "./banding.js?v=20261006l";
 import { applyMode, applyStep, isTeachStep, strategyFeedback } from "./pedagogy.js?v=20261006j";
 
 const SIGNAL_LABELS = {
@@ -36,6 +37,18 @@ const SIGNAL_LABELS = {
 
 function signalLabel(type) {
   return SIGNAL_LABELS[type] || type;
+}
+
+function channelLabel(channel) {
+  if (channel === "dapi") return "DAPI — nuclear counterstain";
+  if (channel === "red") return "Red";
+  if (channel === "green") return "Green";
+  if (channel === "merge") return "Merge";
+  return String(channel || "").toUpperCase();
+}
+
+function countOnlyAssay(f) {
+  return f?.spec?.assay_type === "enumeration";
 }
 
 export function isFishStep(step) {
@@ -64,12 +77,20 @@ function fishTeachGraphic(step, f) {
   const exercise = state.session?.exercise;
   if (step === "probe_locus") return locusView(f, true);
   if (exercise === "enumeration") {
-    const normal = { cx: 200, cy: 170, rx: 88, ry: 96, expected_signals: [
-      { id: "n1", type: "green", x: 168, y: 150 },
-      { id: "n2", type: "green", x: 230, y: 176 },
+    const normal = { cx: 120, cy: 150, rx: 70, ry: 74, expected_signals: [
+      { id: "n1", type: "green", x: 100, y: 140 },
+      { id: "n2", type: "green", x: 145, y: 168 },
     ] };
-    return `<div class="fish-canvas">${nucleusSVG(normal, { activeChannel: "merge", showLabels: true, demo: true })}</div>
-      <p class="ideo-caption">Normal example: two signals, one for each copy. The nuclei you score next are not labeled.</p>`;
+    const gain = { cx: 120, cy: 150, rx: 70, ry: 74, expected_signals: [
+      { id: "g1", type: "green", x: 92, y: 128 },
+      { id: "g2", type: "green", x: 128, y: 158 },
+      { id: "g3", type: "green", x: 152, y: 132 },
+    ] };
+    return `<div class="pair-art">
+      <div><p class="group-label">Two copies</p>${nucleusSVG(normal, { width: 240, height: 280, showLabels: true, demo: true })}<p>Two signals is the usual count.</p></div>
+      <div><p class="group-label">Three copies</p>${nucleusSVG(gain, { width: 240, height: 280, showLabels: true, demo: true })}<p>Three signals means three copies.</p></div>
+    </div>
+    <p class="ideo-caption">The nuclei you score next are not labeled. Overlapping outlines are unscorable.</p>`;
   }
   if (exercise === "break-apart") {
     const intact = { cx: 120, cy: 150, rx: 70, ry: 74, expected_signals: [{ id: "f", type: "fusion", x: 120, y: 150 }] };
@@ -103,9 +124,13 @@ function fishTeachGraphic(step, f) {
 function locusView(f, teaching = false) {
   const loc = f.spec.localization || {};
   const chrom = loc.chromosome || f.probes[0]?.chromosome;
-  const pieces = localizationPieces(f.maps, chrom, "band");
+  const needsSub = parseBandLabel(loc.expected)?.subband != null;
+  const pieces = localizationPieces(f.maps, chrom, resolutionForLocus(loc.expected));
   const reveal = teaching || (state.session?.instructionMode === "practice" && state.session?.pedagogy?.revealLabels);
   const highlight = teaching ? loc.expected : null;
+  const place = needsSub
+    ? "Click the sub-band slice, or name chromosome, arm, region, band, and sub-band."
+    : "Place the probe from the chromosome, arm, and band.";
   return `
     <div class="assembly-stage">
       <div class="ideo-column">
@@ -115,9 +140,9 @@ function locusView(f, teaching = false) {
       <div class="assembly-copy">
         <h3>Where does this probe hybridize?</h3>
         <p>${escapeHtml(f.probes.find((p) => p.probe_id === loc.probe_id)?.description || "Identify the cytogenetic location of the probe.")}</p>
-        <p class="muted">${teaching ? "The address is highlighted while the names are visible." : "Place the probe from the chromosome, arm, and band. The answer is not highlighted."}</p>
+        <p class="muted">${teaching ? "The address is highlighted while the names are visible." : `${place} The answer is not highlighted.`}</p>
         ${teaching ? "" : `<label class="stack">Complete locus
-          <input id="fish-loc" class="iscn-input" value="${escapeHtml(f.localization.locus)}" placeholder="chromosome, arm, band" />
+          <input id="fish-loc" class="iscn-input" value="${escapeHtml(f.localization.locus)}" placeholder="${needsSub ? "e.g. 2q31.1" : "e.g. 4p16"}" />
         </label>
         <div class="locus-grid">
           ${selectField("fish-loc-chr", "Chromosome", f.localization.chromosome, SLOT_IDS)}
@@ -291,7 +316,7 @@ function scopeView(f) {
     <div class="fish-scope-layout">
       <div>
         <div class="channel-bar" role="group" aria-label="Fluorescence channels">
-          ${channels.map((ch) => `<button type="button" class="btn ${f.activeChannel === ch ? "primary" : ""}" data-action="fish-channel" data-ch="${ch}">${ch.toUpperCase()}</button>`).join("")}
+          ${channels.map((ch) => `<button type="button" class="btn ${f.activeChannel === ch ? "primary" : ""}" data-action="fish-channel" data-ch="${ch}">${escapeHtml(channelLabel(ch))}</button>`).join("")}
         </div>
         <div class="fish-canvas" data-fish-canvas="1">${nucleusSVG(spec, {
           activeChannel: f.activeChannel,
@@ -306,7 +331,7 @@ function scopeView(f) {
             <span>Nucleus ${i + 1} of ${f.spec.nuclei.length}</span>
           </button>`).join("")}
         </div>
-        <div class="piece-nav sig-palette" role="group" aria-label="Identify and count signals">
+        ${countOnlyAssay(f) ? "" : `<div class="piece-nav sig-palette" role="group" aria-label="Identify and count signals">
           ${["red", "green", "fusion", "split", "uncertain"].filter((t) => fields.includes(t) || t === "uncertain").map((t) => `
             <button type="button" class="sig-btn ${t} ${f.classifyMode === t ? "on" : ""}" data-action="fish-classify" data-type="${t}">${signalLabel(t)}</button>`).join("")}
         </div>
@@ -314,7 +339,7 @@ function scopeView(f) {
           <button type="button" class="btn" data-action="fish-reclass">Reclassify selected</button>
           <button type="button" class="btn" data-action="fish-remove">Remove selected</button>
           <button type="button" class="btn" data-action="fish-reset-n">Reset nucleus</button>
-        </div>
+        </div>`}
       </div>
         <div class="assembly-copy">
         ${assaySetup(f)}
@@ -339,8 +364,10 @@ function scopeView(f) {
         <div class="locus-grid">
           ${fields.map((fld) => selectField(`fish-count-${fld}`, signalLabel(fld), student.counts[fld], SIGNAL_COUNT_OPTIONS)).join("")}
         </div>
-        <p class="muted">Click fluorescent signals, then enter counts. Red only and green only are single-color spots. A fusion counts once. Do not force a count on an unscorable nucleus.</p>
-        ${student.marks.length ? `<p class="group-label">Identified signals</p>
+        <p class="muted">${countOnlyAssay(f)
+          ? "Count the signals of this probe, and decide whether the nucleus is scorable. Overlapping outlines are unscorable. Do not force a count on an unscorable nucleus."
+          : "Click each fluorescent spot and classify it, then enter the counts. A fusion counts once. Red only and green only are single-color spots. Do not force a count on an unscorable nucleus."}</p>
+        ${countOnlyAssay(f) ? "" : student.marks.length ? `<p class="group-label">Identified signals</p>
           <ul class="fish-mark-list">${student.marks.map((m) => `<li>
             <button type="button" class="btn ${f.selectedMark === m.id ? "primary" : ""}" data-action="fish-select-mark" data-id="${escapeHtml(m.id)}">${escapeHtml(signalLabel(m.type))}</button>
           </li>`).join("")}</ul>` : "<p class='muted'>No signals marked yet. Click a fluorescent spot or enter counts below.</p>"}
@@ -479,6 +506,7 @@ export function handleFishAction(action, el) {
 }
 
 export function clickFishCanvas(ev) {
+  if (countOnlyAssay(state.session?.fish)) return false;
   const canvas = ev.target.closest("[data-fish-canvas]");
   if (!canvas) return false;
   const svg = canvas.querySelector("svg");
@@ -527,10 +555,11 @@ function checkScope(isSubmit) {
       if (g.countsOk) countsOk.ok += 1;
     }
   });
+  const countOnly = countOnlyAssay(f);
   const nucleusReady = (spec, student) => {
     const g = gradeNucleus(student, spec, fields);
     const sig = gradeSignalIdentification(student.marks, spec.expected_signals, f.spec.signal_tolerance || 20);
-    const signalsRequired = Boolean(spec.scorable) && (spec.expected_signals || []).length > 0;
+    const signalsRequired = !countOnly && Boolean(spec.scorable) && (spec.expected_signals || []).length > 0;
     const signalsOk = !signalsRequired || (sig.identified === sig.expected && sig.classified === sig.expected && sig.extra === 0);
     return g.complete && signalsOk;
   };
@@ -546,7 +575,9 @@ function checkScope(isSubmit) {
       tone: allComplete ? "ok" : "review",
       scored: true,
       title: allComplete ? "Nucleus records are complete." : "One or more nuclei are incomplete or incorrect.",
-      body: `Signal identification ${idStats.identified}/${idStats.expected}; classification ${idStats.classified}/${idStats.expected}; scorable nuclei ${quality.ok}/${quality.n}; counts ${countsOk.ok}/${countsOk.n}.`,
+      body: countOnly
+        ? `Scorable decision ${quality.ok}/${quality.n}; counts ${countsOk.ok}/${countsOk.n}.`
+        : `Signal identification ${idStats.identified}/${idStats.expected}; classification ${idStats.classified}/${idStats.expected}; scorable nuclei ${quality.ok}/${quality.n}; counts ${countsOk.ok}/${countsOk.n}.`,
     }, true);
     return;
   }
@@ -557,17 +588,30 @@ function checkScope(isSubmit) {
     <li>Scorable: <strong>${g.scorable}</strong></li>
     ${g.artifact !== "na" ? `<li>Artifact: <strong>${g.artifact}</strong></li>` : ""}
     ${Object.entries(g.counts).filter(([, v]) => v !== "na").map(([k, v]) => `<li>${signalLabel(k)}: <strong>${v}</strong></li>`).join("")}
-    <li>Signals identified: ${sig.identified}/${sig.expected}</li>
-    <li>Signals classified: ${sig.classified}/${sig.expected}</li>
+    ${countOnly ? "" : `<li>Signals identified: ${sig.identified}/${sig.expected}</li><li>Signals classified: ${sig.classified}/${sig.expected}</li>`}
   </ul>`;
   const nucleusOk = nucleusReady(spec, student);
   writeFb("fish_scope", {
     tone: nucleusOk ? "ok" : "review",
     scored: true,
     title: nucleusOk ? "This nucleus is complete." : "Review scorability, artifact, or signal counts.",
-    body: spec.scorable ? "Compare your counts with the visible signals. Put a fused spot under Fusion. Red only and green only are the single-color spots." : "If the nucleus is unscorable, do not force a count.",
+    body: spec.scorable
+      ? (countOnly ? "Compare your count with the signals you can assign to this nucleus." : "Compare your counts with the visible signals. Put a fused spot under Fusion. Red only and green only are the single-color spots.")
+      : "If the nucleus is unscorable, do not force a count.",
     extra,
   }, false);
+}
+
+function nestedBand(outer, inner) {
+  const left = String(outer || "");
+  const right = String(inner || "");
+  if (!left || !right) return false;
+  if (left === right) return true;
+  return left.startsWith(`${right}.`);
+}
+
+function sameBand(placed, expected) {
+  return nestedBand(placed, expected) || nestedBand(expected, placed);
 }
 
 function checkLocus(isSubmit = false) {
@@ -585,8 +629,14 @@ function checkLocus(isSubmit = false) {
     return;
   }
   const placed = s.fish.localization.placedId;
-  if (placed && expected && (placed === expected || placed.startsWith(expected))) grade.components.placement = "correct";
-  else if (placed) grade.components.placement = "incorrect";
+  const locus = s.fish.localization.locus || "";
+  if (placed && expected && sameBand(placed, expected)) {
+    grade.components.placement = "correct";
+    if ((!locus || locus === placed) && nestedBand(expected, placed)) {
+      grade.match = true;
+      grade.components.complete = "correct";
+    }
+  } else if (placed) grade.components.placement = "incorrect";
   s.scores.fish_localization = grade;
   const guided = state.session.instructionMode;
   writeFb("probe_locus", {

@@ -4,7 +4,7 @@
  */
 
 import { canonicalCase, diseaseList, karyotypeActivityEnabled, labDiseases, splitBreakpointArms, teachingKaryotype } from "./atlas.js?v=20261006j";
-import { piecesForExercise } from "./banding.js?v=20261006j";
+import { piecesForExercise } from "./banding.js?v=20261006l";
 import { placeSyntheticDemo, resolveProbes } from "./fish.js?v=20261006j";
 
 export const HIDDEN_CASE_IDS = new Set([
@@ -286,10 +286,10 @@ export function methodAudit(disease, library, links, packs, maps, probes) {
   };
 }
 
-export function diseaseMenuPath(diseaseId, { focus = "", mode = "explore" } = {}) {
+export function diseaseMenuPath(diseaseId, { focus = "", mode = "assigned" } = {}) {
   let path = `#/disease/${diseaseId}`;
   if (focus) path += `/focus/${focus}`;
-  if (mode === "assigned") path += "/assigned";
+  if (mode === "explore") path += "/explore";
   return path;
 }
 
@@ -341,33 +341,45 @@ export function caseTeaching(disease, method, links, packs) {
   const { assemblies } = linkedPayload(disease.id, links, packs);
   if (method === "fish") return "";
   if (method === "chromosome") {
-    if (assemblies.some((spec) => spec.transform?.type === "deletion")) return "Deletion localization · abnormal chromosome assembly";
-    if (assemblies.some((spec) => spec.transform?.type === "inversion")) return "Inversion localization · abnormal chromosome assembly";
-    if (assemblies.some((spec) => spec.transform?.type === "translocation_derivative")) return "Breakpoint localization · derivative chromosome assembly";
+    const item = canonicalCase(disease);
+    if (assemblies.some((spec) => spec.transform?.type === "deletion")) return deletionTeaching(item);
+    if (assemblies.some((spec) => spec.transform?.type === "inversion")) return "Inversion — the segment reverses. Find the breakpoints on the band map.";
+    if (assemblies.some((spec) => spec.transform?.type === "translocation_derivative")) return "Derivative chromosome — material moved. Find the breakpoints on the band map.";
     if (assemblies.some((spec) => spec.nomenclature?.expected)) return "Locus identification";
     return "";
   }
-  if (method === "karyotype") return "Karyotype construction · classification · ISCN";
+  if (method === "karyotype") return "Build the karyotype, classify the finding, and write the ISCN";
   return "";
+}
+
+function deletionTeaching(item) {
+  const visibility = item?.karyotype_visibility;
+  if (item?.default_karyotype_activity === false || visibility === "usually_not_visible") {
+    return "Microdeletion — a routine karyotype can look normal. The band map and FISH show the missing region.";
+  }
+  if (visibility === "size_dependent") {
+    return "Deletion size varies — a large one shortens one arm on the karyotype; a small one may need the band map or FISH.";
+  }
+  return "Visible deletion — one homolog is shorter. Compare the pair, then name the band.";
 }
 
 export const SKILL_PRACTICE = {
   chromosome: [
-    { title: "Chromosome 7 anatomy", href: "#/lab/chromosome/anatomy/assembly-chr7-anatomy" },
-    { title: "Chromosome 7 band assembly", href: "#/lab/chromosome/chromosome_assembly/assembly-chr7-bands" },
-    { title: "Chromosome 7 locus identification", href: "#/lab/chromosome/band_identification/assembly-chr7-bands" },
-    { title: "Paracentric inversion practice", href: "#/lab/chromosome/structural_abnormalities/assembly-inv7" },
+    { title: "Chromosome 7 anatomy", summary: "Start here. Name pter, the arms, the centromere, and qter on a normal chromosome.", href: "#/lab/chromosome/anatomy/assembly-chr7-anatomy" },
+    { title: "Chromosome 7 band assembly", summary: "Rebuild chromosome 7 from pter to qter using the stain pattern.", href: "#/lab/chromosome/chromosome_assembly/assembly-chr7-bands" },
+    { title: "Chromosome 7 locus identification", summary: "Read the marked address 7q22.1: chromosome, arm, region, band, sub-band.", href: "#/lab/chromosome/band_identification/assembly-chr7-bands" },
+    { title: "Paracentric inversion practice", summary: "After the normal chromosome, reverse one arm segment and name the change.", href: "#/lab/chromosome/structural_abnormalities/assembly-inv7" },
   ],
   karyotype: [
-    { title: "Normal male karyotype", href: "#/lab/karyotype/karyotype_construction/normal-46xy" },
-    { title: "Normal female karyotype", href: "#/lab/karyotype/karyotype_construction/normal-46xx" },
-    { title: "Mosaic notation practice", href: "#/lab/karyotype/iscn_interpretation/iscn-mosaic-45x" },
+    { title: "Normal male karyotype", summary: "Start here for this laboratory. Pair homologs into numbered boxes.", href: "#/lab/karyotype/karyotype_construction/normal-46xy" },
+    { title: "Normal female karyotype", summary: "The same worksheet with two X chromosomes and no Y.", href: "#/lab/karyotype/karyotype_construction/normal-46xx" },
+    { title: "Mosaic notation practice", summary: "Read a slash and the cell counts in square brackets.", href: "#/lab/karyotype/iscn_interpretation/iscn-mosaic-45x" },
   ],
   fish: [
-    { title: "Chromosome 21 enumeration", href: "#/lab/fish/enumeration/fish-enum-cep21" },
-    { title: "16q22 break-apart", href: "#/lab/fish/break-apart/fish-breakapart-16q22" },
-    { title: "Probe localization", href: "#/lab/fish/probe-localization/fish-locus-9q34" },
-    { title: "Signal quality", href: "#/lab/fish/quality/fish-enum-cep21" },
+    { title: "Chromosome 21 enumeration", summary: "Start here. Count signals in one nucleus and decide whether it is scorable.", href: "#/lab/fish/enumeration/fish-enum-cep21" },
+    { title: "16q22 break-apart", summary: "Decide whether flanking signals stayed together or split.", href: "#/lab/fish/break-apart/fish-breakapart-16q22" },
+    { title: "Probe localization", summary: "Place a probe on its chromosome, arm, and band.", href: "#/lab/fish/probe-localization/fish-locus-9q34" },
+    { title: "Signal quality", summary: "Reject a nucleus when its signals cannot be assigned to one cell.", href: "#/lab/fish/quality/fish-enum-cep21" },
   ],
 };
 
@@ -637,7 +649,7 @@ export function buildDiseaseCase(disease, library, plan, mode) {
     stepTitles: plan.stepTitles,
     scoreFocus: plan.scoreFocus || "",
     strictAdvance: true,
-    returnHref: `#/disease/${disease.id}${assigned ? "/assigned" : ""}`,
+    returnHref: `#/disease/${disease.id}${assigned ? "" : "/explore"}`,
     hints: [
       "Arrange every chromosome into its numbered place before deciding which chromosomes are abnormal.",
       "Compare each chromosome with its partner: length, centromere position, and band pattern.",

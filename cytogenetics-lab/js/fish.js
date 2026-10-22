@@ -3,7 +3,7 @@
  * Educational use only — not for clinical diagnostic interpretation.
  */
 
-import { flattenToLevel, parseBandLabel, gradeLocus, attachFromMap, applyTransform, cloneSegments } from "./banding.js?v=20261006j";
+import { flattenToLevel, parseBandLabel, gradeLocus, attachFromMap, applyTransform, cloneSegments } from "./banding.js?v=20261006k";
 
 export const ASSAY_FIELDS = {
   enumeration: ["green", "red"],

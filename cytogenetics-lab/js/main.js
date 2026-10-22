@@ -1,8 +1,8 @@
-import { enrichCatalog, loadActivityLinks, loadActivityPacks, loadCatalog, loadDiseases, loadTemplates, loadMaps, loadProbes } from "./cases.js?v=20261006j";
-import { bindChromosomeMaps } from "./chromosomes.js?v=20261006j";
+import { enrichCatalog, loadActivityLinks, loadActivityPacks, loadCatalog, loadDiseases, loadTemplates, loadMaps, loadProbes } from "./cases.js?v=20261015a";
+import { bindChromosomeMaps } from "./chromosomes.js?v=20261015a";
 import { parseHash } from "./util.js?v=20261006j";
 import { patch, subscribe } from "./store.js?v=20261006j";
-import { render } from "./ui.js?v=20261006j";
+import { render } from "./ui.js?v=20261015a";
 
 subscribe(render);
 

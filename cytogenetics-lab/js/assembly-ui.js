@@ -1,9 +1,9 @@
 import { BAND_DESIGNATIONS, BAND_DIGIT_OPTIONS, COMPARE_ARM_OPTIONS, CHROM_WITH_NONE, REGION_OPTIONS, SLOT_IDS, STRUCTURAL_OPTIONS, SUBBAND_OPTIONS, escapeHtml, joinPair, selectField, splitPair } from "./util.js?v=20261006j";
 import { state, patchSession } from "./store.js?v=20261006j";
-import { divergence, gradeAssembly, gradeComparison, gradeLocus, movePiece, shiftSelected } from "./banding.js?v=20261006j";
-import { ideogramSVG, pieceChipSVG } from "./ideogram.js?v=20261006j";
+import { divergence, gradeAssembly, gradeComparison, gradeLocus, movePiece, nomenclaturePieces, parseBandLabel, shiftSelected } from "./banding.js?v=20261006l";
+import { ideogramSVG, pieceChipSVG, stainLegendHTML } from "./ideogram.js?v=20261015a";
 import { compareISCN } from "./iscn.js";
-import { applyMode, applyStep, isTeachStep } from "./pedagogy.js?v=20261006j";
+import { applyMode, applyStep, isTeachStep } from "./pedagogy.js?v=20261006l";
 
 function baseStep(step) {
   return String(step || "").replace(/_\d+$/, "");
@@ -16,9 +16,12 @@ export function isAssemblyStep(step) {
 function labelsFor(step) {
   if (isTeachStep(step)) return true;
   const s = state.session;
-  if (s?.module === "disease") return s.instructionMode === "assessment" ? false : "region";
-  if (s?.instructionMode === "practice" && s.pedagogy?.revealLabels) return "region";
-  return false;
+  const mode = s?.instructionMode;
+  const applied = baseStep(applyStep(step));
+  if (mode === "assessment") return false;
+  if (mode === "practice") return Boolean(s?.pedagogy?.revealLabels);
+  if (applied === "nomenclature" || applied === "anatomy") return false;
+  return true;
 }
 
 export function assemblyView(step) {
@@ -121,13 +124,14 @@ function anatomyItem(id, prompt) {
 }
 
 function assembleView(a, labels, teaching) {
-  const show = labels === true ? true : labels === "region" ? "region" : false;
+  const show = Boolean(labels);
   if (teaching) {
     return `
       <div class="assembly-stage">
         <div class="ideo-column">
           ${ideogramSVG(a.expected, { width: 180, height: 560, showLabels: true, showRuler: true })}
           <p class="ideo-caption">Ordered example. pter is at the top. The next screen hides the names.</p>
+          ${stainLegendHTML(a.expected)}
         </div>
       </div>`;
   }
@@ -162,7 +166,12 @@ function assembleView(a, labels, teaching) {
           <li>All segments must be used.</li>
           <li>Click Check to review your assembly.</li>
         </ol>
-        <p class="muted">${teaching ? "Names are on the map for this explanation." : (show === "region" ? "A hint has restored region-level labels." : "Band names stay off this screen.")}</p>
+        <p class="muted">${teaching
+          ? "Names are on the map for this explanation."
+          : (show
+            ? "Each segment is labeled with its G-band name. Order them pter → centromere → qter."
+            : "Band names stay off this screen. Use the shade pattern inside each region, and the centromere.")}</p>
+        ${show ? "" : stainLegendHTML(a.expected)}
       </aside>
     </div>`;
 }
@@ -171,9 +180,7 @@ function pieceToken(a, id, stackIndex, showLabels, connected) {
   const piece = pieceById(a, id);
   if (!piece) return "";
   const sel = a.selectedId === id ? " selected" : "";
-  const visible = showLabels === true ? (piece.role === "centromere" ? "cen" : piece.label)
-    : showLabels === "region" ? (piece.role === "centromere" ? "cen" : (piece.parent_region || piece.label))
-    : "segment";
+  const visible = showLabels ? (piece.role === "centromere" ? "cen" : piece.label) : "segment";
   return `<div class="piece-token${sel}${connected ? " connected" : ""}" draggable="true" data-piece="${escapeHtml(id)}" data-stack-index="${stackIndex ?? ""}" tabindex="0" role="button" aria-label="${escapeHtml(visible)}">
     ${pieceChipSVG(piece, { showLabels, connected })}
   </div>`;
@@ -183,27 +190,37 @@ function nomenclatureView(a, labels, teaching) {
   const spec = a.spec.nomenclature || {};
   const highlight = spec.expected || spec.highlight;
   const fields = a.locus;
-  const show = labels === true || labels === "region";
-  const inExpected = a.expected.some((p) => p.id === highlight || p.label === highlight);
-  const source = spec.source === "normal" || !inExpected ? (a.normal || a.expected) : a.expected;
+  const show = Boolean(labels);
+  const parsed = parseBandLabel(highlight);
+  const needsSub = parsed?.subband != null;
+  const source = nomenclaturePieces(state.maps, a.spec);
+  const how = needsSub
+    ? "Sub-bands of one band are drawn as separate slices. They are numbered from the centromere toward the telomere: .1 is closest to the centromere."
+    : "The gold bracket marks one G-band. Stop at band; this map does not subdivide it.";
   return `
     <div class="assembly-stage">
       <div class="ideo-column">
-        ${ideogramSVG(source, { width: 180, height: 560, showLabels: show, highlightId: highlight })}
+        ${ideogramSVG(source, { width: 180, height: 560, showLabels: show, highlightId: highlight, showRuler: teaching })}
         <p class="ideo-caption">The gold bracket marks the locus to name.</p>
       </div>
       <div class="assembly-copy">
-        ${teaching ? `<h3>The marked address, with names visible</h3><p>Read chromosome, arm, region, band, then sub-band. The next screen keeps the mark and hides the name.</p>` : `<h3>Name the highlighted locus</h3>
-        <p>Write the address as chromosome, arm, region, band, then sub-band.</p>
+        ${teaching ? `<h3>The marked address, with names visible</h3>
+        <p>Read chromosome, arm, region, and band.${needsSub ? " This band is split into sub-bands on the map; include the sub-band of the marked slice." : ""}</p>
+        <p>${how}</p>
+        <p>The next screen keeps the mark and hides the names.</p>` : `<h3>Name the highlighted locus</h3>
+        <p>${needsSub
+          ? "Write chromosome, arm, region, band, then the sub-band of the marked slice. Numbering increases from the centromere toward the telomere."
+          : "Write chromosome, arm, region, and band. This map does not ask for a sub-band."}</p>
+        <p class="muted">${how}</p>
         <label class="stack">Complete locus
-          <input id="loc-complete" class="iscn-input" value="${escapeHtml(fields.locus)}" placeholder="chromosome, arm, region, band" />
+          <input id="loc-complete" class="iscn-input" value="${escapeHtml(fields.locus)}" placeholder="${needsSub ? "format, e.g. 3p21.3" : "format, e.g. 5p14"}" />
         </label>
         <div class="locus-grid">
           ${selectField("loc-chr", "Chromosome", fields.chromosome, SLOT_IDS)}
           ${selectField("loc-arm", "Arm (p or q)", fields.arm, ["p", "q"])}
           ${selectField("loc-region", "Region", fields.region, REGION_OPTIONS)}
           ${selectField("loc-band", "Band", fields.band, BAND_DIGIT_OPTIONS)}
-          ${selectField("loc-sub", "Sub-band", fields.subband, SUBBAND_OPTIONS)}
+          ${needsSub ? selectField("loc-sub", "Sub-band", fields.subband, SUBBAND_OPTIONS) : ""}
         </div>`}
       </div>
     </div>`;
@@ -230,6 +247,7 @@ function comparisonView(a, labels, teaching) {
       <div class="assembly-copy">
         <h3>${teaching ? "What changed on the map" : "Structural interpretation"}</h3>
         <p>${teaching ? "Compare the normal chromosome with the rearranged one. The class is not named yet." : "Homologous regions are stacked pter→qter. Highlighted bands mark where the abnormal map diverges from the reference."}</p>
+        ${stainLegendHTML(assembled)}
         ${teaching ? "" : `<p class="legend"><span class="swatch missing"></span> lost <span class="swatch extra"></span> extra / translocated <span class="swatch inverted"></span> inverted</p>
         <label class="stack">Abnormality type
           <select id="cmp-type">
@@ -355,16 +373,7 @@ function checkAssembly(isSubmit) {
 }
 
 function anatomyBreakpoints(got) {
-  const arm = String(got.arm || "").toLowerCase();
-  const bits = [got.band, got.band2].filter(Boolean).map((b) => String(b).replace(/\s+/g, ""));
-  const out = [];
-  for (const b of bits) {
-    out.push(b);
-    if (/^[pq]/i.test(b)) continue;
-    if (arm.includes("p")) out.push(`p${b}`);
-    if (arm.includes("q")) out.push(`q${b}`);
-  }
-  return out.join(",");
+  return [got.band, got.band2].filter(Boolean).map((b) => String(b).replace(/\s+/g, "")).join(",");
 }
 
 function checkAnatomy(isSubmit) {
@@ -387,8 +396,9 @@ function checkAnatomy(isSubmit) {
     if (components.chromosomes !== "na") parts.push(`chromosome: ${components.chromosomes}`);
     if (components.arms !== "na") parts.push(`arm: ${components.arms}`);
     if (components.breakpoints !== "na") parts.push(`placement: ${components.breakpoints}`);
-    ok = ok && ["type", "chromosomes", "arms", "breakpoints"].every((k) => components[k] === "correct" || components[k] === "na");
-    s.scores.abnormality_recognition = { ok: components.type === "correct", detail: "from anatomy" };
+    const placementOk = ["type", "chromosomes", "arms", "breakpoints"].every((k) => components[k] === "correct" || components[k] === "na");
+    ok = ok && placementOk;
+    s.scores.abnormality_recognition = { ok: placementOk, detail: "from anatomy" };
   }
   writeFb(s.steps[s.stepIndex] || "anatomy", {
     tone: ok ? "ok" : "review",
@@ -431,15 +441,21 @@ function checkComparison(isSubmit) {
     ? (iscn.match ? "correct" : (s.assembly.comparison.iscn ? "incorrect" : "missing"))
     : "na";
   const typeOk = components.type === "correct";
+  const placementOk = ["chromosomes", "arms", "breakpoints"].every((k) => components[k] === "correct" || components[k] === "na");
+  const ok = typeOk && placementOk;
   const extra = `<ul class="comp-list">${Object.entries(components).filter(([, v]) => v !== "na").map(([k, v]) => `<li>${k}: <strong>${v}</strong></li>`).join("")}</ul>`;
-  s.scores.abnormality_recognition = { ok: typeOk, detail: "from assembly comparison" };
+  s.scores.abnormality_recognition = { ok, detail: "from assembly comparison" };
   const guided = s.instructionMode;
   writeFb(s.steps[s.stepIndex] || "comparison", {
-    tone: typeOk ? "ok" : "review",
+    tone: ok ? "ok" : "review",
     scored: true,
-    title: typeOk ? "Structural class matches the curated transformation." : "Structural class needs review.",
+    title: ok
+      ? "Structural interpretation matches this map."
+      : (typeOk ? "The class is right. The chromosome, arm, or breakpoint needs review." : "Structural class needs review."),
     body: guided
-      ? (typeOk ? "The class matches the change on this chromosome." : "Name the structural change on this chromosome. The notation comes after the class is right.")
+      ? (ok
+        ? "The class, chromosome, arm, and breakpoint match the change on this map."
+        : "Name the structural change, then the chromosome, arm, and exact breakpoint where the maps diverge.")
       : (isSubmit
         ? `This case applies a ${t.type} to the reference map${s.caseData.expected_iscn ? ` (${s.caseData.expected_iscn})` : ""}.`
         : "The expected ISCN is not shown until you submit this step."),

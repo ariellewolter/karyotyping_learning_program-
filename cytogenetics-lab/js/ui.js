@@ -23,18 +23,19 @@ import {
   splitPair,
 } from "./util.js?v=20261006j";
 import { casesForExercise, exerciseById, labById, labPath, LABS, mapLegacyModule, sessionModuleFor } from "./labs.js?v=20261006j";
-import { hydrateCase, loadCase } from "./cases.js?v=20261006j";
-import { metaphaseLayout, renderChromosome } from "./chromosomes.js?v=20261006j";
+import { hydrateCase, loadCase } from "./cases.js?v=20261015a";
+import { metaphaseLayout, renderChromosome } from "./chromosomes.js?v=20261015a";
 import { allAssigned, canAdvanceGroup, currentStep, gradeKaryotype, karyotypeFeedback, moveChromosome, poolForCurrentStep, resetCurrentGroup, resetKaryotype, unplacedForStep } from "./karyotype.js";
 import { compareISCN, iscnComponentLabels } from "./iscn.js";
 import { attemptSummary, summarizeSession } from "./scoring.js";
-import { initAssembly } from "./banding.js?v=20261006j";
-import { assemblyControls, assemblyView, dropPiece, handleAssemblyAction, isAssemblyStep, readAssemblyFields, selectPiece } from "./assembly-ui.js?v=20261006j";
-import { clickFishBand, clickFishCanvas, fishControls, fishView, handleFishAction, isFishStep, readFishFields } from "./fish-ui.js?v=20261006j";
-import { canonicalCase, diseaseById, diseaseCase, labDiseases, teachingKaryotype } from "./atlas.js?v=20261006j";
-import { atlasBrowse, atlasControls, atlasFindSlots, atlasLabBody, atlasSlotPicked, atlasSummary, handleAtlasAction, isAtlasLabStep, markAtlasKaryotype, readAtlasFields } from "./atlas-ui.js?v=20261006j";
+import { initAssembly } from "./banding.js?v=20261006l";
+import { assemblyControls, assemblyView, dropPiece, handleAssemblyAction, isAssemblyStep, readAssemblyFields, selectPiece } from "./assembly-ui.js?v=20261015a";
+import { clickFishBand, clickFishCanvas, fishControls, fishView, handleFishAction, isFishStep, readFishFields } from "./fish-ui.js?v=20261015a";
+import { canonicalCase, diseaseById, diseaseCase, labDiseases } from "./atlas.js?v=20261006j";
+import { atlasBrowse, atlasControls, atlasFindSlots, atlasLabBody, atlasSlotPicked, atlasSummary, handleAtlasAction, isAtlasLabStep, markAtlasKaryotype, readAtlasFields } from "./atlas-ui.js?v=20261015a";
 import { CASE_ALIASES, METHOD_FAMILIES, SKILL_PRACTICE, buildDiseaseCase, caseSubtitle, caseTeaching, diseaseMenuPath, diseasesForMethod, familyActivities, isStudentCatalogCase, planActivity } from "./activities.js?v=20261006j";
-import { applyMode, applyStep, hintFor, instructionSteps, isTeachStep, lessonFor, modeLabel } from "./pedagogy.js?v=20261006j";
+import { applyMode, applyStep, centromereKeyHtml, hintFor, instructionSteps, isTeachStep, lessonForContext, modeLabel } from "./pedagogy.js?v=20261006l";
+import { bindClassLab, classLabView } from "./class-lab.js?v=20261015b";
 
 export function render() {
   try {
@@ -68,6 +69,10 @@ function paint() {
   else if (route.name === "reference") app.innerHTML = shell(referenceView());
   else if (route.name === "help") app.innerHTML = shell(helpView());
   else if (route.name === "cases") app.innerHTML = shell(allCasesView());
+  else if (route.name === "class") {
+    app.innerHTML = shell(classLabView(route.classId, route.step));
+    bindClassLab(app);
+  }
   else if (route.name === "disease" && route.diseaseId) app.innerHTML = shell(diseaseBoard(route));
   else if (route.name === "disease-activity" && route.diseaseId && route.activity) {
     const ready = state.session?.module === "disease"
@@ -106,7 +111,7 @@ function paint() {
     }
   } else if (route.name === "atlas") app.innerHTML = shell(atlasBrowse(route));
   else if (route.name === "atlas-lab" && route.diseaseId) {
-    go(diseaseMenuPath(route.diseaseId, { mode: route.mode }));
+    go(diseaseMenuPath(route.diseaseId, { mode: "assigned" }));
     return;
   } else if (route.name === "lab" && !route.caseId && !route.exercise) app.innerHTML = shell(labLanding(route.lab));
   else if (route.name === "lab" && !route.caseId) app.innerHTML = shell(skillExerciseView(route.lab, route.exercise));
@@ -162,6 +167,12 @@ function bindChrome() {
       }
     });
   });
+  $$("[data-class-return]").forEach((el) => {
+    el.addEventListener("click", () => {
+      sessionStorage.setItem("cyto.classReturn", el.getAttribute("data-class-return") || "");
+      sessionStorage.setItem("cyto.classNext", el.getAttribute("data-class-next") || "");
+    });
+  });
 }
 
 function homeView() {
@@ -170,8 +181,20 @@ function homeView() {
       <section class="lab-hero">
         <p class="eyebrow">Interactive cytogenetics laboratory</p>
         <h2>Explore chromosomes. Build karyotypes. Analyze FISH.</h2>
-        <p>Connect cytogenetic morphology to nomenclature and molecular cytogenetics. Enter any laboratory independently — these are workspaces, not a required sequence.</p>
-        <p class="lede"><a href="#/cases">Cases</a> opens each disease once, then the activities that disease can support. <a href="#/atlas">Atlas</a> remains the chromosome and disease reference. Skills practice stays in the three laboratories.</p>
+        <p>Start with karyotyping. You look at one cell and arrange the chromosomes. FISH is next. You look at the fluorescent signals and score them.</p>
+        <div class="class-pair">
+          <a class="lab-enter green" href="#/class/karyotype">
+            <h3>Karyotyping</h3>
+            <p>See a metaphase and arrange it. Then read a case.</p>
+            <span class="enter-link">Begin →</span>
+          </a>
+          <a class="lab-enter violet" href="#/class/fish">
+            <h3>FISH</h3>
+            <p>See a fluorescent signal and score it. Then read a case.</p>
+            <span class="enter-link">Begin →</span>
+          </a>
+        </div>
+        <p class="workstation-label">Or practice one skill</p>
         <div class="lab-tri">
           ${LABS.map((lab) => `
             <article class="lab-enter ${lab.tone}" data-go="${labPath(lab.id)}">
@@ -201,7 +224,20 @@ function labLanding(labId) {
         <h2>${escapeHtml(lab.title)}</h2>
         <p class="lede">${escapeHtml(lab.summary)}</p>
       </header>
-      <h3>Clinical cases</h3>
+      <h3>Start here</h3>
+      <p>These exercises teach the method. Choose Learn the first time through.</p>
+      <ul class="case-list">
+        ${skills.map((skill) => `
+          <li class="case-skill">
+            <span>
+              <span class="case-title">${escapeHtml(skill.title)}</span>
+              <span class="muted">${escapeHtml(skill.summary || "")}</span>
+            </span>
+            <span class="skill-links">${["learn", "practice", "assessment"].map((mode) => `<a href="${skill.href}/${mode}">${modeLabel(mode)}</a>`).join("")}</span>
+          </li>`).join("")}
+      </ul>
+      <h3>Disease cases</h3>
+      <p>A case opens without the diagnosis or the ISCN string. The line under each name says whether the change is visible on a karyotype.</p>
       <ul class="case-list">
         ${diseases.map((disease) => `
           <li>
@@ -210,15 +246,6 @@ function labLanding(labId) {
               <span class="muted">${escapeHtml([caseSubtitle(disease, lab.id, state.activityLinks, state.activityPacks, state.probes), caseTeaching(disease, lab.id, state.activityLinks, state.activityPacks)].filter(Boolean).join(" — "))}</span>
             </button>
           </li>`).join("") || "<li class='muted'>No disease case has this method yet.</li>"}
-      </ul>
-      <h3>Skills practice</h3>
-      <ul class="case-list">
-        ${skills.map((skill) => `
-          <li>
-            <button type="button" class="case-row" data-go="${skill.href}">
-              <span class="case-title">${escapeHtml(skill.title)}</span>
-            </button>
-          </li>`).join("")}
       </ul>
     </main>`;
 }
@@ -274,7 +301,7 @@ function allCasesView() {
     <main class="picker">
       <p class="crumb"><a href="#/">Home</a> / Cases</p>
       <h2>Disease cases</h2>
-      <p class="lede">Each disease is listed once. Open it for every activity that case can run. Skills practice stays inside each laboratory.</p>
+      <p class="lede">Each disease is listed once. Opening it hides the finding until you interpret the case. Choose Learn the first time. Skills practice stays inside each laboratory.</p>
       <ul class="case-list">
         ${diseases.map((disease) => `
           <li>
@@ -289,8 +316,8 @@ function allCasesView() {
 
 function activityHref(diseaseId, activityId, route, instruction) {
   const focus = route.focus ? `/focus/${route.focus}` : "";
-  const assigned = route.mode === "assigned" ? "/assigned" : "";
-  return `#/disease/${diseaseId}/${activityId}/${instruction}${focus}${assigned}`;
+  const named = route.mode === "explore" ? "/explore" : "";
+  return `#/disease/${diseaseId}/${activityId}/${instruction}${focus}${named}`;
 }
 
 function modeLinks(diseaseId, activityId, route) {
@@ -306,9 +333,10 @@ function diseaseBoard(route) {
     return `<main class="panel"><h2>Case not available</h2><p>That disease is not one of the canonical teaching cases.</p><p><a class="btn" href="#/cases">Back</a></p></main>`;
   }
   const item = canonicalCase(disease);
-  const kt = teachingKaryotype(item);
   const assigned = route.mode === "assigned";
-  const setting = item?.kind === "acquired" ? "Acquired cytogenetics" : "Constitutional cytogenetics";
+  const setting = item?.kind === "acquired"
+    ? "Acquired cytogenetics: the finding arose in a tumor or a blood disease"
+    : "Constitutional cytogenetics: the finding is part of the person's chromosome complement";
   const args = [disease, state.diseases, state.activityLinks, state.activityPacks, state.maps];
   const focusedFamily = METHOD_FAMILIES.find((family) => family.id === route.focus);
   const families = focusedFamily
@@ -333,11 +361,15 @@ function diseaseBoard(route) {
     <main class="picker">
       <p class="crumb"><a href="#/">Home</a> / <a href="${back}">${escapeHtml(backLabel)}</a> / ${escapeHtml(assigned ? "Assigned case" : disease.disease_name)}</p>
       <h2>${escapeHtml(assigned ? "Assigned case" : disease.disease_name)}</h2>
-      <p class="lede">${escapeHtml(assigned ? `${setting}. The condition is not named until interpretation.` : (item?.patient_case_label || ""))}</p>
-      ${assigned ? "" : `<p><span class="pill">${escapeHtml(kt?.iscn || "")}</span></p>`}
-      <h3>Complete case</h3>
-      <p>Integrated case. This sequence can move across karyotype, chromosome analysis, and FISH when this disease has those activities.</p>
-      <p class="skill-links">${modeLinks(disease.id, "complete", route)}</p>
+      <p class="lede">${escapeHtml(assigned ? `${setting}. The condition and the ISCN string stay hidden until you interpret the case.` : `${setting}. The finding and the ISCN string stay off this page.`)}</p>
+      <p>${focusedFamily
+        ? (route.focus === "fish"
+          ? "Score the signals. Learn shows you the pattern first."
+          : "Arrange the chromosomes and decide what changed. Learn shows you the pattern first.")
+        : "Learn shows you the idea first. Practice asks you immediately. Assessment explains the answer at the end."}</p>
+      ${focusedFamily ? "" : `<h3>Complete case</h3>
+      <p>This uses every method available for the disease, including karyotyping and FISH.</p>
+      <p class="skill-links">${modeLinks(disease.id, "complete", route)}</p>`}
       <h3>${focusedFamily ? escapeHtml(focusedFamily.title) : "Practice individual skills"}</h3>
       ${sections || "<p class='muted'>No activity has the data this case needs.</p>"}
       ${assigned ? "" : `<p><a class="btn" href="${diseaseMenuPath(disease.id, { focus: route.focus, mode: "assigned" })}">Open as an assigned case</a></p>`}
@@ -348,7 +380,8 @@ function helpView() {
   return `
     <main class="reference">
       <h2>Using this laboratory</h2>
-      <p>Each laboratory opens with clinical cases first. Skills practice is listed under those cases.</p>
+      <p>Begin with <a href="#/class/karyotype">Karyotyping</a>, then <a href="#/class/fish">FISH</a>. Each one shows you what you are looking at, then gives you the work. After that you choose a case. The case does not tell you the answer first.</p>
+      <p>Inside a laboratory, skills practice is listed before the disease cases.</p>
       <ul>
         <li><strong>Chromosome Analysis</strong> — drag G-band segments to build one chromosome; anatomy and banding stay on that map.</li>
         <li><strong>Karyotype &amp; ISCN</strong> — whole-cell arrangement, chromosome identification, abnormality class, nomenclature, and disease association.</li>
@@ -393,6 +426,13 @@ async function ensureSession(moduleId, caseId, loc = {}) {
     session.pedagogy = { hintLevel: {}, first: {} };
     session.strictAdvance = true;
     session.returnHref = labPath(session.lab, session.exercise, caseId);
+  }
+  const classReturn = sessionStorage.getItem("cyto.classReturn");
+  if (classReturn) {
+    session.returnHref = classReturn;
+    session.classNext = sessionStorage.getItem("cyto.classNext") || "";
+    sessionStorage.removeItem("cyto.classReturn");
+    sessionStorage.removeItem("cyto.classNext");
   }
   applyKaryotypeScaffold(session);
   if (moduleId !== "karyotype" && !integrated && hydrated.chromosomes.length) {
@@ -572,6 +612,7 @@ function workspaceView() {
   const c = s.caseData;
   const hideDx = s.integrated && step !== "summary";
   const anatomyEx = s.exercise === "anatomy" || step === "anatomy";
+  const anatomyAbnormal = Boolean(s.assembly?.spec?.transform?.type && s.assembly.spec.transform.type !== "none");
   const chr = s.assembly?.spec?.chromosome;
   const atlasLab = s.module === "atlas";
   const diseaseLab = s.module === "disease";
@@ -588,8 +629,8 @@ function workspaceView() {
     ? (s.atlas?.mode === "assigned"
       ? "Build this karyotype, then find what is abnormal. The condition and which mechanism this patient has are named only after the interpretation."
       : (s.atlas?.cytogeneticCase?.patient_case_label || "Build the canonical teaching karyotype for the disease you chose."))
-    : (anatomyEx
-      ? "Identify pter, p arm, centromere, q arm, and qter. If this map differs from a normal homolog, classify the rearrangement and where it occurs. Numbering begins at the centromere and increases toward each telomere."
+      : (anatomyEx
+      ? `Identify pter, p arm, centromere, q arm, and qter. Numbering begins at the centromere and increases toward each telomere.${anatomyAbnormal ? " This map differs from a normal homolog. Classify the rearrangement and where it occurs." : ""}`
       : (s.integrated ? (c.unknown_prompt || c.clinical_history) : c.clinical_history || "No history provided."));
   const demo = c.placeholder_assets !== false || s.chromosomes.some((ch) => ch.placeholder) || c.fish?.synthetic_images;
   return `
@@ -597,7 +638,7 @@ function workspaceView() {
       <aside class="case-rail">
         ${workspaceCrumb(s)}
         <h2>${escapeHtml(workspaceTitle)}</h2>
-        ${c.case_type ? `<p><span class="pill">${escapeHtml(c.case_type)}</span></p>` : ""}
+        ${c.case_type ? `<p><span class="pill">${escapeHtml(c.case_type)}</span> ${escapeHtml(caseKindNote(c.case_type))}</p>` : ""}
         ${demo ? `<p class="asset-banner">${c.fish?.synthetic_images ? "Synthetic demonstration fluorescence and schematic chromosomes — not authentic clinical specimens." : "Demonstration chromosome graphics — schematic G-band drawings, not authentic clinical specimens."}</p>` : ""}
         <section>
           <h3>${s.module === "assembly" ? "About this exercise" : s.module === "atlas" ? "This lab" : "Clinical history"}</h3>
@@ -624,10 +665,15 @@ function fishOnlySession(s) {
   return steps.length > 0 && steps.every((st) => isFishStep(st));
 }
 
+function includedKaryotypeMatching(s) {
+  return (s.steps || []).some((step) => applyStep(step) === "karyotype");
+}
+
 function showKaryotypeSheet(s, step) {
   if (!s.chromosomes?.length || s.module === "assembly") return false;
   if (s.module === "fish" || s.exercise === "fish" || fishOnlySession(s)) return false;
   if (isFishStep(step) || isAssemblyStep(step) || step === "unavailable") return false;
+  if (step === "summary" && !includedKaryotypeMatching(s)) return false;
   if (s.module === "atlas") return step === "karyotype" || step === "find";
   if (s.module === "disease") return ["karyotype", "find", "inspect", "abnormality", "iscn_construction", "iscn_interpretation", "disease", "narrative", "summary"].includes(step);
   return ["karyotype", "abnormality", "iscn_construction", "iscn_interpretation", "disease", "narrative"].includes(step) || step === "summary";
@@ -771,6 +817,7 @@ function karyotypeBoard(interactive) {
         ${kt.trayScope === "all" && groupLeft ? `<p class="muted">Chromosomes that belong in this group are placed. Open the next group when you are ready.</p>` : ""}
         <div class="karyotype-sheet focus-sheet">
           <p class="group-label">Place chromosomes in karyotype</p>
+          <p class="muted">Each number is one box. Put every copy of that chromosome in its box.</p>
           ${groupBlock(step.id, step.slots, ACTIVE_SCALE, true)}
         </div>
       </div>
@@ -859,7 +906,7 @@ function controls(step) {
   if (state.session?.module === "disease" && isAtlasLabStep(step)) {
     return `<div class="controls">${back}${btn("atlas-check", "Check")}${hintButton()}${btn("atlas-submit", "Continue", "primary")}</div>`;
   }
-  const leaveLabel = state.session?.module === "disease" ? "Back to case" : "Start new case";
+  const leaveLabel = state.session?.module === "disease" ? "Back to case" : (fromClass(state.session) ? "Back to the lab" : "Start new case");
   if (isAssemblyStep(step)) {
     return `<div class="controls">${back}${assemblyControls(step)}${btn("new-case", leaveLabel)}</div>`;
   }
@@ -879,7 +926,7 @@ function controls(step) {
       buttons.push(hintButton());
       buttons.push(btn("submit-step", "Submit karyotype", "primary"));
     } else {
-      const gate = canAdvanceGroup(s.karyotype, s.chromosomes, s.caseData);
+      const gate = canAdvanceGroup(s.karyotype, s.chromosomes, karyotypeAdvanceCase(s));
       const atStart = (s.karyotype.activeStep || 0) <= 0;
       const atEnd = (s.karyotype.activeStep || 0) >= (s.karyotype.steps?.length || 1) - 1;
       buttons.push(btn("reset-kt", "Reset this group"));
@@ -895,8 +942,27 @@ function controls(step) {
     buttons.push(btn("check-step", "Check"));
     buttons.push(btn("submit-step", "Submit", "primary"));
   }
-  buttons.push(btn("new-case", state.session?.module === "atlas" ? "Back to Atlas" : (state.session?.module === "disease" ? "Back to case" : "Start new case")));
+  buttons.push(btn("new-case", state.session?.module === "atlas" ? "Back to Atlas" : (state.session?.module === "disease" ? "Back to case" : (fromClass(state.session) ? "Back to the lab" : "Start new case"))));
   return `<div class="controls">${buttons.join("")}</div>`;
+}
+
+function fromClass(session) {
+  return String(session?.returnHref || "").startsWith("#/class");
+}
+
+function caseKindNote(type) {
+  const key = String(type || "").toLowerCase();
+  if (key === "constitutional") return "The finding is part of the person's chromosome complement.";
+  if (key === "acquired") return "The finding arose in a tumor or a blood disease.";
+  if (key === "technical") return "This specimen teaches a method. It is not a disease case.";
+  return "";
+}
+
+function karyotypeAdvanceCase(session) {
+  if (session?.instructionMode === "learn" || session?.instructionMode === "practice") {
+    return { ...(session.caseData || {}), require_correct_groups: true };
+  }
+  return session?.caseData || {};
 }
 
 function btn(action, label, kind = "") {
@@ -909,7 +975,7 @@ function panelBody(step) {
   const s = state.session;
   const c = s.caseData;
   if (isTeachStep(step)) {
-    const lesson = lessonFor(s.atlas?.disease, applyStep(step)) || { title: "Before you answer", html: "<p>Read this distinction, then try the next screen.</p>" };
+    const lesson = lessonForContext(s.atlas?.disease, applyStep(step), s.exercise) || { title: "Before you answer", html: "<p>Read this distinction, then try the next screen.</p>" };
     return `<article class="teach-card"><h3>${escapeHtml(lesson.title)}</h3>${lesson.html}</article>`;
   }
   if (step === "metaphase") return `<p>Inspect morphology before cutting chromosomes into the worksheet. Demonstration graphics are schematic.</p>`;
@@ -918,13 +984,18 @@ function panelBody(step) {
       return `<p>Place each chromosome in its numbered position. The A–G rows are the usual layout. The tray is the full set, and it is not sorted into groups. Drag into a numbered position, or click to select and then click a destination.</p>`;
     }
     if (s.instructionMode === "practice") {
-      return `<p>The Denver groups stay on the worksheet, and only one group is open. The tray is the full chromosome set, not pre-sorted. Choose the chromosomes that belong in the open group. A hint can remind you what that group looks like.</p>`;
+      return `<div>
+        ${centromereKeyHtml()}
+        <p>The tray is the whole cell. Only one group is open. Choose the chromosomes that belong there. Both copies of a chromosome go in that chromosome's numbered box. A trisomy puts all three copies in the same box.</p>
+        <p class="muted">Next group stays closed until those boxes are correct.</p>
+      </div>`;
     }
     return `<div>
-      <p>Work one Denver/ISCN group at a time. The tray contains only the chromosomes that belong to the active group, in random order and without identity labels. Drag into a numbered position, or click to select and then click a destination.</p>
+      ${s.instructionMode === "learn" ? centromereKeyHtml() : ""}
+      <p>Work one group at a time. This tray holds only that group's chromosomes, without names. Both copies go in the same numbered box: two chromosomes in box 1, two in box 2, and two in box 3 for Group A. Drag into a box, or click a chromosome and then click its box.</p>
       <p class="muted">${s.module === "atlas" || s.module === "disease"
-        ? "The abnormal chromosome is already drawn into the set. Submit is accepted when every chromosome is in its numbered place."
-        : "You may advance after every chromosome in the active tray has been placed; pair numbers do not have to be correct unless the case requires it. Submit the karyotype after all groups to grade the complete arrangement."}</p>
+        ? "An abnormal homolog still belongs in its own number's box. Next group stays closed until the open boxes are correct."
+        : "Next group stays closed until each box holds the right chromosomes. Submit after the last group to grade the whole karyotype."}</p>
     </div>`;
   }
   if (step === "unavailable") return `<p>This activity is not available. The case does not include the data the step needs, so no empty worksheet is shown.</p>`;
@@ -1033,7 +1104,7 @@ function summaryView() {
     ${c.references?.length ? `<h3>References</h3><ul class="refs">${c.references.map((r) => `<li><strong>${escapeHtml(r.label)}.</strong> ${escapeHtml(r.citation)}</li>`).join("")}</ul>` : ""}
     <div class="controls">
       ${assignmentBackButton()}
-      ${btn("new-case", s.module === "disease" ? "Back to case" : "Start new case", "primary")}
+      ${btn("new-case", s.classNext ? "Continue the lab" : (s.module === "disease" ? "Back to case" : "Start new case"), "primary")}
       <button type="button" class="btn" data-go="#/">Return to laboratories</button>
     </div>
   </section>`;
@@ -1357,6 +1428,18 @@ function handleAction(action, el) {
       go(href);
       return;
     }
+    if (step === "summary" && s.classNext) {
+      const href = s.classNext;
+      patch({ session: null });
+      go(href);
+      return;
+    }
+    if (fromClass(s)) {
+      const href = s.returnHref;
+      patch({ session: null });
+      go(href);
+      return;
+    }
     const list = studentExerciseCases(s.lab || mapLegacyModule(s.module).lab, s.exercise || mapLegacyModule(s.module).exercise);
     const idx = list.findIndex((c) => c.case_id === s.caseData.case_id);
     const next = list[(idx + 1) % Math.max(list.length, 1)] || list[0];
@@ -1453,14 +1536,14 @@ function gotoGroup(index) {
   const current = s.karyotype.activeStep || 0;
   if (target === current) return;
   if (target > current) {
-    const gate = canAdvanceGroup(s.karyotype, s.chromosomes, s.caseData);
+    const gate = canAdvanceGroup(s.karyotype, s.chromosomes, karyotypeAdvanceCase(s));
     if (!gate.ok) {
       writeFeedback("karyotype", {
         tone: "review",
         title: gate.reason === "incorrect" ? "This group must be arranged correctly before continuing" : "Place every chromosome in this group first",
         body: gate.reason === "incorrect"
-          ? "This case requires a correct arrangement before the next group is available."
-          : "Assign all chromosomes from the active tray to numbered positions. They do not have to be in the correct pairs yet.",
+          ? "Each box has to hold the right chromosomes. Both copies of a chromosome belong in that chromosome's box."
+          : "Put every chromosome from this group into a numbered box. Both copies belong in the same box.",
       });
       rerenderWorkspace();
       return;
@@ -1554,7 +1637,7 @@ function useHint() {
     const level = s.pedagogy?.hintLevel?.[step] || 0;
     const hint = hintFor(s.atlas?.disease, step, level, s.exercise, s.instructionMode);
     const applied = applyStep(step);
-    if (s.instructionMode === "practice" && s.module !== "disease" && applied !== "fish_scope" && applied !== "fish_interpret" && applied !== "fish_demo") {
+    if (s.instructionMode === "practice" && applied !== "fish_scope" && applied !== "fish_interpret" && applied !== "fish_demo") {
       s.pedagogy = s.pedagogy || { hintLevel: {}, first: {} };
       s.pedagogy.revealLabels = true;
     }

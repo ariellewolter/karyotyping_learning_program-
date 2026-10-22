@@ -1,7 +1,7 @@
-import { expectedPositions, expandChromosomeSet } from "./chromosomes.js?v=20261006j";
+import { expectedPositions, expandChromosomeSet } from "./chromosomes.js?v=20261015a";
 import { shuffle, seedFrom } from "./util.js?v=20261006j";
 
-export const CACHE = "20261006j";
+export const CACHE = "20261006l";
 
 export async function loadJSON(path) {
   const url = path.includes("?") ? path : `${path}?v=${CACHE}`;

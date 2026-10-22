@@ -174,15 +174,19 @@ export function parseHash() {
   if (parts[0] === "reference") return { name: "reference" };
   if (parts[0] === "help") return { name: "help" };
   if (parts[0] === "cases") return { name: "cases" };
+  if (parts[0] === "class") {
+    const step = Number(parts[2]);
+    return { name: "class", classId: parts[1] === "fish" ? "fish" : "karyotype", step: Number.isFinite(step) ? step : 0 };
+  }
   if (parts[0] === "disease") {
     const diseaseId = parts[1] || null;
     const rest = parts.slice(2);
-    const assigned = rest.includes("assigned");
+    const named = rest.includes("explore");
     const focusAt = rest.indexOf("focus");
     const focus = focusAt >= 0 ? (rest[focusAt + 1] || null) : null;
     const instruction = rest.find((part) => part === "learn" || part === "practice" || part === "assessment") || null;
     const activity = rest.find((part, index) => {
-      if (part === "assigned" || part === "focus" || part === "learn" || part === "practice" || part === "assessment") return false;
+      if (part === "assigned" || part === "explore" || part === "focus" || part === "learn" || part === "practice" || part === "assessment") return false;
       if (focusAt >= 0 && index === focusAt + 1) return false;
       return true;
     }) || null;
@@ -192,7 +196,7 @@ export function parseHash() {
       activity,
       focus,
       instruction,
-      mode: assigned ? "assigned" : "explore",
+      mode: named ? "explore" : "assigned",
     };
   }
   if (parts[0] === "lab") {

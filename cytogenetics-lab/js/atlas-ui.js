@@ -1,7 +1,7 @@
 import { state } from "./store.js?v=20261006j";
 import { SLOT_IDS, escapeHtml } from "./util.js?v=20261006j";
-import { renderChromosome } from "./chromosomes.js?v=20261006j";
-import { ideogramSVG } from "./ideogram.js?v=20261006j";
+import { renderChromosome } from "./chromosomes.js?v=20261015a";
+import { ideogramSVG } from "./ideogram.js?v=20261015a";
 import {
   activeCase,
   affectedChromosomes,
@@ -126,10 +126,9 @@ function diseasePage(diseaseId) {
       <p class="lede">${escapeHtml(disease.teaching_notes || "This disease has more than one cytogenetic case. The simple lab uses the canonical case only.")}</p>
       ${ready ? `
         <div class="controls">
-          <a class="btn primary" href="#/disease/${disease.id}">Open case laboratory</a>
-          <a class="btn" href="#/disease/${disease.id}/assigned">Open as an assigned case</a>
+          <a class="btn primary" href="#/disease/${disease.id}">Open the case</a>
         </div>
-        <p class="muted">The laboratory uses ${escapeHtml(canonical?.case_title || "the canonical teaching case")}. Other mechanisms on this page stay reference material.</p>
+        <p class="muted">The case hides the disease name and the finding until interpretation. This page stays the reference. The laboratory uses ${escapeHtml(canonical?.case_title || "the canonical teaching case")}.</p>
       ` : `<p class="muted">The canonical case is not a simple karyotype exercise. The other mechanisms are listed so they are not mistaken for that exercise.</p>`}
       ${referenceList(disease)}
       <div class="atlas-chrom">
@@ -227,10 +226,15 @@ function casesTouching(disease, chromosome) {
 
 function visibilityShort(disease) {
   const item = canonicalCase(disease);
-  if (item?.lab_level === "default" && item?.karyotype_visibility === "size_dependent") return "Size-dependent lab";
-  if (item?.lab_level === "default") return "Canonical lab";
-  if (item?.karyotype_visibility === "potentially_visible") return "Sometimes visible";
-  return "Not a simple karyotype";
+  if (item?.lab_level !== "default") return "Reference only — not the laboratory case";
+  if (item?.default_karyotype_activity === false || item?.karyotype_visibility === "usually_not_visible") {
+    return "Microdeletion — usually not visible on a routine karyotype";
+  }
+  if (item?.karyotype_visibility === "size_dependent") {
+    return "Size-dependent — a large change can show on a karyotype; a small one may not";
+  }
+  if (item?.karyotype_visibility === "potentially_visible") return "Sometimes visible on a karyotype";
+  return "Visible on the teaching karyotype";
 }
 
 function diseaseArt(disease) {

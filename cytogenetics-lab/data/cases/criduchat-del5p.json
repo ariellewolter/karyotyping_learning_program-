@@ -16,7 +16,7 @@
     "chromosome": "5",
     "resolution": "band",
     "include_anatomy": false,
-    "transform": { "type": "deletion", "labels": ["5p15.2", "5p15.1"] },
+    "transform": { "type": "deletion", "labels": ["5p15.3", "5p15.2", "5p15.1"] },
     "reference_normal": true,
     "nomenclature": {
       "highlight": "5p15.2",

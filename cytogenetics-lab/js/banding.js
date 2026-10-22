@@ -56,23 +56,24 @@ export function flattenToLevel(segments, level = "band") {
       continue;
     }
     const parsed = parseBandLabel(seg.role === "centromere" ? "cen" : key) || {};
+    const isCen = seg.role === "centromere" || seg.arm === "cen";
     groups.push({
       key,
       id: key,
-      label: seg.role === "centromere" ? "cen" : key,
+      label: isCen ? "cen" : key,
       chromosome: seg.chromosome,
       arm: seg.arm,
       region: parsed.region ?? seg.region,
       band: level === "region" ? null : (parsed.band ?? seg.band),
       subband: level === "subband" ? (parsed.subband ?? seg.subband) : null,
-      role: seg.role || "band",
+      role: isCen ? "centromere" : (seg.role || "band"),
       stain: seg.stain,
       weight: seg.weight || 1,
       orientation: seg.orientation || "forward",
       origin: seg.origin || seg.chromosome,
       inverted: Boolean(seg.inverted),
       translocated: Boolean(seg.translocated),
-      parent_region: seg.parent_region,
+      parent_region: isCen ? "cen" : `${seg.chromosome}${seg.arm}${seg.region}`,
       members: [seg],
     });
   }
@@ -190,6 +191,27 @@ export function attachFromMap(maps, chromosome, fromLabel, toLabel, orientation)
     }));
   }
   return slice;
+}
+
+export function resolutionForLocus(label) {
+  const parsed = parseBandLabel(label);
+  if (!parsed || parsed.arm === "cen") return "band";
+  if (parsed.subband != null) return "subband";
+  if (parsed.band != null) return "band";
+  return "region";
+}
+
+/** Ideogram used to name a locus. Follows the expected address, not the assembly piece size. */
+export function nomenclaturePieces(maps, spec) {
+  const nom = spec?.nomenclature || {};
+  const highlight = nom.expected || nom.highlight;
+  const level = nom.resolution || resolutionForLocus(highlight);
+  const chrom = String(spec?.chromosome || "");
+  const base = cloneSegments(maps?.chromosomes?.[chrom]?.segments || []);
+  const segs = nom.source === "abnormal"
+    ? applyTransform(base, spec.transform)
+    : base;
+  return flattenToLevel(segs, level);
 }
 
 export function piecesForExercise(maps, spec) {
@@ -310,9 +332,9 @@ export function gradeComparison(comparison, caseData, transform) {
   const bpExp = (caseData.bands_involved || []).map((b) => String(b).toLowerCase().replace(/\s+/g, ""));
   return {
     type: typeOk ? "correct" : (type ? "incorrect" : "missing"),
-    chromosomes: setMatch(chrGot, chrExp),
-    arms: setMatch(armGot, armExp),
-    breakpoints: setMatch(bpGot, bpExp),
+    chromosomes: identityMatch(chrGot, chrExp),
+    arms: identityMatch(armGot, armExp),
+    breakpoints: bandMatch(bpGot, bpExp),
   };
 }
 
@@ -342,11 +364,30 @@ function armTokens(s) {
   return found.length ? found : tokens(s).map((t) => t.replace(/[^pq]/g, "")).filter(Boolean);
 }
 
-function setMatch(got, exp) {
+function identityMatch(got, exp) {
   if (!exp.length) return "na";
   if (!got.length) return "missing";
-  const ok = exp.every((e) => got.some((g) => g.includes(e) || e.includes(g)));
-  return ok ? "correct" : "incorrect";
+  const norm = (value) => String(value).toLowerCase().replace(/^chr(omosome)?/, "");
+  const a = got.map(norm).sort();
+  const b = exp.map(norm).sort();
+  return a.length === b.length && a.every((value, i) => value === b[i]) ? "correct" : "incorrect";
+}
+
+/** Band dropdowns omit the arm. 15.2 matches p15.2; 15 does not. */
+function bandKey(value) {
+  const text = String(value || "").toLowerCase().replace(/\s+/g, "");
+  const addressed = text.match(/^(?:\d+|x|y)?([pq])(\d+(?:\.\d+)?)$/);
+  if (addressed) return addressed[2];
+  const bare = text.match(/^(\d+(?:\.\d+)?)$/);
+  return bare ? bare[1] : text;
+}
+
+function bandMatch(got, exp) {
+  if (!exp.length) return "na";
+  if (!got.length) return "missing";
+  const a = got.map(bandKey).sort();
+  const b = exp.map(bandKey).sort();
+  return a.length === b.length && a.every((value, i) => value === b[i]) ? "correct" : "incorrect";
 }
 
 export function anatomyHotspots() {
