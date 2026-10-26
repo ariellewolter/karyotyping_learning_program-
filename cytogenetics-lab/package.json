@@ -1,6 +1,6 @@
 {
   "name": "cytogenetics-lab-instruction",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "type": "module",
   "main": "electron/main.js",
@@ -12,7 +12,7 @@
     "package:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac",
     "package:mac:signed": "electron-builder --mac",
     "package:win": "electron-builder --win",
-    "postinstall": "node electron/ensure-binary.js",
+    "postinstall": "node electron/ensure-binary.js && electron-builder install-app-deps",
     "templates": "python3 scripts/generate_templates.py",
     "check:bands": "node scripts/check-band-span.mjs",
     "check:lookup": "node scripts/check-lookup-engine.mjs",
@@ -41,8 +41,7 @@
       "js/**/*",
       "data/**/*",
       "assets/**/*",
-      "electron/main.js",
-      "reference-database/src/**/*",
+      "electron/**/*",
       "reference-database/data/cytogenetics.sqlite",
       "reference-database/data/normalized/**/*",
       "package.json"
@@ -50,7 +49,8 @@
     "asarUnpack": [
       "reference-database/**/*",
       "data/diseases.json",
-      "data/disease-activities.json"
+      "data/disease-activities.json",
+      "**/node_modules/better-sqlite3/**/*"
     ],
     "mac": {
       "category": "public.app-category.education",
@@ -70,5 +70,8 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.10.0"
   }
 }

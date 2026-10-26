@@ -1,14 +1,14 @@
 /**
  * Desktop shell for the teaching laboratory.
- * Serves the same static app over app:// and answers /api/reference/*
- * by calling the Python reference adapter when Python is available.
+ * Serves the static app over app:// and answers /api/reference/* in-process
+ * from the packaged SQLite database — students do not need Python or npm.
  */
 
-import { spawnSync } from "node:child_process";
 import { app, BrowserWindow, protocol, shell } from "electron";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { configureReferenceApi, respond as referenceRespond } from "./reference-api.js";
 
 const SCHEME = "app";
 const TYPES = {
@@ -41,16 +41,12 @@ protocol.registerSchemesAsPrivileged([
   },
 ]);
 
-/** Static files live in the asar (or project root in development). */
 function staticRoot() {
   if (app.isPackaged) return app.getAppPath();
   return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 }
 
-/**
- * Python cannot read asar archives. Reference code, SQLite, and teaching JSON
- * are asarUnpack'd so they sit on a real path beside the asar.
- */
+/** SQLite + native modules must live on a real filesystem path (asarUnpack). */
 function unpackedRoot() {
   if (!app.isPackaged) return staticRoot();
   return path.join(process.resourcesPath, "app.asar.unpacked");
@@ -68,74 +64,10 @@ function fileForRequest(requestUrl) {
   return resolved;
 }
 
-function findPython() {
-  const attempts = process.platform === "win32"
-    ? [
-      { cmd: "py", args: ["-3"] },
-      { cmd: "python", args: [] },
-      { cmd: "python3", args: [] },
-    ]
-    : [
-      { cmd: "python3", args: [] },
-      { cmd: "python", args: [] },
-    ];
-  for (const attempt of attempts) {
-    try {
-      const probe = spawnSync(attempt.cmd, [...attempt.args, "-c", "import sys; print(sys.executable)"], {
-        encoding: "utf8",
-        env: process.env,
-        windowsHide: true,
-      });
-      if (probe.status === 0 && probe.stdout?.trim()) {
-        return { cmd: attempt.cmd, args: attempt.args };
-      }
-    } catch {
-      /* try next */
-    }
-  }
-  return null;
-}
-
-function referenceUnavailable(reason) {
-  return new Response(JSON.stringify({
-    available: false,
-    reason: reason || "Reference module is unavailable. Laboratory activities are unchanged.",
-  }), { headers: { "content-type": "application/json" } });
-}
-
 function referenceResponse(requestUrl) {
   const url = new URL(requestUrl);
-  const root = unpackedRoot();
-  const script = path.join(root, "reference-database", "src", "adapters", "api.py");
-  const src = path.join(root, "reference-database", "src");
-  if (!fs.existsSync(script)) {
-    return referenceUnavailable("The reference adapter is not packaged with this build.");
-  }
-  const python = findPython();
-  if (!python) {
-    return referenceUnavailable(
-      "Python 3 was not found on this computer. Install Python 3 to enable the Reference library. Karyotyping and FISH casework still work.",
-    );
-  }
-  const result = spawnSync(
-    python.cmd,
-    [...python.args, script, url.pathname, url.search.replace(/^\?/, "")],
-    {
-      encoding: "utf8",
-      env: { ...process.env, PYTHONPATH: src },
-      windowsHide: true,
-      maxBuffer: 8 * 1024 * 1024,
-    },
-  );
-  if (result.status !== 0 || !result.stdout) {
-    const detail = String(result.stderr || result.error?.message || "").trim().slice(0, 240);
-    return referenceUnavailable(
-      detail
-        ? `Reference module is unavailable. ${detail}`
-        : "Reference module is unavailable. Laboratory activities are unchanged.",
-    );
-  }
-  return new Response(result.stdout, { headers: { "content-type": "application/json" } });
+  const payload = referenceRespond(url.pathname, url.search.replace(/^\?/, ""));
+  return new Response(JSON.stringify(payload), { headers: { "content-type": "application/json" } });
 }
 
 function createWindow() {
@@ -161,6 +93,12 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  const unpacked = unpackedRoot();
+  configureReferenceApi({
+    unpackedRoot: unpacked,
+    // diseases.json is unpacked beside reference-database for teaching-index links
+    labDataRoot: unpacked,
+  });
   protocol.handle(SCHEME, async (request) => {
     const url = new URL(request.url);
     if (url.pathname.startsWith("/api/reference")) return referenceResponse(request.url);
