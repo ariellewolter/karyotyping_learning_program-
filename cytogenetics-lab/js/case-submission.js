@@ -2,10 +2,13 @@
  * The integrated casework report: intake, karyotype, ideogram, FISH, and interpretation.
  * Built only from the learner's own entries. The curated teaching answer is never written into it.
  */
-import { escapeHtml } from "./util.js";
+import { escapeHtml, GROUPS } from "./util.js";
 import { ideogramSVG } from "./ideogram.js?v=20261024j";
 import { genomeIssues, genomeSVG, issueBands, markBands, markLocation } from "./case-ideogram.js?v=20261025gen2";
 import { sortedCrops } from "./case-report.js?v=20261026cs1";
+import { exploreISCN } from "./iscn.js";
+import { resolveClones } from "./karyotype-analysis.js";
+import { describeKaryogram, inferPloidy, renderChromosome } from "./chromosomes.js?v=20261026p5";
 
 export const SUBMISSION_FORMAT = "cytogenetics-lab-submission-v1";
 
@@ -142,6 +145,11 @@ export function buildSubmission(current, { studentName = "", studentId = "", lim
       visible: current.observation || "",
       chromosomeLog: (current.chromosomeReads || []).map((row) => ({ ...row })),
       crops: (current.sortedChromosomes || []).filter((piece) => piece.chromosome).map((piece) => ({ ...piece })),
+      affectedRemakes: (current.affectedRemakes || []).map((item) => ({
+        chromosome: item.chromosome,
+        lostCount: item.lostCount || 0,
+        pieces: (item.pieces || []).map((piece) => ({ ...piece })),
+      })),
       ideogramMarks: (current.studentMarks || []).map((mark) => ({ ...mark })),
       imageMarkers: (current.imageAnnotations || []).map((marker) => ({ ...marker })),
       fish: current.lab === "fish" ? {
@@ -218,16 +226,22 @@ function table(headers, rows, empty) {
 
 function ideogramFigures(maps, snapshot) {
   const iscn = genomeIssues(snapshot.conclusions.iscn, null);
-  const marks = snapshot.observations.ideogramMarks;
+  const marks = snapshot.observations.ideogramMarks || [];
   const chromosomes = [...new Set([...marks.map((mark) => String(mark.chromosome)), ...iscn.issues.map((issue) => String(issue.chromosome))])].filter(Boolean);
   const figures = chromosomes.map((chromosome) => {
     const segments = maps?.chromosomes?.[chromosome]?.segments || [];
     if (!segments.length) return "";
+    const ownMarks = marks.filter((mark) => String(mark.chromosome) === chromosome);
+    const ownIssues = iscn.issues.filter((issue) => String(issue.chromosome) === chromosome);
     const highlightIds = [
-      ...marks.filter((mark) => String(mark.chromosome) === chromosome).flatMap((mark) => markBands(maps, mark).map((band) => band.id)),
-      ...iscn.issues.filter((issue) => String(issue.chromosome) === chromosome).flatMap((issue) => issueBands(maps, issue).map((band) => band.id)),
+      ...ownMarks.flatMap((mark) => markBands(maps, mark).map((band) => band.id)),
+      ...ownIssues.flatMap((issue) => issueBands(maps, issue).map((band) => band.id)),
     ];
-    return `<figure><figcaption>Chromosome ${escapeHtml(chromosome)}</figcaption>${ideogramSVG(segments, { width: 90, height: 380, barWidth: 30, highlightIds, highlightTag: false })}</figure>`;
+    const labels = [
+      ...ownMarks.map((mark) => `${mark.effect}: ${markLocation(mark)}`),
+      ...ownIssues.map((issue) => `${issue.effect}: ${issue.location}`),
+    ];
+    return `<figure class="ideo-id"><figcaption><strong>Chromosome ${escapeHtml(chromosome)}</strong>${labels.length ? `<span>${escapeHtml(labels.join(" · "))}</span>` : ""}</figcaption>${ideogramSVG(segments, { width: 90, height: 380, barWidth: 30, highlightIds, highlightTag: false })}</figure>`;
   }).join("");
   const genome = genomeSVG(maps, {
     marked: new Set(marks.flatMap((mark) => markBands(maps, mark).map((band) => band.id))),
@@ -240,6 +254,46 @@ function ideogramFigures(maps, snapshot) {
     ...iscn.issues.map((issue) => [issue.location, issue.chromosome, issue.effect, issue.details.join(" "), "Read from your ISCN"]),
   ];
   return { figures, rows, genome };
+}
+
+/** Schematic karyogram from the student's written ISCN (same layout as the Draw explorer). */
+function assembledKaryogramHTML(iscn) {
+  const report = exploreISCN(iscn);
+  if (report.status === "empty" || report.status === "unsupported") return "";
+  const sheets = resolveClones(report).map((line) => karyogramSheetHTML(line)).filter(Boolean).join("");
+  if (!sheets) return "";
+  return `<div class="assembled-karyogram"><p class="note">Assembled karyogram from the written ISCN <code>${escapeHtml(report.raw)}</code>.</p>${sheets}</div>`;
+}
+
+function karyogramSheetHTML(line) {
+  if (!line?.sex || /^(IDEM|SL|SDL\d*)$/i.test(line.sex)) return "";
+  const ploidy = inferPloidy(line.count, line.ploidy, line.countRange);
+  const model = describeKaryogram(line.sex, line.items, line.count, { ploidy });
+  if (!model?.chromosomes?.length) return "";
+  const byIdentity = {};
+  for (const chromosome of model.chromosomes) {
+    (byIdentity[chromosome.identity] = byIdentity[chromosome.identity] || []).push(chromosome);
+  }
+  const block = (name, ids) => {
+    const slots = ids.filter((id) => byIdentity[id]?.length);
+    if (!slots.length) return "";
+    return `<div class="iscn-k-group"><p class="group-label">Group ${escapeHtml(name)}</p><div class="iscn-k-slots">${slots.map((slot) => {
+      const changed = byIdentity[slot].some((chromosome) => chromosome.variant && chromosome.variant !== "normal");
+      return `<div class="iscn-k-slot${changed ? " iscn-k-changed" : ""}"><div class="iscn-k-body">${byIdentity[slot].map((chromosome) => renderChromosome(chromosome, { scale: 0.35, hideIdentity: true })).join("")}</div><p>${escapeHtml(slot)}${changed ? " · changed" : ""}</p></div>`;
+    }).join("")}</div></div>`;
+  };
+  return `<div class="iscn-karyogram"><div class="iscn-k-row">${block("A", GROUPS.A)}${block("B", GROUPS.B)}${block("C", ["X"])}</div><div class="iscn-k-row">${block("C", GROUPS.C.filter((id) => id !== "X"))}</div><div class="iscn-k-row">${block("D", GROUPS.D)}${block("E", GROUPS.E)}</div><div class="iscn-k-row">${block("F", GROUPS.F)}${block("G", GROUPS.G)}</div></div>`;
+}
+
+function affectedRemakesHTML(remakes) {
+  if (!remakes?.length) return `<p class="note">No affected chromosomes were remade.</p>`;
+  return `<div class="row remake-row">${remakes.map((item) => {
+    const pieces = item.pieces || [];
+    const preview = pieces.length
+      ? ideogramSVG(pieces, { width: 88, height: 280, showLabels: false, showRuler: false })
+      : `<p class="note">Empty</p>`;
+    return `<figure class="remake"><figcaption><strong>Chromosome ${escapeHtml(item.chromosome)}</strong>${item.lostCount ? ` · ${item.lostCount} unused` : " · intact remake"}</figcaption>${preview}</figure>`;
+  }).join("")}</div>`;
 }
 
 function workstationSection(w) {
@@ -267,6 +321,8 @@ function reportHTML(snapshot, { maps, crops, draft }) {
   const c = snapshot.conclusions;
   const karyotype = snapshot.lab !== "fish";
   const ideogram = karyotype ? ideogramFigures(maps, snapshot) : { figures: "", rows: [] };
+  const karyogram = karyotype ? assembledKaryogramHTML(c.iscn) : "";
+  const remakes = karyotype ? affectedRemakesHTML(o.affectedRemakes) : "";
   const byChromosome = new Map();
   crops.forEach((crop) => byChromosome.set(crop.chromosome, [...(byChromosome.get(crop.chromosome) || []), crop]));
   const comparisons = [...byChromosome.entries()].map(([chromosome, items]) => `<figure class="pair"><figcaption>${escapeHtml(chromosome)}</figcaption>${items.map((crop) => `<img class="crop" src="${crop.url}" alt="Chromosome ${escapeHtml(chromosome)} ${escapeHtml(crop.homolog)}"><span>${escapeHtml(crop.homolog)}</span>`).join("")}</figure>`).join("");
@@ -277,12 +333,17 @@ function reportHTML(snapshot, { maps, crops, draft }) {
     p, li { font-size: 12px; line-height: 1.4; } .note { color: #526576; font-size: 11px; } .draft { color: #9a3412; font-weight: bold; }
     table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 6px; } th, td { border-bottom: 1px solid #d7d2c8; text-align: left; padding: 4px; vertical-align: top; } th { width: 28%; }
     .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; } figure { margin: 0; text-align: center; } figcaption { font-size: 11px; }
-    .pair span { display: block; font-size: 10px; } img.crop { width: 48px; height: auto; background: #f4f4f2; }
+    .pair span, .ideo-id figcaption span { display: block; font-size: 10px; color: #526576; } img.crop { width: 48px; height: auto; background: #f4f4f2; }
     .block { white-space: pre-wrap; font-size: 12px; } code { font-size: 12px; }
     img, svg { max-width: 100%; } .genome svg { width: 100%; height: auto; }
+    .iscn-karyogram { display: grid; gap: 6px; margin: 6px 0 10px; } .iscn-k-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; }
+    .iscn-k-group { padding: 4px 6px; border: 1px solid #d7d2c8; border-radius: 6px; background: #fffefa; } .iscn-k-group .group-label { margin: 0 0 2px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: #526576; }
+    .iscn-k-slots { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-end; } .iscn-k-slot p { margin: 2px 0 0; text-align: center; font-size: 10px; }
+    .iscn-k-body { display: flex; align-items: flex-end; justify-content: center; gap: 2px; } .iscn-k-changed { outline: 2px solid #6d5b94; outline-offset: 2px; border-radius: 4px; }
+    .chr-svg, .chr-img { display: block; } .remake figcaption { margin-bottom: 4px; }
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     @page { margin: 14mm; }
-    @media print { body { margin: 0; } h2, h3 { break-after: avoid; } tr, figure, .row, .block { break-inside: avoid; } }
+    @media print { body { margin: 0; } h2, h3 { break-after: avoid; } tr, figure, .row, .block, .iscn-karyogram { break-inside: avoid; } }
   </style></head><body>
     <p class="note">Educational casework report. Not a clinical report and not a diagnosis.</p>
     ${draft ? `<p class="draft">Draft: this case has not been submitted.</p>` : ""}
@@ -294,8 +355,10 @@ function reportHTML(snapshot, { maps, crops, draft }) {
     ${karyotype ? `
       <h3>Karyotype</h3>
       <table>${row("Chromosome count", o.count || "Not recorded")}${row("Sex chromosome complement", o.sex || "Not recorded")}${row("Visible finding", o.visible || "Not recorded")}</table>
+      <h3>Assembled karyogram</h3>${karyogram || `<p class="note">No karyogram could be drawn from the written ISCN.</p>`}
       <h3>Chromosome log</h3>${table(["Chromosome", "What was seen", "Note"], o.chromosomeLog.map((item) => [item.chromosome, item.seen, item.note]), "No chromosome decisions recorded.")}
       <h3>Homolog comparisons</h3>${comparisons ? `<div class="row">${comparisons}</div>` : `<p class="note">No labeled chromosome crops were saved.</p>`}
+      <h3>Affected chromosomes remade</h3>${remakes}
       <h3>Ideogram and abnormality table</h3>${ideogram.genome ? `<div class="genome">${ideogram.genome}</div><p class="note">Red bars: the student's marks. Amber bars: read from the student's ISCN. Chromosomes named in either are in red type.</p>` : ""}${ideogram.figures ? `<div class="row">${ideogram.figures}</div>` : ""}${table(["Location", "Chromosome", "Effect", "What was identified", "Source"], ideogram.rows, "No band or segment was marked, and none was read from the ISCN.")}
     ` : snapshot.fishWorkstation ? "" : `
       <h3>FISH scoring</h3>

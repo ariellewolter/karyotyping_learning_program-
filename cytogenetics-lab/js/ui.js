@@ -47,6 +47,7 @@ import { CASE_ALIASES, LAB_PERIODS, METHOD_FAMILIES, SKILL_PRACTICE, buildDiseas
 import { applyStep, centromereKeyHtml, hintFor, instructionSteps, isTeachStep, lessonForContext } from "./pedagogy.js?v=20261025open1";
 import { bindClassLab, classLabView } from "./class-lab.js?v=20261025fish1";
 import { bindPatientKaryogram, patientKaryogramMarkup } from "./patient-karyogram.js?v=20261026cs15";
+import { guidedKaryotypePacket, guidedVisualsIncomplete } from "./guided-case-artifacts.js?v=20261026guide1";
 import { generatedFishImages, generatedMetaphaseFromFormula, generatedMetaphaseImage, metaphaseSvg, spreadChromosomeSvg, spreadRotations } from "./specimen-image.js?v=20261026cs4";
 import { benchMarkup, benchPlace, benchRecord, benchRedo, benchSlotAllowed, benchTurn, benchUndo, identityColour, sidewaysPlaced } from "./karyogram-bench.js?v=20261026cs1";
 import { analyzeCaseSet, analyzeFormula } from "./case-analysis.js?v=20261025case1";
@@ -1029,8 +1030,12 @@ function guidedTeachingRecord(imported, disease, labId) {
       seen: item?.student_should_notice || item?.visual_change || "Changed relative to the expected pair",
       note: "Guided example",
     })),
-    studentMarks: [],
-    affectedRemakes: [],
+    ...guidedKaryotypePacket({
+      images: base.images,
+      iscn,
+      maps: state.maps,
+      disease: item || disease,
+    }),
   };
 }
 
@@ -1328,14 +1333,39 @@ function bindPatientEvents(app, route) {
   }
   if (route.action === "workspace" && current && route.lab === "karyotype") {
     const needsIdentity = current.images?.some((image) => image.generated && !image.cuts?.some((box) => /^(?:[1-9]|1\d|2[0-2]|X|Y)$/.test(String(box.truth || ""))));
+    const refreshGuidedAssembly = () => {
+      if (caseMode(current) !== "guided" || current.submission) return;
+      const packet = guidedKaryotypePacket({
+        images: current.images || [],
+        iscn: current.iscnDraft || current.source?.iscn || "",
+        maps: state.maps,
+        disease: canonicalCase(diseaseById(state.diseases, current.source?.diseaseId)) || diseaseById(state.diseases, current.source?.diseaseId),
+        existing: {
+          sortedChromosomes: current.sortedChromosomes,
+          affectedRemakes: current.affectedRemakes,
+          studentMarks: current.studentMarks,
+        },
+      });
+      if (JSON.stringify(packet.sortedChromosomes) === JSON.stringify(current.sortedChromosomes || [])
+        && JSON.stringify(packet.affectedRemakes) === JSON.stringify(current.affectedRemakes || [])
+        && JSON.stringify(packet.studentMarks) === JSON.stringify(current.studentMarks || [])) return;
+      Object.assign(current, packet);
+      try {
+        localStorage.setItem("cyto.patientCases", JSON.stringify(patientCases().map((item) => item.id === current.id ? { ...item, ...packet } : item)));
+      } catch { /* storage full */ }
+    };
     if (needsIdentity) recoverSpreadCuts(current).then(() => {
+      refreshGuidedAssembly();
       const panel = app.querySelector("#patient-karyogram");
       if (panel?.dataset.caseId === current.id) {
         delete panel.dataset.kgBound;
         bindPatientKaryogram(app, current);
       }
     });
-    else bindPatientKaryogram(app, current);
+    else {
+      refreshGuidedAssembly();
+      bindPatientKaryogram(app, current);
+    }
     const formula = formulaText(current.iscnDraft) || (teachingAnswerHidden(current.source) ? "" : (formulaText(visibleFinding(current)) || current.source?.iscn || ""));
     bindCaseReport(app, current, {
       maps: state.maps,
@@ -1747,7 +1777,7 @@ function bindPatientEvents(app, route) {
           diseaseName: String(item.source.diseaseName || "").slice(0, 160),
           caseName: String(item.source.caseName || "").slice(0, 160),
           importedAt: String(item.source.importedAt || "").slice(0, 40),
-          mode: ["explore", "unknown"].includes(item.source.mode) ? item.source.mode : undefined,
+          mode: ["explore", "unknown", "guided"].includes(item.source.mode) ? item.source.mode : undefined,
           revealed: item.source.revealed === true,
           answerFinding: String(item.source.answerFinding || "").slice(0, 2000),
           answerTitle: String(item.source.answerTitle || "").slice(0, 160),
@@ -1776,6 +1806,23 @@ function bindPatientEvents(app, route) {
         images: Array.isArray(item.images) ? item.images.filter((image) => image && /^data:image\/(png|jpeg|webp);base64,/i.test(image.data || "") && image.data.length < 1400000).slice(0, 5).reduce((kept, image) => kept.reduce((size, saved) => size + saved.data.length, 0) + image.data.length <= 2800000 ? [...kept, { name: String(image.name || "image").slice(0, 200), data: image.data, generated: Boolean(image.generated), ...(image.specimen ? { specimen: true } : {}), ...(image.draft ? { draft: true } : {}), ...(Array.isArray(image.cuts) ? { cuts: image.cuts.filter((box) => box && [box.x, box.y, box.width, box.height].every(Number.isFinite) && box.width > 0 && box.height > 0).slice(0, 80).map((box) => ({ x: Math.max(0, Math.min(100, box.x)), y: Math.max(0, Math.min(100, box.y)), width: Math.min(100, box.width), height: Math.min(100, box.height), ...(/^(?:[1-9]|1\d|2[0-2]|X|Y)$/.test(String(box.truth || "")) ? { truth: String(box.truth) } : {}) })) } : {}) }] : kept, []) : [],
         caseReview: item.caseReview && typeof item.caseReview === "object" ? { image: item.caseReview.image === true, formula: item.caseReview.formula === true, events: item.caseReview.events === true } : null,
         studentMarks: Array.isArray(item.studentMarks) ? item.studentMarks.filter((mark) => mark && typeof mark === "object").slice(0, 40).map((mark) => ({ id: String(mark.id || "").slice(0, 40), chromosome: String(mark.chromosome || "").slice(0, 2), location: String(mark.location || "").slice(0, 40), effect: String(mark.effect || "").slice(0, 60), note: String(mark.note || "").slice(0, 160), ...(mark.whole ? { whole: true } : {}), ...(mark.from ? { from: String(mark.from).slice(0, 12) } : {}), ...(mark.to ? { to: String(mark.to).slice(0, 12) } : {}) })) : [],
+        affectedRemakes: Array.isArray(item.affectedRemakes) ? item.affectedRemakes.filter((entry) => entry && /^(?:[1-9]|1\d|2[0-2]|X|Y)$/.test(String(entry.chromosome || ""))).slice(0, 24).map((entry) => ({
+          chromosome: String(entry.chromosome),
+          stack: Array.isArray(entry.stack) ? entry.stack.map(String).slice(0, 80) : [],
+          lost: Array.isArray(entry.lost) ? entry.lost.map(String).slice(0, 80) : [],
+          lostCount: Math.max(0, Math.min(80, Number(entry.lostCount) || 0)),
+          pieces: Array.isArray(entry.pieces) ? entry.pieces.filter((piece) => piece && piece.id).slice(0, 80).map((piece) => ({
+            id: String(piece.id).slice(0, 40),
+            label: String(piece.label || "").slice(0, 40),
+            chromosome: String(piece.chromosome || "").slice(0, 2),
+            arm: String(piece.arm || "").slice(0, 8),
+            role: String(piece.role || "").slice(0, 20),
+            stain: Number.isFinite(piece.stain) ? piece.stain : 0,
+            weight: Number.isFinite(piece.weight) ? piece.weight : 1,
+            orientation: piece.orientation === "reverse" ? "reverse" : "forward",
+          })) : [],
+          savedAt: String(entry.savedAt || "").slice(0, 40),
+        })) : [],
         reportMeta: item.reportMeta && typeof item.reportMeta === "object" ? { studentName: String(item.reportMeta.studentName || "").slice(0, 120), studentId: String(item.reportMeta.studentId || "").slice(0, 60), limitations: String(item.reportMeta.limitations || "").slice(0, 2000) } : undefined,
         submission: sanitizeSubmission(item.submission) || undefined,
         savedAt: new Date().toISOString(),
@@ -2035,7 +2082,10 @@ function guidedCaseIncomplete(current) {
 
 /** Older guided cases opened before pre-fill still get a completed packet when the workspace loads. */
 function ensureGuidedComplete(current) {
-  if (!current || !guidedCaseIncomplete(current)) return current;
+  if (!current || caseMode(current) !== "guided" || current.submission) return current;
+  const needsText = guidedCaseIncomplete(current);
+  const needsVisuals = guidedVisualsIncomplete(current);
+  if (!needsText && !needsVisuals) return current;
   const disease = diseaseById(state.diseases, current.source?.diseaseId);
   if (!disease) return current;
   const labId = current.lab === "fish" ? "fish" : "karyotype";
@@ -2048,14 +2098,29 @@ function ensureGuidedComplete(current) {
     history: current.source?.answerNotes || current.history || "",
     source: current.source,
   }, disease, labId);
+  const visuals = labId === "karyotype"
+    ? guidedKaryotypePacket({
+      images: validSpecimenImages(current.images).length ? current.images : filled.images,
+      iscn: filled.iscnDraft || current.iscnDraft || current.source?.iscn || "",
+      maps: state.maps,
+      disease: canonicalCase(disease) || disease,
+      existing: {
+        sortedChromosomes: current.sortedChromosomes,
+        affectedRemakes: current.affectedRemakes,
+        studentMarks: current.studentMarks,
+      },
+    })
+    : {};
   const next = {
     ...current,
-    ...filled,
+    ...(needsText ? filled : {}),
+    ...visuals,
     id: current.id,
     lab: current.lab,
     savedAt: current.savedAt,
     submission: current.submission || null,
     images: validSpecimenImages(current.images).length ? current.images : filled.images,
+    reportMeta: needsText ? filled.reportMeta : (current.reportMeta || filled.reportMeta),
   };
   try {
     localStorage.setItem("cyto.patientCases", JSON.stringify(patientCases().map((item) => item.id === current.id ? next : item)));
