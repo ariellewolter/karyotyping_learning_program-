@@ -1,17 +1,4 @@
-import { state } from "./store.js?v=20261006j";
 import { escapeHtml } from "./util.js?v=20261006j";
-import { canonicalCase } from "./atlas.js?v=20261006j";
-import { caseSubtitle, diseaseMenuPath, diseasesForMethod } from "./activities.js?v=20261006j";
-
-const KARYOTYPE_FIRST = ["down-syndrome", "turner", "cri-du-chat"];
-const FISH_FIRST = ["down-syndrome", "cri-du-chat", "aml-inv16"];
-
-const BLURB = {
-  "down-syndrome": "Count the chromosomes. One number does not have the usual pair.",
-  turner: "Look at the sex chromosomes.",
-  "cri-du-chat": "Compare the two copies of one chromosome. One arm is short.",
-  "aml-inv16": "Decide whether the probed locus is still intact or has split.",
-};
 
 export function classLabView(classId, stepIndex) {
   const steps = classId === "fish" ? fishSteps() : karyotypeSteps();
@@ -109,10 +96,9 @@ function karyotypeSteps() {
       work: { href: "#/lab/karyotype/karyotype_construction/normal-46xy/learn", label: "Arrange the karyotype" },
     },
     {
-      title: "Choose a case",
-      body: `<p>Arrange the cell and decide what changed. The case will not tell you the finding until you have interpreted it.</p>
-        ${choiceList(karyotypeDiseases(), KARYOTYPE_FIRST, "karyotype")}
-        ${moreCases(karyotypeDiseases(), KARYOTYPE_FIRST, "karyotype")}`,
+      title: "Continue in Casework",
+      body: `<p>The cases are in Casework. Start with the guided example, then choose an independent case. Each independent case is the same kind of assignment.</p>
+        <p><a class="btn primary" href="#/patients/karyotype">Open Karyotyping Casework</a></p>`,
     },
   ];
 }
@@ -130,7 +116,7 @@ function fishSteps() {
     },
     {
       title: "Add the probe",
-      body: `<p data-class-prompt>Add a probe that matches chromosome 21. Then wash off whatever did not bind.</p>
+      body: `<p data-class-prompt>Add a probe that matches chromosome 8. Then wash off whatever did not bind.</p>
         ${probeFigure()}
         <div class="controls">
           <button type="button" class="btn" data-class-act="add-probe">Add the probe</button>
@@ -152,26 +138,25 @@ function fishSteps() {
       title: "Score these nuclei",
       picture: picture(fishDraw("merge"), "Your turn"),
       body: `<p>Count the green spots you can assign to one nucleus, and say whether that nucleus is scorable.</p>`,
-      work: { href: "#/lab/fish/enumeration/fish-enum-cep21/learn", label: "Count the signals" },
+      work: { href: "#/lab/fish/enumeration/fish-enum-cep8/learn", label: "Count the signals" },
     },
     {
       title: "Some fields cannot be scored",
       picture: picture(fishDraw("overlap"), "Overlap"),
       body: `<p>When two nuclear outlines overlap, a spot in the overlap could belong to either cell. Leave that field unscorable.</p>`,
-      work: { href: "#/lab/fish/quality/fish-enum-cep21/learn", label: "Decide what you can score" },
+      work: { href: "#/lab/fish/quality/fish-enum-cep8/learn", label: "Decide what you can score" },
     },
     {
       title: "Together or apart",
       picture: picture(fishDraw("split"), "Break-apart"),
       body: `<p>This probe paints both sides of one gene. If the colors stay together, that copy of the gene is intact. If they separate, the gene has split.</p>
         <p>The separated colors do not tell you which chromosome received the piece.</p>`,
-      work: { href: "#/lab/fish/break-apart/fish-breakapart-16q22/learn", label: "Score the break-apart" },
+      work: { href: "#/lab/fish/break-apart/fish-breakapart-7q22/learn", label: "Score the break-apart" },
     },
     {
-      title: "Choose a case",
-      body: `<p>Score the assay in the case. It will not tell you the finding until you interpret the signals.</p>
-        ${choiceList(fishDiseases(), FISH_FIRST, "fish")}
-        ${moreCases(fishDiseases(), FISH_FIRST, "fish")}`,
+      title: "Continue in Casework",
+      body: `<p>The assays are in Casework. Start with the guided enumeration, then choose an independent case. Each independent case is the same kind of assignment.</p>
+        <p><a class="btn primary" href="#/patients/fish">Open FISH Casework</a></p>`,
     },
   ];
 }
@@ -249,12 +234,12 @@ export function bindClassLab(root) {
         if (wash) wash.disabled = false;
         setCaption(root, "Probe on the slide");
         finishAct(el, "Probe added");
-        say("Some probe bound chromosome 21. The extra spots did not bind. Wash them off.");
+        say("Some probe bound chromosome 8. The extra spots did not bind. Wash them off.");
       }
       if (act === "wash") {
         root.querySelector(".class-probe")?.classList.add("is-washed");
         setCaption(root, "After the wash");
-        setPrompt(root, "Only probe that bound chromosome 21 is still visible.");
+        setPrompt(root, "Only probe that bound chromosome 8 is still visible.");
         finishAct(el, "Washed");
         say("Each remaining green spot is one copy of that target.");
       }
@@ -467,42 +452,3 @@ function fishDraw(kind) {
   return `${night}${nucleus}${greens}`;
 }
 
-function karyotypeDiseases() {
-  return diseasesForMethod(state.diseases, state.activityLinks, state.activityPacks, state.maps, "karyotype", state.probes)
-    .filter((disease) => {
-      const item = canonicalCase(disease);
-      return item?.default_karyotype_activity !== false && item?.karyotype_visibility !== "usually_not_visible";
-    });
-}
-
-function fishDiseases() {
-  return diseasesForMethod(state.diseases, state.activityLinks, state.activityPacks, state.maps, "fish", state.probes);
-}
-
-function choiceList(diseases, ids, method) {
-  const chosen = ids.map((id) => diseases.find((disease) => disease.id === id)).filter(Boolean);
-  return `<ul class="case-list">${chosen.map((disease) => diseaseRow(disease, method)).join("")}</ul>`;
-}
-
-function moreCases(diseases, featured, method) {
-  const rest = diseases.filter((disease) => !featured.includes(disease.id));
-  if (!rest.length) return "";
-  return `
-    <details class="more-cases">
-      <summary>Other cases</summary>
-      <ul class="case-list">${rest.map((disease) => diseaseRow(disease, method)).join("")}</ul>
-    </details>`;
-}
-
-function diseaseRow(disease, method) {
-  const line = BLURB[disease.id] || (method === "fish"
-    ? caseSubtitle(disease, "fish", state.activityLinks, state.activityPacks, state.probes)
-    : "Arrange the chromosomes and decide what changed.");
-  return `
-    <li>
-      <button type="button" class="case-row" data-go="${diseaseMenuPath(disease.id, { focus: method })}">
-        <span class="case-title">${escapeHtml(disease.disease_name)}</span>
-        <span class="muted">${escapeHtml(line)}</span>
-      </button>
-    </li>`;
-}

@@ -5,8 +5,10 @@
  * Never present these drawings as authentic clinical specimens.
  */
 
-import { applyTransform, cloneSegments } from "./banding.js?v=20261006k";
-import { relativeLuminance, stainHex } from "./ideogram.js?v=20261015a";
+import { applyTransform, attachFromMap, cloneSegments, piecesAtResolution } from "./banding.js?v=20261024c";
+import { metaphaseChromosomeSVG, relativeLuminance, stainHex } from "./ideogram.js?v=20261025ex1";
+import { exploreISCN, impliedDerivatives, segmentTransform } from "./iscn.js";
+import { buildModel, isModelled, modelChromosomes, modelIdentity, modelRole } from "./derivative-model.js";
 
 let boundMaps = null;
 let clipSerial = 0;
@@ -20,6 +22,20 @@ export function sexCopyNumber(sex) {
   const x = (s.match(/X/g) || []).length;
   const y = (s.match(/Y/g) || []).length;
   return { X: x, Y: y };
+}
+
+/**
+ * Autosome copy number for the baseline karyotype. Taken from an ISCN ploidy
+ * token such as <3n>, or inferred from the written chromosome count.
+ */
+export function inferPloidy(count, ploidyToken = "", countRange = null) {
+  const match = String(ploidyToken || "").trim().match(/^(\d+)n/i);
+  if (match) return Math.min(4, Math.max(1, Number(match[1])));
+  const n = Number(countRange?.[1] ?? count);
+  if (!Number.isFinite(n)) return 2;
+  if (n >= 81) return 4;
+  if (n >= 58) return 3;
+  return 2;
 }
 
 export function expandChromosomeSet(caseData, templates) {
@@ -42,10 +58,11 @@ export function expandChromosomeSet(caseData, templates) {
   Object.assign(copies, spec.copy_number || {});
 
   const variants = spec.variants || {};
-  const homologLabels = ["a", "b", "c", "d"];
+  const homologLabels = ["a", "b", "c", "d", "e", "f", "g", "h"];
   const out = [];
 
   const order = [...Array.from({ length: 22 }, (_, i) => String(i + 1)), "X", "Y"];
+  if ((copies.mar || 0) > 0 || Object.keys(variants).some((key) => /^mar/i.test(key))) order.push("mar");
   for (const identity of order) {
     const n = copies[identity] || 0;
     for (let i = 0; i < n; i += 1) {
@@ -96,6 +113,21 @@ export function renderChromosome(chr, options = {}) {
     const h = Math.max(28, Math.round((rel / 8.44) * 210 * (options.scale || 1)));
     return `<img class="chr-img" draggable="false" alt="${alt}" src="${escapeAttr(chr.src)}" style="height:${h}px;width:auto" />`;
   }
+  const pieces = piecesAtResolution(piecesForChromosome(chr), options.resolution);
+  if (pieces?.length) {
+    return metaphaseChromosomeSVG(pieces, {
+      colorMode: options.colorMode || "banding",
+      bandInfo: Boolean(options.bandInfo),
+      scale: options.scale || 1,
+      widthScale: options.widthScale || 1,
+      texture: Boolean(options.texture),
+      realistic: Boolean(options.realistic),
+      bendSeed: options.bendSeed || chr.id,
+      mirror: Boolean(options.mirror),
+      showLabels: Boolean(options.showLabels),
+      referenceBp: boundMaps?.reference_bp,
+    });
+  }
   if (!chr.template) {
     return `<div class="chr-missing" title="Missing template"></div>`;
   }
@@ -104,10 +136,6 @@ export function renderChromosome(chr, options = {}) {
 
 function escapeAttr(value) {
   return String(value || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
-}
-
-function cloneArm(arm) {
-  return (arm || []).map((pair) => [pair[0], pair[1]]);
 }
 
 function structuralRecord(identity, variant) {
@@ -164,118 +192,222 @@ function structuralRecord(identity, variant) {
   };
 }
 
-function applyVariant(template, variant) {
-  const t = {
-    relativeLength: template.relativeLength,
-    cen: template.cen,
-    morphology: template.morphology,
-    p: cloneArm(template.p),
-    q: cloneArm(template.q),
+export function chromosomeTraits(chr) {
+  const pieces = piecesForChromosome(chr);
+  if (pieces?.length) {
+    const total = pieces.reduce((sum, piece) => sum + (piece.weight || 0), 0) || 1;
+    const cenAt = pieces.findIndex((piece) => piece.role === "centromere" || piece.arm === "cen");
+    let before = 0;
+    for (let index = 0; index < Math.max(0, cenAt); index += 1) before += pieces[index].weight || 0;
+    const cenWeight = cenAt >= 0 ? (pieces[cenAt].weight || 0) : 0;
+    return {
+      cen: cenAt >= 0 ? (before + cenWeight / 2) / total : null,
+      relativeLength: total,
+    };
+  }
+  if (!chr?.template) return { cen: null, relativeLength: 0 };
+  return {
+    cen: Number(chr.template.cen),
+    relativeLength: Number(chr.template.relativeLength) || 0,
   };
-  const v = variant || "normal";
-  if (v === "normal") return t;
+}
 
-  const deletion = String(v).match(/^del\([^)]+\)\(([pq])/);
-  if (deletion) {
-    if (deletion[1] === "p") {
-      // Arm templates run centromere → telomere. Drop the distal bands, as on q.
-      t.p = t.p.slice(0, Math.max(1, t.p.length - 2));
-      t.cen = Math.min(0.18, t.cen * 0.55);
-      t.relativeLength *= 0.88;
-    } else {
-      t.q = t.q.slice(0, Math.max(1, t.q.length - 2));
-      t.relativeLength *= 0.86;
+function resolveAttach(attach) {
+  if (attach.arm === "p") {
+    const segments = boundMaps?.chromosomes?.[String(attach.chromosome)]?.segments || [];
+    const pter = segments.find((segment) => segment.arm === "p");
+    return { ...attach, from: pter?.id || attach.band, to: attach.band };
+  }
+  return { ...attach, from: attach.band };
+}
+
+function piecesForChromosome(chr) {
+  const identity = String(chr?.identity || "");
+  const variant = String(chr?.variant || "normal");
+  if (variant !== "normal" && isModelled(variant)) return buildModel(boundMaps, variant, identity)?.segments || null;
+  const record = boundMaps?.chromosomes?.[identity];
+  if (!record?.segments?.length) return null;
+  const base = cloneSegments(record.segments);
+  const spec = segmentTransform(chr.variant);
+  if (!spec) return base;
+  if (spec.type === "robertsonian" && spec.partner) {
+    const partner = cloneSegments(boundMaps?.chromosomes?.[String(spec.partner)]?.segments || []);
+    if (!partner.length) return base;
+    return applyTransform(base, { type: "robertsonian", attach_segments: partner });
+  }
+  if (spec.attach_from) {
+    const attach = resolveAttach(spec.attach_from);
+    const segments = attachFromMap(boundMaps, attach.chromosome, attach.from, attach.to, attach.orientation);
+    return applyTransform(base, { ...spec, attach_segments: segments });
+  }
+  return applyTransform(base, spec);
+}
+
+/** Map segments in drawing order for one chromosome variant, or null without a band map. */
+export function drawnSegments(identity, variant = "normal") {
+  return piecesForChromosome({ identity, variant });
+}
+
+/** Model details (centromeres, origins, uncertain material) for a modelled variant, or null. */
+export function drawnModel(identity, variant) {
+  return isModelled(variant) ? buildModel(boundMaps, variant, identity) : null;
+}
+
+/** Drawn segments at a display resolution ("400", "550", or "detailed"). */
+export function drawnPieces(identity, variant = "normal", resolution = "detailed") {
+  return piecesAtResolution(piecesForChromosome({ identity, variant }), resolution);
+}
+
+export function schematicForVariant(template) {
+  return template;
+}
+
+const KARYOGRAM_ORDER = [...Array.from({ length: 22 }, (_, i) => String(i + 1)), "X", "Y"];
+
+function karyogramTotal(copies, additions) {
+  return Object.values(copies).reduce((sum, count) => sum + count, 0) + additions.length;
+}
+
+/**
+ * Chromosomes implied by one cell line. A written count chooses whether a
+ * symbol replaces a homolog or adds a chromosome. The source string is not rewritten.
+ * options.ploidy sets the autosome baseline (2 diploid, 3 triploid, 4 tetraploid).
+ */
+export function describeKaryogram(sex, items, writtenCount = null, options = {}) {
+  const complement = String(sex || "");
+  if (!complement) return null;
+  const ploidy = Math.max(1, Math.min(4, Number(options.ploidy) || 2));
+  const copies = { ...sexCopyNumber(complement) };
+  for (let n = 1; n <= 22; n += 1) copies[String(n)] = copies[String(n)] || ploidy;
+  const replacements = {};
+  const additions = [];
+  for (const item of items || []) {
+    if (item?.kind !== "numerical") continue;
+    const identity = String(item.chromosomes?.[0] || "");
+    if (!/^([1-9]|1\d|2[0-2]|X|Y)$/.test(identity)) continue;
+    const delta = String(item.token || "").startsWith("-") ? -1 : 1;
+    copies[identity] = Math.max(0, (copies[identity] || 0) + delta);
+  }
+  for (const item of items || []) {
+    if (!item || item.kind === "numerical" || item.kind === "annotation") continue;
+    const variant = String(item.variant || item.token || "");
+    const copiesWritten = Math.max(1, Number(item.copies) || 1);
+    const derivatives = impliedDerivatives(variant);
+    if (derivatives?.length >= 2) {
+      for (const piece of derivatives) {
+        if (item.gain) additions.push({ identity: piece.identity, variant: piece.variant });
+        else (replacements[piece.identity] = replacements[piece.identity] || []).push(piece.variant);
+      }
+      continue;
     }
-    return t;
+    const modelled = isModelled(variant);
+    const spec = modelled ? null : segmentTransform(variant);
+    if (!spec && !modelled) continue;
+    const role = modelled ? modelRole(variant) : spec.type === "robertsonian" ? "dicentric" : "replace";
+    const identity = modelled ? modelIdentity(variant) : String(item.chromosomes?.[0] || "");
+    if (!identity) continue;
+    if (item.gain || role === "marker") {
+      for (let copy = 0; copy < copiesWritten; copy += 1) additions.push({ identity, variant });
+      continue;
+    }
+    if (role === "dicentric") {
+      const [left, right] = modelled ? modelChromosomes(variant) : spec.chromosomes;
+      copies[left] = Math.max(0, (copies[left] || 0) - 1);
+      copies[right] = Math.max(0, (copies[right] || 0) - 1);
+      additions.push({ identity: left, variant });
+      continue;
+    }
+    const now = karyogramTotal(copies, additions);
+    const target = Number.isFinite(writtenCount) ? writtenCount : null;
+    const add = target == null
+      ? spec?.type === "isochromosome"
+      : Math.abs(now + 1 - target) < Math.abs(now - target);
+    if (add) additions.push({ identity, variant });
+    else (replacements[identity] = replacements[identity] || []).push(variant);
   }
-  if (/der\(22\)t\(9;22\)/.test(v)) {
-    t.q = [[3, 4], [4, 0], [3, 5], [2, 0]];
-    t.relativeLength *= 0.78;
-    t.cen = 0.28;
-    t.morphology = "acrocentric";
-    return t;
+  const chromosomes = [];
+  for (const identity of KARYOGRAM_ORDER) {
+    const queue = [...(replacements[identity] || [])];
+    let remaining = copies[identity] || 0;
+    while (remaining > 0 && queue.length) {
+      chromosomes.push({ identity, variant: queue.shift() });
+      remaining -= 1;
+    }
+    while (remaining > 0) {
+      chromosomes.push({ identity, variant: "normal" });
+      remaining -= 1;
+    }
+    while (queue.length) chromosomes.push({ identity, variant: queue.shift() });
   }
-  if (/der\(9\)t\(9;22\)/.test(v)) {
-    t.q = [...t.q.slice(0, 5), [4, 4], [5, 0], [4, 2]];
-    t.relativeLength *= 1.04;
-    return t;
-  }
-  if (/der\(15\)t\(15;17\)/.test(v)) {
-    t.q = [...t.q.slice(0, 4), [5, 3], [4, 0], [3, 4]];
-    return t;
-  }
-  if (/der\(17\)t\(15;17\)/.test(v)) {
-    t.q = [[4, 2], [5, 0], [6, 5], [4, 0]];
-    t.relativeLength *= 1.08;
-    return t;
-  }
-  if (/der\(8\)t\(8;14\)/.test(v)) {
-    t.q = [...t.q.slice(0, 4), [5, 0], [4, 4]];
-    return t;
-  }
-  if (/der\(14\)t\(8;14\)/.test(v)) {
-    t.q = [[4, 4], [5, 0], [6, 3], [5, 0], [4, 2]];
-    t.relativeLength *= 1.1;
-    return t;
-  }
-  if (/der\(8\)t\(8;21\)/.test(v)) {
-    t.q = [...t.q.slice(0, -2), [4, 2], [3, 0]];
-    t.relativeLength *= 0.96;
-    return t;
-  }
-  if (/der\(21\)t\(8;21\)/.test(v)) {
-    t.q = [...t.q, [5, 3], [4, 0]];
-    t.relativeLength *= 1.12;
-    return t;
-  }
-  const inverted = pericentricSchematic(t, v);
-  if (inverted) return inverted;
-  if (/der\(2\)t\(2;5\)/.test(v)) {
-    t.p = [[3, 0], [4, 2], ...t.p.slice(2)];
-    return t;
-  }
-  if (/der\(5\)t\(2;5\)/.test(v)) {
-    t.q = [...t.q.slice(0, -1), [5, 2], [4, 0]];
-    return t;
-  }
-  if (/der\(11\)t\(11;22\)/.test(v)) {
-    t.q = [...t.q.slice(0, -1), [4, 3], [3, 0]];
-    return t;
-  }
-  if (/der\(22\)t\(11;22\)/.test(v)) {
-    t.q = [...t.q, [5, 2], [4, 0]];
-    t.relativeLength *= 1.08;
-    return t;
-  }
-  return t;
+  chromosomes.push(...additions);
+  return { chromosomes, drawnCount: chromosomes.length };
 }
 
-function pericentricSchematic(template, variant) {
-  const match = String(variant || "").match(/^inv\((\d+|X|Y)\)\(([pq][\d.]+)([pq][\d.]+)\)$/);
-  if (!match) return null;
-  const segments = boundMaps?.chromosomes?.[match[1]]?.segments;
-  if (!segments?.length) return null;
-  const from = `${match[1]}${match[2]}`;
-  const to = `${match[1]}${match[3]}`;
-  const transformed = applyTransform(cloneSegments(segments), { type: "inversion", from, to });
-  const cenAt = transformed.findIndex((segment) => segment.role === "centromere");
-  if (cenAt <= 0 || cenAt >= transformed.length - 1) return null;
-  const band = (segment) => [segment.weight || 1, segment.stain || 0];
-  const next = {
-    ...template,
-    p: transformed.slice(0, cenAt).reverse().map(band),
-    q: transformed.slice(cenAt + 1).map(band),
-    bandOrder: transformed.map((segment) => `${segment.id}${segment.orientation === "reverse" ? "~" : ""}`),
+/**
+ * Chromosome set for one written cell line. The first cell line with a sex
+ * complement is used. The source formula is not rewritten.
+ */
+const CLONE_REF = /^(IDEM|SL|SDL\d*)$/i;
+
+/** Expand idem / sl / sdl so a later clone carries the stemline abnormalities. */
+function expandCloneLines(report) {
+  const resolved = [];
+  (report?.lines || []).forEach((line, index) => {
+    const sex = String(line.sex || "");
+    const refToken = CLONE_REF.test(sex)
+      ? sex
+      : (line.items || []).find((item) => item.kind === "annotation" && CLONE_REF.test(item.token))?.token;
+    const match = String(refToken || "").match(CLONE_REF);
+    let base = null;
+    if (match && index > 0) {
+      const word = match[1].toUpperCase();
+      const n = match[1].match(/^SDL(\d*)$/i)?.[1];
+      const target = word.startsWith("SDL") && n ? Number(n) : word === "SDL" ? Math.max(0, index - 1) : 0;
+      base = resolved[Math.min(target, resolved.length - 1)];
+    }
+    const own = (line.items || []).filter((item) => !(item.kind === "annotation" && CLONE_REF.test(item.token)));
+    resolved.push({
+      ...line,
+      sex: base && (!sex || CLONE_REF.test(sex)) ? base.sex : sex,
+      items: [...(base ? base.items : []), ...own],
+    });
+  });
+  return resolved;
+}
+
+export function chromosomeSetFromFormula(text) {
+  const report = exploreISCN(String(text || "").trim());
+  if (!report || report.status === "empty" || report.status === "unsupported") return null;
+  const line = expandCloneLines(report).find((item) => item.sex && !CLONE_REF.test(item.sex));
+  if (!line?.sex) return null;
+  const ploidy = inferPloidy(line.count, line.ploidy, line.countRange);
+  const model = describeKaryogram(line.sex, line.items, line.count, { ploidy });
+  if (!model?.chromosomes?.length) return null;
+  const homologs = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  const seen = {};
+  const variants = {};
+  for (const chromosome of model.chromosomes) {
+    const identity = String(chromosome.identity);
+    const index = seen[identity] || 0;
+    seen[identity] = index + 1;
+    if (chromosome.variant && chromosome.variant !== "normal") {
+      const label = homologs[index] || String(index + 1);
+      variants[`${identity}${label}`] = chromosome.variant;
+    }
+  }
+  const copy_number = {};
+  for (const identity of KARYOGRAM_ORDER) copy_number[identity] = seen[identity] || 0;
+  if (seen.mar) copy_number.mar = seen.mar;
+  return {
+    sex: line.sex,
+    copy_number,
+    variants,
+    formula: report.raw,
+    mosaic: report.status === "mosaic",
+    writtenCount: line.count,
+    drawnCount: model.drawnCount,
+    ploidy,
   };
-  const pWeight = next.p.reduce((sum, pair) => sum + pair[0], 0);
-  const qWeight = next.q.reduce((sum, pair) => sum + pair[0], 0);
-  const all = pWeight + qWeight || 1;
-  next.cen = pWeight / all;
-  return next;
-}
-
-export function schematicForVariant(template, variant) {
-  return applyVariant(template, variant);
 }
 
 function drawHeight(template, scale) {
@@ -284,11 +416,12 @@ function drawHeight(template, scale) {
 }
 
 function schematicSVG(chr, options) {
-  const template = applyVariant(chr.template, chr.variant);
+  const template = chr.template;
   const scale = options.scale || 1;
   const height = options.height || drawHeight(template, scale);
-  const cw = Math.max(11, Math.round(13 * Math.min(scale, 2.3)));
-  const gap = Math.max(3, Math.round(4 * Math.min(scale, 2)));
+  const widthScale = Math.max(1, Math.min(2, Number(options.widthScale) || 1));
+  const cw = Math.max(11, Math.round(13 * Math.min(scale, 2.3) * widthScale));
+  const gap = Math.max(3, Math.round(4 * Math.min(scale, 2) * widthScale));
   const padX = Math.max(3, Math.round(3.2 * Math.min(scale, 2)));
   const padY = Math.max(8, Math.round(7 * Math.min(scale, 1.8)));
   const totalH = height;

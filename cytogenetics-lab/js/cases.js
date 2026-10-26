@@ -1,4 +1,4 @@
-import { expectedPositions, expandChromosomeSet } from "./chromosomes.js?v=20261015a";
+import { expectedPositions, expandChromosomeSet } from "./chromosomes.js?v=20261026p5";
 import { shuffle, seedFrom } from "./util.js?v=20261006j";
 
 export const CACHE = "20261006l";

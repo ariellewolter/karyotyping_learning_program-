@@ -213,7 +213,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 0.65,
+      "basis": "Acquired abnormality in a neoplastic specimen: tumor nuclei mixed with non-neoplastic stromal nuclei, so normal nuclei remain alongside the abnormal clone. Authored teaching proportion, not a population estimate."
+    }
   },
   "hints": [
     "A split means EWSR1 is rearranged. The canonical teaching partner is FLI1, but this break-apart result does not identify that partner."

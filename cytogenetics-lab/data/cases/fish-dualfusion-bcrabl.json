@@ -3,20 +3,43 @@
   "title": "Dual-fusion FISH — t(9;22)",
   "difficulty": "advanced",
   "case_type": "acquired",
-  "modules": ["fish", "abnormality", "iscn_construction", "disease"],
+  "modules": [
+    "fish",
+    "abnormality",
+    "iscn_construction",
+    "disease"
+  ],
   "clinical_history": "Interphase nuclei hybridized with a red 9q34 probe and a green 22q11.2 probe. Reconstruct why fusions appear after a reciprocal translocation. Demonstration graphics; not a clinical marrow film.",
   "fish": {
     "assay_type": "dual-fusion",
     "specimen_type": "interphase",
-    "exercises": ["dual-fusion", "interphase", "probe-localization", "probe-type", "probe-strategy"],
+    "exercises": [
+      "dual-fusion",
+      "interphase",
+      "probe-localization",
+      "probe-type",
+      "probe-strategy"
+    ],
     "synthetic_images": true,
-    "channels": ["dapi", "red", "green", "merge"],
-    "probe_ids": ["abl-9q34", "bcr-22q11"],
+    "channels": [
+      "dapi",
+      "red",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "abl-9q34",
+      "bcr-22q11"
+    ],
     "include_probe_type": true,
     "include_localization": true,
     "include_strategy": true,
     "include_schematic": true,
-    "count_fields": ["red", "green", "fusion"],
+    "count_fields": [
+      "red",
+      "green",
+      "fusion"
+    ],
     "signal_tolerance": 20,
     "localization": {
       "probe_id": "abl-9q34",
@@ -30,38 +53,159 @@
       "detects": "fusion between two defined loci",
       "normal_pattern": "2 red and 2 green signals"
     },
+    "case_specific_cutoff": {
+      "pattern": "1 red, 1 green, and 2 fusion",
+      "normal_counts": {
+        "red": 2,
+        "green": 2,
+        "fusion": 0
+      },
+      "abnormal_counts": {
+        "red": 1,
+        "green": 1,
+        "fusion": 2
+      },
+      "note": "This teaching assay records its expected classic dual-fusion pattern for the BCR and ABL1 probes. No percentage cutoff is applied.",
+      "percent_cutoff": 10,
+      "cutoff_kind": "educational",
+      "cutoff_source": "Set for this teaching exercise on a small field. Clinical laboratories derive their own cutoffs from normal-specimen studies with far more nuclei."
+    },
     "expected_interpretation": "reciprocal_fusion",
-    "interpretation_options": ["normal_2R2G", "reciprocal_fusion", "deletion", "unscorable_study"],
+    "interpretation_options": [
+      "normal_2R2G",
+      "reciprocal_fusion",
+      "deletion",
+      "unscorable_study"
+    ],
     "nuclei": [
       {
         "nucleus_id": "n1",
-        "cx": 200, "cy": 170, "rx": 92, "ry": 96,
+        "cx": 200,
+        "cy": 170,
+        "rx": 92,
+        "ry": 96,
         "scorable": true,
         "artifact_type": null,
         "expected_signals": [
-          { "id": "f1", "type": "fusion", "x": 158, "y": 148 },
-          { "id": "f2", "type": "fusion", "x": 214, "y": 124 },
-          { "id": "r1", "type": "red", "x": 246, "y": 176 },
-          { "id": "g1", "type": "green", "x": 186, "y": 204 }
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
         ],
-        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 2
+        },
         "expected_classification": "2F1R1G"
       },
       {
         "nucleus_id": "n2",
-        "cx": 200, "cy": 172, "rx": 90, "ry": 92,
+        "cx": 200,
+        "cy": 172,
+        "rx": 90,
+        "ry": 92,
         "scorable": true,
         "artifact_type": null,
         "expected_signals": [
-          { "id": "f1", "type": "fusion", "x": 164, "y": 140 },
-          { "id": "f2", "type": "fusion", "x": 222, "y": 132 },
-          { "id": "r1", "type": "red", "x": 240, "y": 188 },
-          { "id": "g1", "type": "green", "x": 176, "y": 198 }
+          {
+            "id": "f1",
+            "type": "fusion",
+            "x": 164,
+            "y": 140
+          },
+          {
+            "id": "f2",
+            "type": "fusion",
+            "x": 222,
+            "y": 132
+          },
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 240,
+            "y": 188
+          },
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 176,
+            "y": 198
+          }
         ],
-        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_counts": {
+          "red": 1,
+          "green": 1,
+          "fusion": 2
+        },
         "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n3-normal",
+        "cx": 200,
+        "cy": 170,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "r1",
+            "type": "red",
+            "x": 158,
+            "y": 148
+          },
+          {
+            "id": "r2",
+            "type": "red",
+            "x": 214,
+            "y": 124
+          },
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 246,
+            "y": 176
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 186,
+            "y": 204
+          }
+        ],
+        "expected_counts": {
+          "red": 2,
+          "green": 2,
+          "fusion": 0
+        },
+        "expected_classification": "2R2G"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 0.85,
+      "basis": "Acquired abnormality in a neoplastic specimen: untreated chronic-phase marrow, where the BCR::ABL1 clone predominates but residual normal cells are present, so normal nuclei remain alongside the abnormal clone. Authored teaching proportion, not a population estimate."
+    }
   },
   "assembly": {
     "chromosome": "22",
@@ -70,19 +214,43 @@
     "transform": {
       "type": "translocation_derivative",
       "keep_through": "22q11.2",
-      "attach_from": { "chromosome": "9", "from": "9q34" }
+      "attach_from": {
+        "chromosome": "9",
+        "from": "9q34"
+      }
     },
     "reference_normal": true
   },
   "abnormality_category": "structural",
-  "abnormality_type": ["translocation", "reciprocal translocation"],
+  "abnormality_type": [
+    "translocation",
+    "reciprocal translocation"
+  ],
   "abnormality_options": {
-    "categories": ["normal", "numerical", "structural"],
-    "types": ["deletion", "translocation", "reciprocal translocation", "derivative chromosome"]
+    "categories": [
+      "normal",
+      "numerical",
+      "structural"
+    ],
+    "types": [
+      "deletion",
+      "translocation",
+      "reciprocal translocation",
+      "derivative chromosome"
+    ]
   },
-  "chromosomes_involved": ["9", "22"],
-  "arms_involved": ["q", "q"],
-  "bands_involved": ["q34", "q11.2"],
+  "chromosomes_involved": [
+    "9",
+    "22"
+  ],
+  "arms_involved": [
+    "q",
+    "q"
+  ],
+  "bands_involved": [
+    "q34",
+    "q11.2"
+  ],
   "expected_iscn": "46,XY,t(9;22)(q34;q11.2)",
   "accepted_iscn_variants": [
     "46,XY,t(9;22)(q34;q11.2)",

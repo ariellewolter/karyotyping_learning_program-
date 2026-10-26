@@ -1,8 +1,6 @@
-/** Instructional scaffolding. The activity engines stay the same; the mode changes what is shown first. */
+/** Teaching cards shown before an exercise step. */
 
 import { canonicalCase } from "./atlas.js?v=20261006j";
-
-export const INSTRUCTION_MODES = ["learn", "practice", "assessment"];
 
 export function isTeachStep(step) {
   return String(step || "").startsWith("teach:");
@@ -12,13 +10,13 @@ export function applyStep(step) {
   return isTeachStep(step) ? String(step).slice(6) : step;
 }
 
-export function instructionSteps(steps, disease, mode, skillId) {
+export function instructionSteps(steps, disease, mode, skillId, caseData) {
   if (mode !== "learn") return { steps, titles: {} };
   const out = [];
   const titles = {};
   const seen = new Set();
   for (const step of steps) {
-    const lesson = disease ? lessonFor(disease, step) : skillLesson(skillId, step);
+    const lesson = disease ? lessonFor(disease, step) : skillLesson(skillId, step, caseData);
     if (lesson && !seen.has(lesson.id)) {
       seen.add(lesson.id);
       const id = `teach:${step}`;
@@ -31,10 +29,10 @@ export function instructionSteps(steps, disease, mode, skillId) {
 }
 
 /** Skill sessions have no disease. Their lesson must win over the generic step card. */
-export function lessonForContext(disease, step, skillId) {
+export function lessonForContext(disease, step, skillId, caseData) {
   const applied = applyStep(step);
   if (!disease && skillId) {
-    const skill = skillLesson(skillId, applied);
+    const skill = skillLesson(skillId, applied, caseData);
     if (skill) return skill;
   }
   return lessonFor(disease, applied);
@@ -99,7 +97,21 @@ export function lessonFor(disease, step) {
   return null;
 }
 
-export function hintFor(disease, step, level, skillId, mode) {
+export function hintFor(disease, step, level, skillId, caseData) {
+  const appliedStep = applyStep(step);
+  if (!disease && caseData?.assembly?.transform?.type === "deletion") {
+    const list = appliedStep === "comparison"
+      ? [
+        "Name deletion. One band is absent, and the bands on either side stay in order.",
+        "The missing band is on the long arm. The short arm and the centromere are unchanged.",
+      ]
+      : [
+        "The missing segment is on the long arm. The centromere and the short arm stay.",
+        "Neighboring bands keep their original order.",
+      ];
+    const index = Math.max(0, Math.min(level, list.length - 1));
+    return { text: list[index], last: index >= list.length - 1, index };
+  }
   const id = disease?.id;
   const ladders = {
     "cml:probe_strategy": [
@@ -160,7 +172,7 @@ export function hintFor(disease, step, level, skillId, mode) {
     ],
     "iscn_interpretation:iscn_interpretation": [
       "A slash separates cell lines. Brackets count cells in that line, not chromosomes.",
-      "45,X[12]/46,XX[18] is twelve cells with one X and eighteen cells with two X chromosomes.",
+      "47,XX,+8[6]/46,XX[14] is six cells with an extra chromosome 8 and fourteen cells that are 46,XX.",
     ],
     "enumeration:fish_scope": [
       "Count discrete signals that belong to one nucleus.",
@@ -180,8 +192,8 @@ export function hintFor(disease, step, level, skillId, mode) {
       "Separated flanking signals mean the locus is rearranged.",
     ],
     "probe-localization:probe_locus": [
-      "Read the address from chromosome, to arm, to band.",
-      "9q34 is chromosome 9, long arm, band 34.",
+      "Read the address from chromosome, to arm, to band, then sub-band.",
+      "7q22.1 is chromosome 7, long arm, band 22, sub-band 1.",
     ],
     "quality:fish_scope": [
       "A scorable nucleus has a single outline and discrete signals.",
@@ -189,10 +201,21 @@ export function hintFor(disease, step, level, skillId, mode) {
     ],
   };
   const applied = applyStep(step);
+  if (applied === "disease" && skillId === "disease_association") {
+    const item = canonicalCase(disease);
+    const chromosomes = [].concat(item?.primary_chromosome || []).filter(Boolean);
+    const notice = item?.student_should_notice || "Match the named condition to its chromosome finding.";
+    const list = [
+      "The condition is already named. Choose its chromosome finding, not the finding of a different condition.",
+      chromosomes.length ? `The chromosomes to account for are ${chromosomes.join(" and ")}.` : "Start from the chromosomes this condition is known for.",
+      notice,
+    ];
+    const index = Math.max(0, Math.min(level, list.length - 1));
+    return { text: list[index], last: index >= list.length - 1, index };
+  }
   const key = disease?.id ? `${id}:${applied}` : `${skillId || ""}:${applied}`;
   const family = disease?.id ? fishFamilyHints(id, applied) : null;
-  const practiceTray = applied === "karyotype" && mode === "practice" ? practiceKaryotypeHints(Boolean(disease?.id)) : null;
-  const list = practiceTray || family || ladders[key] || (disease ? genericHints(disease, applied) : skillHints(skillId, applied));
+  const list = family || ladders[key] || (disease ? genericHints(disease, applied) : skillHints(skillId, applied));
   const index = Math.max(0, Math.min(level, list.length - 1));
   return { text: list[index], last: index >= list.length - 1, index };
 }
@@ -206,7 +229,7 @@ function skillHints(skillId, step) {
   return ["Use the pattern in front of you. The formal condition name is not part of this skill."];
 }
 
-function skillLesson(skillId, step) {
+function skillLesson(skillId, step, caseData) {
   if (skillId === "anatomy" && step === "anatomy") {
     return { id: "skill-anatomy", title: "Chromosome landmarks", html: anatomySkillCard() };
   }
@@ -217,10 +240,13 @@ function skillLesson(skillId, step) {
     return { id: "skill-locus", title: "How to read 7q22.1", html: locusSkillCard("7q22.1") };
   }
   if (skillId === "structural_abnormalities" && (step === "assemble" || step === "comparison")) {
+    if (caseData?.assembly?.transform?.type === "deletion") {
+      return { id: "skill-deletion", title: "A schematic deletion", html: deletionSkillCard() };
+    }
     return { id: "skill-inversion", title: "Paracentric inversion", html: inversionSkillCard() };
   }
   if (skillId === "karyotype_construction" && step === "karyotype") {
-    return { id: "skill-karyotype", title: "How a normal karyotype is organized", html: normalKaryotypeCard() };
+    return { id: "skill-karyotype", title: "How a karyotype is organized", html: normalKaryotypeCard() };
   }
   if (skillId === "iscn_interpretation" && step === "iscn_interpretation") {
     return { id: "skill-mosaic", title: "Mosaic notation", html: mosaicSkillCard() };
@@ -300,14 +326,20 @@ function inversionSkillCard() {
 function normalKaryotypeCard() {
   return `
     <p>Homologs are the two copies of one chromosome. Pair them by relative size, centromere position, and band pattern. Both copies go in that chromosome's numbered box: two chromosomes in box 1, two in box 2, and so on.</p>
-    <p>X sits with the C group. Y sits with the G group. This skill is a normal karyotype: do not look for a disease abnormality.</p>
+    <p>X sits with the C group. Y sits with the G group. A chromosome can have one copy or three. Every copy still goes in that chromosome's numbered box, including a chromosome whose arm has changed.</p>
     ${denverCard()}`;
+}
+
+function deletionSkillCard() {
+  return `
+    <p>A deletion removes a segment. The rest of the chromosome stays in order. This exercise removes band 6q21 from a normal chromosome 6 map. It is a schematic teaching change.</p>
+    <p>Compare the shortened map with the normal chromosome. The missing piece is the finding. No syndrome is attached to this map.</p>`;
 }
 
 function mosaicSkillCard() {
   return `
     <p>Mosaic notation lists more than one cell line. A slash separates the lines. The number in square brackets is how many cells were counted in that line, not a chromosome count.</p>
-    <p>Example shape: 45,X[12]/46,XX[18]. Twelve cells have a single X. Eighteen cells have two X chromosomes. The next screen asks you to read a string in that form. The explanation stays hidden until you submit.</p>`;
+    <p>Example shape: 47,XX,+8[6]/46,XX[14]. Six cells have an extra chromosome 8. Fourteen cells are 46,XX. The next screen asks you to read that string. The explanation stays hidden until you submit.</p>`;
 }
 
 function enumerationSkillCard() {
@@ -320,7 +352,7 @@ function enumerationSkillCard() {
 
 function breakApartSkillCard() {
   return `
-    <p>A break-apart probe flanks one locus. This skill is about that signal relationship, not a named disease.</p>
+    <p>A break-apart probe flanks one locus. This skill is about that signal relationship, not a named disease. The 7q22.1 pair in this exercise is a synthetic demonstration of probe design and of how to read fused versus split signals. It is not a validated clinical assay, and a split does not name a partner gene.</p>
     ${oneStrategy("Break-apart")}
     <ul class="comp-list">
       <li>Intact locus — the flanking signals stay together.</li>
@@ -331,25 +363,32 @@ function breakApartSkillCard() {
 
 function probeLocusSkillCard() {
   return `
-    <p>A probe position is a cytogenetic address, read in order:</p>
+    <p>A FISH probe is a fluorescent DNA sequence. It hybridizes where the matching sequence is located; the probe is not placed at an arbitrary spot.</p>
+    <p><strong>Why map the address?</strong> The location tells you what a fluorescent signal represents. That helps you choose a probe for the question and interpret whether a target is present, missing, rearranged, or joined to another locus.</p>
+    <p>Read a cytogenetic address in order:</p>
     <ol class="comp-list">
       <li>chromosome</li>
       <li>arm (p or q)</li>
       <li>band</li>
-      <li>locus written as one address</li>
-      <li>probe sitting on that address</li>
+      <li>the locus written as one address</li>
     </ol>
-    <p>9q34 means chromosome 9, long arm, band 34. The next screen asks you to place a probe. The correct band is not highlighted.</p>`;
+    <p>In this example the teaching probe sits at <strong>7q22.1</strong>: chromosome 7, long arm, band 22, sub-band 1. That is the same address used for the chromosome 7 band lesson. The probe is an educational definition for this course.</p>
+    <p>The map connects the signal to a chromosome and a band. Next, place the probe at 7q22.1. The correct band will not be highlighted.</p>`;
 }
 
 function qualitySkillCard() {
   return `
-    <p>Score a nucleus only when its signals belong to one cell.</p>
+    <p>Score a nucleus only when its signals belong to one cell and can be counted. The pictures above are the patterns.</p>
     <ul class="comp-list">
-      <li><strong>Clear discrete signals</strong> in one nuclear outline — scorable.</li>
-      <li><strong>Overlapping nuclei</strong> — two outlines overlap, so a signal cannot be assigned to one nucleus. Unscorable.</li>
+      <li><strong>Scorable</strong> — one intact outline and discrete signals.</li>
+      <li><strong>Overlapping nuclei</strong> — two outlines meet, so a signal may belong to either cell.</li>
+      <li><strong>Truncated nucleus</strong> — the outline is cut off by the edge of the field.</li>
+      <li><strong>Weak signals</strong> — the spots are too faint to count.</li>
+      <li><strong>Excessive background</strong> — extra paint is scattered through the field.</li>
+      <li><strong>Ambiguous signals</strong> — the spots are smeared and cannot be separated into a count.</li>
+      <li><strong>Poor nuclear morphology</strong> — the outline is ragged or broken, not one intact nucleus.</li>
     </ul>
-    <p>This drawing set models overlap. It does not draw truncation, background haze, or ambiguous paint as separate pictures. Classify the later nuclei from the outline and the signals you can see.</p>`;
+    <p>The nuclei you score next are not labeled. If a nucleus is unscorable, name the pattern and leave the count blank.</p>`;
 }
 
 function oneStrategy(name) {
@@ -414,17 +453,6 @@ function fishFamilyHints(id, step) {
   return ladders[family]?.[step] || null;
 }
 
-function practiceKaryotypeHints(disease) {
-  const hints = [
-    "The tray is the whole set. Only the active group's places are open.",
-    "Choose chromosomes by size, centromere position, and band pattern.",
-  ];
-  hints.push(disease
-    ? "An abnormal homolog still belongs with its own chromosome number."
-    : "X is placed with the C group. Y is placed with the G group.");
-  return hints;
-}
-
 function genericHints(disease, step) {
   const item = canonicalCase(disease);
   if (step === "probe_strategy") {
@@ -438,73 +466,21 @@ function genericHints(disease, step) {
   return ["Use the chromosome you can see. The formal name of the condition comes later."];
 }
 
-export function strategyFeedback(diseaseId, choice, ok) {
-  if (ok) {
-    return {
-      learn: "That strategy matches the biological question: two known loci, from two chromosomes, brought together.",
-      practice: "That matches the question.",
-    };
-  }
-  const enumeration = /enumeration/i.test(choice || "");
-  if (diseaseId === "cml" && enumeration) {
-    return {
-      learn: "Enumeration probes answer chromosome copy-number questions. In this case the question is whether two defined loci from chromosomes 9 and 22 have been brought together by a rearrangement. Compare the strategies again.",
-      practice: "Enumeration tests copy number. This case asks whether two known loci are rearranged together.",
-    };
-  }
-  if (diseaseId === "cml") {
-    return {
-      learn: "Break-apart asks whether one locus was disrupted. A target/reference assay asks whether one region is missing. This case asks whether ABL1 on chromosome 9 and BCR on chromosome 22 have been brought together.",
-      practice: "This case asks whether two known loci are rearranged together.",
-    };
-  }
-  return {
-    learn: "Match the strategy to the question: copy number, a missing region, one disrupted locus, or two loci joined.",
-    practice: "That strategy answers a different question than this case.",
+export function strategyFeedback(choice, ok, expected, probes = []) {
+  const targets = probes
+    .map((probe) => `${probe.probe_name || "probe"} at ${probe.target_locus || "its target"}`)
+    .join(" and ");
+  const targetsText = targets ? ` The probes in this case mark ${targets}.` : "";
+  const explanations = {
+    "chromosome enumeration": `This assay asks how many copies of its chromosome-specific target are present. A centromeric signal counts copies; it does not test for a structural rearrangement.${targetsText}`,
+    "loss of a specific locus": `This assay asks whether the target region is missing. Compare the target signal with the reference signal: a retained reference helps distinguish a localized loss from general signal failure.${targetsText}`,
+    "rearrangement of a particular locus": `This assay asks whether one locus is disrupted. Break-apart probes flank that locus; separated signals support rearrangement but do not identify its partner.${targetsText}`,
+    "fusion between two defined loci": `This assay asks whether two defined loci have been brought together. Their normal positions are separate; colocalized signals provide evidence of fusion.${targetsText}`,
+    "chromosome origin": `This assay asks which chromosome contributed a large exchanged segment. It addresses material origin, not a small gene-level breakpoint.${targetsText}`,
+    "chromosome-wide visualization": `This assay visualizes large stretches of chromosome material to show chromosome origin or exchange. It is not designed to resolve a small gene-level change.${targetsText}`,
   };
-}
-
-/** Assessment keeps the explanation off the working screen. Learn and Practice keep the feedback they were given. */
-export function applyMode(session, step, fb, { lock = false } = {}) {
-  if (session?.instructionMode !== "assessment" || !fb?.scored) return fb;
-  session.pedagogy = session.pedagogy || { hintLevel: {}, first: {} };
-  if (lock && !session.pedagogy.first[step]) {
-    session.pedagogy.first[step] = { ok: fb.tone === "ok", title: fb.title, body: fb.body };
-  }
-  if (!lock) {
-    return {
-      tone: "review",
-      title: "Submit to record this response.",
-      body: "Assessment does not explain the answer during the activity.",
-    };
-  }
-  return {
-    tone: "ok",
-    title: "Response recorded.",
-    body: "The explanation is withheld until the summary.",
-  };
-}
-
-export function voice(mode, { ok, learn, practice }) {
-  if (mode === "assessment") {
-    return { tone: "ok", title: "Response recorded.", body: "The explanation is withheld until the summary." };
-  }
-  if (ok) {
-    return {
-      tone: "ok",
-      title: "Recorded.",
-      body: mode === "learn" ? "That follows the question you were just shown." : "Continue.",
-    };
-  }
-  return {
-    tone: "review",
-    title: mode === "learn" ? "Use the distinction you just saw" : "Try again",
-    body: mode === "learn" ? learn : practice,
-  };
-}
-
-export function modeLabel(mode) {
-  return { learn: "Learn", practice: "Practice", assessment: "Assessment" }[mode] || "Learn";
+  const explanation = explanations[expected] || "Use the case question and the probe targets to identify what this assay is designed to detect.";
+  return ok ? `Correct. ${explanation}` : `Reconsider the case question. ${explanation}`;
 }
 
 function strategyCatalog() {
@@ -552,7 +528,8 @@ function cmlLocusCard() {
       <div><p class="group-label">Chromosome 9</p><p>q arm → 9q34 → ABL1</p></div>
       <div><p class="group-label">Chromosome 22</p><p>q arm → 22q11.2 → BCR</p></div>
     </div>
-    <p>The next screen asks you to place the probe. The bands above will not stay highlighted as the answer.</p>`;
+    <p>Why use both targets? In a typical cell, ABL1 and BCR are on separate chromosomes. The translocation brings them together. A dual-fusion probe pair marks each gene, so fusion signals provide evidence that the loci are now together.</p>
+    <p>The next screen asks you to place a probe. The bands above will not stay highlighted as the answer.</p>`;
 }
 
 function derivativeCard() {
@@ -577,10 +554,10 @@ function cmlSignalCard() {
 
 function aneuploidyCard(chr) {
   return `
-    <p>Homologs are the two copies of one chromosome number. They sit together in that number's box.</p>
-    <p>A whole extra or missing chromosome changes the count. It does not have to change the banding of that chromosome. Every copy still goes in the same numbered box.</p>
-    <p>For this case, watch chromosome ${chr}.</p>
-    ${denverCard()}`;
+    <p>Observe the chromosomes before you name the finding.</p>
+    <p>First compare a normal pair. Small differences in bend or condensation are ordinary variation in the drawing.</p>
+    <p>Then count chromosome ${chr}. A usual pair has two copies. An extra or missing copy does not have to change the banding, and every copy of that number still belongs in the same box.</p>
+    <p>The later steps ask you to characterize the change and interpret it. Arranging the whole cell is available after the comparison. It is not the first task.</p>`;
 }
 
 function copyCard(chr) {
@@ -609,7 +586,7 @@ export function centromereKeyHtml() {
 
 function denverCard() {
   return `
-    <p>Build the set one Denver group at a time. Size, centromere position, and band pattern decide the group.</p>
+    <p>Start with five landmark pairs, then tell apart the lookalikes: 4 from 5, 9 from X, and 13 from 14 from 15. Match each homolog by length, centromere position, and band pattern.</p>
     ${centromereKeyHtml()}
     <ul class="comp-list">
       <li>A — large metacentric chromosomes: 1–3</li>

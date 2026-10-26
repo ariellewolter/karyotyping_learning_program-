@@ -273,7 +273,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 0.85,
+      "basis": "Acquired abnormality in a neoplastic specimen: a specimen with high tumor content, so normal nuclei remain alongside the abnormal clone. Authored teaching proportion, not a population estimate."
+    }
   },
   "hints": [
     "Red marks MYC on chromosome 8. Green marks IGH on chromosome 14.",

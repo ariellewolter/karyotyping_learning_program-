@@ -1,5 +1,5 @@
 import { resetKaryotype } from "./karyotype.js";
-import { initAssembly } from "./banding.js?v=20261006l";
+import { initAssembly } from "./banding.js?v=20261024c";
 import { fishFlow, initFish } from "./fish.js?v=20261006j";
 import { seedFrom } from "./util.js";
 
@@ -50,6 +50,7 @@ export function emptySkillScores() {
     fish_signals: null,
     fish_counts: null,
     fish_quality: null,
+    fish_field: null,
     fish_strategy: null,
     fish_interpretation: null,
   };
@@ -112,10 +113,15 @@ export function newSession({ caseData, chromosomes, module, integrated, maps, pr
   } else {
     steps = [module, "summary"];
   }
+  steps = withMetaphaseImage(steps, chromosomes);
+  const requested = Number(new URLSearchParams(globalThis.location?.search || "").get("seed"));
+  const presentation = Number.isInteger(requested) && requested >= 0 ? requested : Math.floor(Math.random() * 1e9);
   return {
     caseData,
     chromosomes,
     module,
+    presentation,
+    variation: presentation,
     integrated: Boolean(integrated),
     steps,
     stepIndex: 0,
@@ -169,6 +175,13 @@ export function newSession({ caseData, chromosomes, module, integrated, maps, pr
     startedAt: Date.now(),
     submitted: false,
   };
+}
+
+function withMetaphaseImage(steps, chromosomes) {
+  if (!chromosomes?.length || steps.includes("metaphase") || !steps.includes("karyotype")) return steps;
+  const next = steps.slice();
+  next.splice(steps.indexOf("karyotype"), 0, "metaphase");
+  return next;
 }
 
 function integratedSteps(caseData) {

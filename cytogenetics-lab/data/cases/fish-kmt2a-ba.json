@@ -213,7 +213,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 0.65,
+      "basis": "Acquired abnormality in a neoplastic specimen: diagnostic marrow with residual normal hematopoiesis, so normal nuclei remain alongside the abnormal clone. Authored teaching proportion, not a population estimate."
+    }
   },
   "hints": [
     "A split means KMT2A is rearranged. The assay does not name the partner."

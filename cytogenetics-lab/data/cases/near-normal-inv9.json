@@ -1,0 +1,56 @@
+{
+  "case_id": "near-normal-inv9",
+  "title": "Pericentric inversion of chromosome 9",
+  "difficulty": "introductory",
+  "case_type": "constitutional",
+  "modules": ["karyotype", "abnormality", "iscn_interpretation", "iscn_construction", "disease"],
+  "clinical_history": "Demonstration metaphase prepared for laboratory teaching. One chromosome 9 has a pericentric inversion of the heterochromatin region. No clinical abnormality is provided.",
+  "unknown_prompt": "The chromosome count is 46 and the arms of chromosome 9 are still both present. Compare the band order of the two chromosomes 9, then write the karyotype. Do not assign a disease from this finding alone.",
+  "chromosome_count": 46,
+  "sex_chromosomes": "XY",
+  "chromosome_set": {
+    "sex": "XY",
+    "variants": { "9a": "inv(9)(p12q13)" }
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": ["inversion"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["inversion", "deletion", "translocation"]
+  },
+  "chromosomes_involved": ["9"],
+  "expected_iscn": "46,XY,inv(9)(p12q13)",
+  "accepted_iscn_variants": ["46,XY,inv(9)(p12q13)"],
+  "iscn_prompt": "46,XY,inv(9)(p12q13)",
+  "plain_language_interpretation": "A male karyotype with 46 chromosomes and a pericentric inversion of one chromosome 9, with breakpoints at p12 and q13. The chromosome length is unchanged because the segment is reversed.",
+  "interpretation_items": {
+    "chromosome_count": "46",
+    "sex_chromosomes": "XY",
+    "numerical": "none",
+    "structural": "inversion",
+    "chromosomes_involved": "9",
+    "arm": "p;q",
+    "band": "p12"
+  },
+  "diagnosis": "No disease is assigned from this karyotype alone",
+  "diagnosis_options": [
+    "No disease is assigned from this karyotype alone",
+    "Down syndrome (trisomy 21)",
+    "Cri-du-chat syndrome",
+    "Chronic myeloid leukemia"
+  ],
+  "explanation": "A pericentric inversion reverses a segment that includes the centromere. inv(9)(p12q13) is a common heteromorphic change. The two chromosomes 9 stay the same length; the band order between p12 and q13 is reversed on one homolog. This teaching case does not assign a syndrome from that finding.",
+  "hints": [
+    "Count the chromosomes first. An inversion does not change the count.",
+    "Compare the two chromosomes 9. Look for a reversed band order around the centromere, not a missing arm.",
+    "Write the breakpoints inside one set of parentheses with no semicolon: inv(9)(p12q13)."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

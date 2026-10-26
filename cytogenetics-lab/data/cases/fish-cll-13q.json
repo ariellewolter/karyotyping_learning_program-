@@ -217,7 +217,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 0.6,
+      "basis": "Acquired abnormality in a neoplastic specimen: peripheral blood containing residual normal lymphocytes and other leukocytes, so normal nuclei remain alongside the abnormal clone. Authored teaching proportion, not a population estimate."
+    }
   },
   "hints": [
     "Red is 13q14. Green is the 13q34 control.",

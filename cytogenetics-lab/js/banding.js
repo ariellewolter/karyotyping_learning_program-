@@ -34,13 +34,54 @@ export function locusString(parts) {
 }
 
 export function resolutionKey(seg, level) {
+  if (seg.role === "unknown") return seg.id || "unknown";
   if (seg.role === "centromere" || seg.arm === "cen") return `${seg.chromosome || ""}cen`;
   if (level === "region") return `${seg.chromosome}${seg.arm}${seg.region}`;
   if (level === "band") {
     if (seg.band == null) return `${seg.chromosome}${seg.arm}${seg.region}`;
     return `${seg.chromosome}${seg.arm}${seg.region}${seg.band}`;
   }
+  if (level === "550") {
+    if (seg.band == null) return `${seg.chromosome}${seg.arm}${seg.region}`;
+    const first = seg.subband == null ? "" : String(seg.subband)[0];
+    return `${seg.chromosome}${seg.arm}${seg.region}${seg.band}${first ? `.${first}` : ""}`;
+  }
   return seg.label || seg.id;
+}
+
+/** Display resolutions. 400 and 550 are approximated by merging the 850-level map. */
+export const RESOLUTIONS = [
+  { id: "400", label: "400 bands", level: "band" },
+  { id: "550", label: "550 bands", level: "550" },
+  { id: "detailed", label: "Detailed", level: null },
+];
+
+/**
+ * Merge drawn segments to a coarser band level. Each merged band takes the
+ * stain that covers most of its length. Origin and orientation are kept.
+ */
+export function piecesAtResolution(segments, resolution) {
+  const level = RESOLUTIONS.find((item) => item.id === String(resolution || ""))?.level;
+  if (!level || !segments?.length) return segments;
+  return flattenToLevel(segments, level).map((group) => ({ ...group, stain: dominantStain(group.members), collapsed: true }));
+}
+
+function dominantStain(members) {
+  const totals = new Map();
+  for (const member of members || []) {
+    if (member.role === "centromere") continue;
+    const stain = member.stain ?? 0;
+    totals.set(stain, (totals.get(stain) || 0) + (member.weight || 1));
+  }
+  let best = members?.[0]?.stain ?? 0;
+  let most = -1;
+  for (const [stain, total] of totals) {
+    if (total > most || (total === most && stain > best)) {
+      best = stain;
+      most = total;
+    }
+  }
+  return best;
 }
 
 export function flattenToLevel(segments, level = "band") {
@@ -60,12 +101,12 @@ export function flattenToLevel(segments, level = "band") {
     groups.push({
       key,
       id: key,
-      label: isCen ? "cen" : key,
+      label: isCen ? "cen" : seg.role === "unknown" ? seg.label : key,
       chromosome: seg.chromosome,
       arm: seg.arm,
       region: parsed.region ?? seg.region,
       band: level === "region" ? null : (parsed.band ?? seg.band),
-      subband: level === "subband" ? (parsed.subband ?? seg.subband) : null,
+      subband: level === "subband" ? (parsed.subband ?? seg.subband) : level === "550" ? (parsed.subband ?? null) : null,
       role: isCen ? "centromere" : (seg.role || "band"),
       stain: seg.stain,
       weight: seg.weight || 1,
@@ -84,21 +125,49 @@ export function cloneSegments(segments) {
   return (segments || []).map((s) => ({ ...s, members: undefined }));
 }
 
+/** A published band name covers itself and its finer subdivisions. 9q34 covers 9q34.11. 5p15.3 covers 5p15.33. */
+export function labelCovers(query, label) {
+  const q = String(query || "").replace(/\s+/g, "");
+  const lab = String(label || "").replace(/\s+/g, "");
+  if (!q || !lab) return false;
+  if (q === lab) return true;
+  if (!lab.startsWith(q)) return false;
+  const extra = lab.slice(q.length);
+  if (extra.startsWith(".")) return true;
+  return q.includes(".") && /^\d+$/.test(extra);
+}
+
+export function segmentMatches(seg, query) {
+  if (!seg || query == null || query === "") return false;
+  const q = String(query).replace(/\s+/g, "");
+  if ([seg.id, seg.label, seg.parent_band].some((value) => labelCovers(q, value))) return true;
+  if (seg.parent_region && seg.parent_region === q) return true;
+  return resolutionKey(seg, "band") === q || resolutionKey(seg, "region") === q;
+}
+
 function matchesLabels(seg, labels) {
-  const set = new Set((labels || []).map(String));
-  return set.has(seg.id) || set.has(seg.label) || set.has(seg.parent_region) || set.has(resolutionKey(seg, "band")) || set.has(resolutionKey(seg, "region"));
+  return (labels || []).some((label) => segmentMatches(seg, label));
+}
+
+function matchSpan(segments, query) {
+  const hits = [];
+  (segments || []).forEach((seg, index) => {
+    if (segmentMatches(seg, query)) hits.push(index);
+  });
+  if (!hits.length) return null;
+  return { start: hits[0], end: hits[hits.length - 1] };
 }
 
 function inRange(seg, fromLabel, toLabel, all) {
   if (!fromLabel && !toLabel) return false;
-  const ids = all.map((s) => s.id);
-  const a = ids.indexOf(fromLabel);
-  const b = ids.indexOf(toLabel);
-  const i = ids.indexOf(seg.id);
-  if (a < 0 || b < 0 || i < 0) {
-    return matchesLabels(seg, [fromLabel, toLabel].filter(Boolean));
-  }
-  return i >= Math.min(a, b) && i <= Math.max(a, b);
+  const from = matchSpan(all, fromLabel);
+  const to = matchSpan(all, toLabel);
+  if (!from || !to) return matchesLabels(seg, [fromLabel, toLabel].filter(Boolean));
+  const lo = Math.min(from.start, to.start);
+  const hi = Math.max(from.end, to.end);
+  const index = all.findIndex((item) => item.id === seg.id && item.start_bp === seg.start_bp);
+  const at = index >= 0 ? index : all.indexOf(seg);
+  return at >= lo && at <= hi;
 }
 
 export function applyTransform(segments, transform) {
@@ -107,28 +176,40 @@ export function applyTransform(segments, transform) {
   const type = transform.type;
 
   if (type === "deletion") {
-    out = out.filter((s) => {
-      if (transform.labels && matchesLabels(s, transform.labels)) return false;
-      if (transform.from && transform.to && inRange(s, transform.from, transform.to, cloneSegments(segments))) return false;
-      return true;
-    });
+    if (transform.terminal_through) {
+      const span = matchSpan(out, transform.terminal_through);
+      if (span) {
+        out = transform.arm === "q" ? out.slice(0, span.start) : out.slice(span.end + 1);
+      }
+    } else if (transform.arm_only) {
+      const arm = transform.arm_only;
+      const indexes = out.map((segment, index) => (segment.arm === arm ? index : -1)).filter((index) => index >= 0);
+      if (indexes.length) {
+        out = arm === "p" ? out.slice(indexes[indexes.length - 1]) : out.slice(0, indexes[0] + 1);
+      }
+    } else {
+      const source = cloneSegments(segments);
+      out = out.filter((segment) => {
+        if (transform.labels && matchesLabels(segment, transform.labels)) return false;
+        if (transform.from && transform.to && inRange(segment, transform.from, transform.to, source)) return false;
+        return true;
+      });
+    }
   } else if (type === "duplication") {
     const labels = transform.labels || [];
-    const next = [];
-    for (const s of out) {
-      next.push(s);
-      if (matchesLabels(s, labels) || (transform.from && inRange(s, transform.from, transform.to, out))) {
-        next.push({ ...s, id: `${s.id}dup`, origin: s.chromosome, duplicated: true });
-      }
+    const copied = out.map((s, index) => (matchesLabels(s, labels) || (transform.from && inRange(s, transform.from, transform.to, out)) ? index : -1)).filter((index) => index >= 0);
+    if (copied.length) {
+      const lo = copied[0];
+      const hi = copied[copied.length - 1];
+      const repeat = out.slice(lo, hi + 1).map((s) => ({ ...s, id: `${s.id}dup`, origin: s.chromosome, duplicated: true }));
+      out = [...out.slice(0, hi + 1), ...repeat, ...out.slice(hi + 1)];
     }
-    out = next;
   } else if (type === "inversion") {
-    const ids = out.map((s) => s.id);
-    const a = ids.indexOf(transform.from);
-    const b = ids.indexOf(transform.to);
-    if (a >= 0 && b >= 0) {
-      const lo = Math.min(a, b);
-      const hi = Math.max(a, b);
+    const a = matchSpan(out, transform.from);
+    const b = matchSpan(out, transform.to);
+    if (a && b) {
+      const lo = Math.min(a.start, b.start);
+      const hi = Math.max(a.end, b.end);
       const mid = out.slice(lo, hi + 1).reverse().map((s) => ({
         ...s,
         orientation: s.orientation === "reverse" ? "forward" : "reverse",
@@ -148,27 +229,43 @@ export function applyTransform(segments, transform) {
     }));
     out = arm === "q" ? [...mirror, ...cen, ...kept] : [...kept, ...cen, ...mirror];
   } else if (type === "ring") {
-    out = out.filter((s) => !matchesLabels(s, transform.remove_labels || []));
-    out = out.map((s, i) => ({ ...s, ring: true, proximal_order: i }));
+    if (transform.from && transform.to) {
+      const a = matchSpan(out, transform.from);
+      const b = matchSpan(out, transform.to);
+      if (a && b) {
+        const lo = Math.min(a.start, b.start);
+        const hi = Math.max(a.end, b.end);
+        out = out.slice(lo, hi + 1);
+      }
+    } else {
+      out = out.filter((s) => !matchesLabels(s, transform.remove_labels || []));
+    }
+    out = out.map((s) => ({ ...s, ring: true }));
   } else if (type === "translocation_derivative") {
     const attach = (transform.attach_segments || []).map((s) => ({ ...s, origin: s.chromosome, translocated: true }));
     if (transform.keep_from) {
-      const idx = out.findIndex((s) => s.id === transform.keep_from || s.label === transform.keep_from);
-      const tail = idx >= 0 ? out.slice(idx) : [];
+      const span = matchSpan(out, transform.keep_from);
+      const tail = span ? out.slice(span.start) : [];
       out = [...attach, ...tail];
     } else {
-      const keepThrough = transform.keep_through;
-      const idx = out.findIndex((s) => s.id === keepThrough || s.label === keepThrough);
-      const head = idx >= 0 ? out.slice(0, idx + 1) : out;
+      const span = matchSpan(out, transform.keep_through);
+      const head = span ? out.slice(0, span.end + 1) : out;
       out = [...head, ...attach];
     }
   } else if (type === "robertsonian") {
-    const attach = (transform.attach_segments || []).filter((s) => s.arm === "q" || s.role === "centromere");
-    const kept = out.filter((s) => s.arm === "q" || s.role === "centromere");
-    out = [
-      ...kept.map((s) => ({ ...s, robertsonian: true })),
-      ...attach.map((s) => ({ ...s, origin: s.chromosome, translocated: true, robertsonian: true })),
-    ];
+    const ownQ = out.filter((s) => s.arm === "q").reverse().map((s) => ({
+      ...s,
+      robertsonian: true,
+      orientation: s.orientation === "reverse" ? "forward" : "reverse",
+    }));
+    const cen = out.filter((s) => s.role === "centromere").map((s) => ({ ...s, robertsonian: true }));
+    const partnerQ = (transform.attach_segments || []).filter((s) => s.arm === "q").map((s) => ({
+      ...s,
+      origin: s.chromosome,
+      translocated: true,
+      robertsonian: true,
+    }));
+    if (ownQ.length && partnerQ.length) out = [...ownQ, ...cen, ...partnerQ];
   }
 
   return out.map((s, i) => ({ ...s, proximal_order: i }));
@@ -176,21 +273,26 @@ export function applyTransform(segments, transform) {
 
 export function attachFromMap(maps, chromosome, fromLabel, toLabel, orientation) {
   const segs = maps?.chromosomes?.[String(chromosome)]?.segments || [];
-  const i = segs.findIndex((s) => s.id === fromLabel || s.label === fromLabel);
-  if (i < 0) return [];
-  if (!toLabel) return cloneSegments(segs.slice(i));
-  const j = segs.findIndex((s) => s.id === toLabel || s.label === toLabel);
-  if (j < 0) return [];
-  const lo = Math.min(i, j);
-  const hi = Math.max(i, j);
-  let slice = cloneSegments(segs.slice(lo, hi + 1));
-  if (orientation === "reverse") {
-    slice = slice.reverse().map((s) => ({
-      ...s,
-      orientation: s.orientation === "reverse" ? "forward" : "reverse",
-    }));
+  const from = matchSpan(segs, fromLabel);
+  if (!from) return [];
+  if (!toLabel) {
+    const tail = cloneSegments(segs.slice(from.start));
+    return orientation === "reverse" ? tail.reverse().map(orientSegment) : tail;
   }
+  const to = matchSpan(segs, toLabel);
+  if (!to) return [];
+  const lo = Math.min(from.start, to.start);
+  const hi = Math.max(from.end, to.end);
+  let slice = cloneSegments(segs.slice(lo, hi + 1));
+  if (orientation === "reverse") slice = slice.reverse().map(orientSegment);
   return slice;
+}
+
+function orientSegment(segment) {
+  return {
+    ...segment,
+    orientation: segment.orientation === "reverse" ? "forward" : "reverse",
+  };
 }
 
 export function resolutionForLocus(label) {
@@ -449,4 +551,98 @@ export function shiftSelected(assembly, dir) {
   if (j >= stack.length) return assembly;
   [stack[i], stack[j]] = [stack[j], stack[i]];
   return { ...assembly, stack, selectedId: id };
+}
+
+export const CHROMOSOME_ORDER = [
+  "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+  "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "X", "Y",
+];
+
+const SHADE = ["pale", "light", "medium", "dark", "black", "variable", "stalk"];
+
+function schematicSegments(chromosomeId, template) {
+  const segments = [];
+  let order = 0;
+  const pushArm = (arm, blocks) => {
+    (blocks || []).forEach((block, index) => {
+      const weight = Array.isArray(block) ? block[0] : 4;
+      const stain = Array.isArray(block) ? block[1] : 0;
+      const shade = SHADE[stain] || "band";
+      const n = index + 1;
+      segments.push({
+        id: `${chromosomeId}${arm}-${shade}-${n}`,
+        chromosome: String(chromosomeId),
+        arm,
+        region: n,
+        band: null,
+        label: `${arm} ${shade} ${n}`,
+        role: "band",
+        stain,
+        weight: Math.max(1, Math.round(Number(weight) || 1)),
+        orientation: "forward",
+        proximal_order: order++,
+      });
+    });
+  };
+  pushArm("p", template?.p);
+  segments.push({
+    id: `${chromosomeId}cen`,
+    chromosome: String(chromosomeId),
+    arm: "cen",
+    region: null,
+    band: null,
+    label: "cen",
+    role: "centromere",
+    stain: 5,
+    weight: 5,
+    orientation: "forward",
+    proximal_order: order++,
+  });
+  pushArm("q", template?.q);
+  return segments;
+}
+
+/** One normal chromosome after another. Real band maps are used where they exist. */
+export function chromosomeSequenceCase(maps, templates) {
+  const chromosomes = { ...(maps?.chromosomes || {}) };
+  for (const id of CHROMOSOME_ORDER) {
+    if (chromosomes[id]?.segments?.length) continue;
+    const template = templates?.chromosomes?.[id];
+    if (!template) continue;
+    chromosomes[id] = { id, schematic: true, segments: schematicSegments(id, template) };
+  }
+  const augmented = { ...(maps || {}), chromosomes };
+  const steps = [];
+  const stepAssembly = {};
+  const stepTitles = {};
+  CHROMOSOME_ORDER.forEach((id) => {
+    if (!augmented.chromosomes?.[id]?.segments?.length) return;
+    const step = steps.length === 0 ? "assemble" : `assemble_${steps.length + 1}`;
+    const schematic = Boolean(augmented.chromosomes[id].schematic);
+    steps.push(step);
+    stepTitles[step] = `Chromosome ${id}`;
+    stepAssembly[step] = {
+      chromosome: id,
+      resolution: schematic ? "piece" : "band",
+      transform: { type: "none" },
+      schematic_note: schematic
+        ? "These pieces are a G-band sketch. The labels count from pter and are not official band addresses."
+        : "",
+    };
+  });
+  const first = steps[0];
+  return {
+    maps: augmented,
+    caseData: {
+      case_id: "chromosome-sequence",
+      title: "Assemble each chromosome",
+      clinical_history: "Order the pieces from pter at the top to qter at the bottom. A correct check lets you continue to the next chromosome.",
+      chromosomes: [],
+      abnormality_category: "normal",
+      assembly: stepAssembly[first] || null,
+      activitySteps: steps,
+      stepAssembly,
+      stepTitles,
+    },
+  };
 }

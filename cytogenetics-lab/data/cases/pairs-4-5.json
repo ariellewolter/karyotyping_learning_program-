@@ -1,0 +1,55 @@
+{
+  "case_id": "pairs-4-5",
+  "title": "Chromosomes 4 and 5",
+  "difficulty": "introductory",
+  "case_type": "constitutional",
+  "modules": ["karyotype", "abnormality", "iscn_interpretation", "iscn_construction"],
+  "clinical_history": "Demonstration metaphase prepared for laboratory teaching. The task is to separate chromosomes 4 and 5. No clinical abnormality is provided.",
+  "unknown_prompt": "Two large submetacentric chromosomes are easy to place in the same group. Use band order to decide which pair is 4 and which is 5, then write the karyotype.",
+  "chromosome_count": 46,
+  "sex_chromosomes": "XY",
+  "learning_rounds": [
+    {
+      "id": "group-b",
+      "title": "4 and 5",
+      "note": "Chromosomes 4 and 5 are both large and submetacentric. The tray contains both. Match each homolog by band order. Size alone does not separate them.",
+      "slots": ["4", "5"]
+    }
+  ],
+  "chromosome_set": { "sex": "XY" },
+  "abnormality_category": "normal",
+  "abnormality_type": [],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy", "deletion"]
+  },
+  "chromosomes_involved": [],
+  "expected_iscn": "46,XY",
+  "accepted_iscn_variants": ["46,XY"],
+  "iscn_prompt": "46,XY",
+  "plain_language_interpretation": "A normal male diploid karyotype. Chromosomes 4 and 5 are both present as normal pairs.",
+  "interpretation_items": {
+    "chromosome_count": "46",
+    "sex_chromosomes": "XY",
+    "numerical": "none",
+    "structural": "none",
+    "chromosomes_involved": "none",
+    "arm": "none",
+    "band": "none"
+  },
+  "diagnosis": "No cytogenetic abnormality identified (normal male karyotype)",
+  "explanation": "Chromosomes 4 and 5 belong to group B. Both are large submetacentric chromosomes, and the difference is the band order along the arms. This demonstration cell has 46 chromosomes, one X, and one Y, with no extra, missing, or rearranged chromosome.",
+  "hints": [
+    "Place both chromosomes in group B before deciding which pair is 4.",
+    "Compare the dark and light bands from the centromere toward the arm ends.",
+    "A normal male study is written 46,XY when no further change is present."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

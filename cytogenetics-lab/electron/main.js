@@ -5,7 +5,8 @@
  * fetch() keep working.
  */
 
-import { app, BrowserWindow, protocol } from "electron";
+import { spawnSync } from "node:child_process";
+import { app, BrowserWindow, protocol, shell } from "electron";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -68,11 +69,31 @@ function createWindow() {
       sandbox: true,
     },
   });
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (/^https:\/\//i.test(url)) shell.openExternal(url);
+    return { action: "deny" };
+  });
   win.loadURL(`${SCHEME}://lab/index.html`);
+}
+
+function referenceResponse(requestUrl) {
+  const url = new URL(requestUrl);
+  const script = path.join(ROOT, "reference-database", "src", "adapters", "api.py");
+  const unavailable = { available: false, reason: "Reference module is unavailable. Laboratory activities are unchanged." };
+  if (!fs.existsSync(script)) {
+    return new Response(JSON.stringify(unavailable), { headers: { "content-type": "application/json" } });
+  }
+  const result = spawnSync("python3", [script, url.pathname, url.search.replace(/^\?/, "")], { encoding: "utf8" });
+  if (result.status !== 0 || !result.stdout) {
+    return new Response(JSON.stringify(unavailable), { headers: { "content-type": "application/json" } });
+  }
+  return new Response(result.stdout, { headers: { "content-type": "application/json" } });
 }
 
 app.whenReady().then(() => {
   protocol.handle(SCHEME, async (request) => {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/api/reference")) return referenceResponse(request.url);
     const filePath = fileForRequest(request.url);
     if (!filePath) return new Response("Forbidden", { status: 403 });
     try {

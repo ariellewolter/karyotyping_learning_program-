@@ -1,0 +1,41 @@
+{
+  "built": "2026-10-25",
+  "sources": [
+    {
+      "source_id": "medgen",
+      "title": "NCBI MedGen",
+      "url": "https://ftp.ncbi.nlm.nih.gov/pub/medgen/",
+      "retrieved": "2026-10-25",
+      "file_date": "FTP files retrieved for this build; MedGen is refreshed weekly",
+      "license_note": "NLM-authored MedGen content is public domain. SNOMED CT strings and OMIM narrative were not copied. External identifiers, including OMIM numbers, were stored.",
+      "record_count": 54776
+    },
+    {
+      "source_id": "clingen",
+      "title": "ClinGen dosage sensitivity",
+      "url": "https://ftp.clinicalgenome.org/",
+      "retrieved": "2026-10-25",
+      "file_date": "regions 28 Apr 2026; genes 25 Oct 2026; assembly GRCh38 GCF_000001405.36",
+      "license_note": "ClinGen curation lists are public resources. Evidence scores and coordinates are stored as published. ISCN was not generated for a region.",
+      "record_count": 1303
+    },
+    {
+      "source_id": "educational",
+      "title": "Educational examples",
+      "url": null,
+      "retrieved": "2026-10-25",
+      "file_date": "2026-10-25",
+      "license_note": "Original short teaching examples. Not copied from the teaching application or from manufacturer catalogs.",
+      "record_count": 10
+    },
+    {
+      "source_id": "mitelman",
+      "title": "Mitelman Database",
+      "url": "https://mitelmandatabase.isb-cgc.org/",
+      "retrieved": null,
+      "file_date": null,
+      "license_note": "Not bundled. No redistributable bulk download with permission for a student desktop application was identified.",
+      "record_count": 0
+    }
+  ]
+}

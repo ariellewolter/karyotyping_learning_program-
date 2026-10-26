@@ -1,7 +1,9 @@
 import { state } from "./store.js?v=20261006j";
+import { bandSpanNoteHTML } from "./band-span.js?v=20261025span3";
 import { SLOT_IDS, escapeHtml } from "./util.js?v=20261006j";
-import { renderChromosome } from "./chromosomes.js?v=20261015a";
-import { ideogramSVG } from "./ideogram.js?v=20261015a";
+import { renderChromosome } from "./chromosomes.js?v=20261026p5";
+import { ideogramSVG } from "./ideogram.js?v=20261024j";
+import { atlasReferenceSection } from "./reference-library.js?v=20261026p5";
 import {
   activeCase,
   affectedChromosomes,
@@ -16,12 +18,12 @@ import {
   gradeInspect,
   gradeInterpret,
   splitBreakpointArms,
-  labDiseases,
   labReady,
   notationChoices,
   optionLabel,
   teachingKaryotype,
 } from "./atlas.js?v=20261006j";
+import { isSeenByMethod, methodFit } from "./activities.js?v=20261026seen3";
 
 const LAB_STEPS = ["find", "inspect", "identify", "interpret"];
 
@@ -30,49 +32,150 @@ export function isAtlasLabStep(step) {
 }
 
 export function atlasBrowse(route) {
-  if (route.view === "chromosome") return chromosomePage(route.chromosome);
-  if (route.view === "disease") return diseasePage(route.diseaseId);
-  return atlasHome();
+  if (route.view === "chromosome") return chromosomePage(route.chromosome, route.method);
+  if (route.view === "disease") return diseasePage(route.diseaseId, route.method);
+  return atlasHome(route.method);
 }
 
-function atlasHome() {
+function diseaseHref(diseaseId, method) {
+  const id = encodeURIComponent(diseaseId || "");
+  if (method === "fish" || method === "karyotype") return `#/atlas/disease/${id}/${method}`;
+  return `#/atlas/disease/${id}`;
+}
+
+const ATLAS_QUESTIONS = [
+  "What changed?",
+  "What does it look like?",
+  "Can microscopy detect it?",
+  "What consequence can it have?",
+];
+
+const LEARNING_PATH = [
+  ["Learn", "Compare normal and abnormal chromosomes with labeled regions", "Recognize morphological changes"],
+  ["Practice", "Inspect an unlabeled abnormal chromosome pair", "Identify the type of abnormality"],
+  ["Investigate", "Open the Disease Atlas for a relevant example", "Understand the associated condition"],
+  ["Casework", "Analyze a blinded metaphase or FISH field", "Apply microscopy skills independently"],
+  ["Report", "Describe observations, findings and limitations", "Communicate cytogenetic results"],
+];
+
+const VISIBILITY_VERDICT = {
+  clearly_visible: ["visible", "Visible on a routine G-banded karyotype"],
+  size_dependent: ["partial", "Visible when large; small changes need FISH or microarray"],
+  potentially_visible: ["partial", "Sometimes visible; often needs higher resolution, FISH or microarray"],
+  usually_not_visible: ["hidden", "Below routine karyotype resolution; confirmed by FISH or microarray"],
+};
+
+function atlasHome(method) {
   const library = state.diseases;
-  const diseases = diseaseList(library);
+  const seen = method === "fish" || method === "karyotype" ? method : null;
+  const diseases = diseaseList(library).filter((d) => isSeenByMethod(d, seen));
+  const types = library?.abnormality_types || [];
+  const grouped = types.map((type) => ({
+    type,
+    list: diseases.filter((d) => guideType(d) === type.id || (type.id === "deletion" && guideType(d) === "duplication")),
+  }));
+  const other = diseases.filter((d) => !types.some((type) => type.id === guideType(d)));
+  const filterNote = seen === "karyotype"
+    ? "Showing conditions appropriate for a routine karyotype report."
+    : seen === "fish"
+      ? "Showing conditions appropriate for a FISH report."
+      : "Filter by the laboratory method you are writing for.";
   return `
     <main class="atlas">
-      <p class="crumb"><a href="#/">Home</a> / Atlas</p>
+      <p class="crumb"><a href="#/">Home</a> / Atlas${seen ? ` / ${seen === "fish" ? "FISH" : "Karyotyping"}` : ""}</p>
       <header class="lab-head">
-        <p class="eyebrow">Chromosome reference and disease library</p>
-        <h2>Atlas</h2>
-        <p class="lede">Atlas is the disease reference. Opening a case starts the same laboratory used from Cases and from the method pages.</p>
+        <p class="eyebrow">Visual guide to chromosome abnormalities</p>
+        <h2>Disease Atlas</h2>
+        <p class="lede">Each condition is explained the same way, with the microscope comparison at the center.</p>
+        ${questionFlow()}
       </header>
+
+      ${seenByFilter(seen)}
+      <p class="muted atlas-seen-note">${escapeHtml(filterNote)}</p>
+
+      <section class="atlas-primer" aria-labelledby="atlas-types">
+        <h3 id="atlas-types">Start here: four kinds of chromosome change</h3>
+        <p class="muted">Learn what each kind looks like before connecting it to a disease.</p>
+        <div class="type-grid">
+          ${types.map((type) => `
+            <article class="type-card">
+              <div class="type-art">
+                <figure>${drawList(type.example.normal, `type-${type.id}-n`, 1.05)}<figcaption>Normal</figcaption></figure>
+                <figure>${drawList(type.example.abnormal, `type-${type.id}-a`, 1.05)}<figcaption>${escapeHtml(type.example.caption)}</figcaption></figure>
+              </div>
+              <h4>${escapeHtml(type.label)}</h4>
+              <p>${escapeHtml(type.summary)}</p>
+              <p class="muted">${escapeHtml(type.learn)}</p>
+            </article>`).join("")}
+        </div>
+      </section>
+
+      <section aria-labelledby="atlas-path">
+        <h3 id="atlas-path">From the microscope to the clinic</h3>
+        <table class="path-table">
+          <thead><tr><th>Stage</th><th>Student activity</th><th>Learning objective</th></tr></thead>
+          <tbody>${LEARNING_PATH.map(([stage, activity, goal]) => `<tr><th scope="row">${stage}</th><td>${activity}</td><td>${goal}</td></tr>`).join("")}</tbody>
+        </table>
+      </section>
+
       <div class="atlas-actions">
-        <button type="button" class="btn primary" id="atlas-assign">Work an assigned disease</button>
-        <p class="muted">An assigned case hides the disease name and the canonical finding until you connect them.</p>
+        <button type="button" class="btn primary" id="atlas-assign">Start an assigned exercise</button>
+        <p class="muted">The disease name and the canonical finding stay hidden until you connect them.</p>
       </div>
+
+      <h3>Conditions by kind of change</h3>
+      ${diseases.length
+        ? [...grouped, { type: { label: "Other rearrangements" }, list: other }].filter((g) => g.list.length).map((g) => `
+        <h4 class="atlas-group">${escapeHtml(g.type.label)}</h4>
+        <ul class="case-list">${diseaseRows(g.list, seen)}</ul>`).join("")
+        : `<p class="muted">No teaching diseases match this laboratory method yet.</p>`}
+
       <h3>Chromosomes</h3>
       <div class="chr-index" aria-label="Chromosomes">
         ${SLOT_IDS.map((id) => {
-          const n = diseasesForChromosome(library, id).length;
-          return `<a class="chr-key" href="#/atlas/chromosome/${id}"><strong>${id}</strong><span>${n ? `${n} disease${n === 1 ? "" : "s"}` : "—"}</span></a>`;
+          const n = diseasesForChromosome(library, id).filter((d) => isSeenByMethod(d, seen)).length;
+          const href = seen ? `#/atlas/chromosome/${id}/${seen}` : `#/atlas/chromosome/${id}`;
+          return `<a class="chr-key" href="${href}"><strong>${id}</strong><span>${n ? `${n} teaching` : "—"}</span><span class="chr-key-ref" data-atlas-reference-count="${id}"></span></a>`;
         }).join("")}
       </div>
-      <h3>Teaching cases</h3>
-      <ul class="case-list">
-        ${diseaseRows(labDiseases(library))}
-      </ul>
-      <h3>Other atlas records</h3>
-      <ul class="case-list">
-        ${diseaseRows(diseases.filter((d) => !labReady(d)))}
-      </ul>
     </main>`;
 }
 
-function chromosomePage(chromosome) {
+function seenByFilter(method, chromosome = null) {
+  const chr = chromosome ? String(chromosome) : "";
+  const hrefFor = (id) => {
+    if (chr) return id ? `#/atlas/chromosome/${chr}/${id}` : `#/atlas/chromosome/${chr}`;
+    return id ? `#/atlas/seen/${id}` : "#/atlas";
+  };
+  const options = [
+    ["", "All diseases"],
+    ["karyotype", "Seen by karyotyping"],
+    ["fish", "Seen by FISH"],
+  ];
+  return `<nav class="atlas-seen-filter" aria-label="Filter diseases by laboratory method">${options.map(([id, label]) => {
+    const active = (method || "") === id;
+    return `<a class="atlas-seen-link${active ? " is-active" : ""}" href="${hrefFor(id)}"${active ? ' aria-current="page"' : ""}>${escapeHtml(label)}</a>`;
+  }).join("")}</nav>`;
+}
+
+function questionFlow() {
+  return `<ol class="question-flow">${ATLAS_QUESTIONS.map((q) => `<li>${escapeHtml(q)}</li>`).join("")}</ol>`;
+}
+
+function guideType(disease) {
+  return disease?.atlas_guide?.type || "other";
+}
+
+function drawList(items, prefix, scale = 1.35) {
+  return `<div class="homolog-row">${(items || []).map((item, i) => draw(item.chr, item.variant || "normal", `${prefix}-${i}`, scale)).join("")}</div>`;
+}
+
+function chromosomePage(chromosome, method) {
   const id = String(chromosome || "1");
+  const seen = method === "fish" || method === "karyotype" ? method : null;
   const template = state.templates?.chromosomes?.[id];
   const map = state.maps?.chromosomes?.[id];
-  const diseases = diseasesForChromosome(state.diseases, id);
+  const diseases = diseasesForChromosome(state.diseases, id).filter((d) => isSeenByMethod(d, seen));
   if (!template && !map) {
     return `<main class="atlas"><p class="crumb"><a href="#/atlas">Atlas</a></p><h2>Unknown chromosome</h2></main>`;
   }
@@ -82,9 +185,11 @@ function chromosomePage(chromosome) {
   const picture = map
     ? ideogramSVG(map.segments, { width: 160, height: 460, showLabels: true })
     : renderChromosome({ id: `atlas-ref-${id}`, identity: id, variant: "normal", template }, { scale: 1.8 });
+  const atlasHref = seen ? `#/atlas/seen/${seen}` : "#/atlas";
   return `
     <main class="atlas">
-      <p class="crumb"><a href="#/">Home</a> / <a href="#/atlas">Atlas</a> / Chromosome ${escapeHtml(id)}</p>
+      <p class="crumb"><a href="#/">Home</a> / <a href="${atlasHref}">Atlas</a> / Chromosome ${escapeHtml(id)}</p>
+      ${seenByFilter(seen, id)}
       <div class="atlas-chrom">
         <div class="ideo-column">
           ${picture}
@@ -92,6 +197,7 @@ function chromosomePage(chromosome) {
         </div>
         <div>
           <h2>Chromosome ${escapeHtml(id)}</h2>
+          <p><button type="button" class="btn" data-inspect-chromosome="${escapeHtml(id)}">Compare the two homologs</button></p>
           <ul class="comp-list">
             <li>Morphology: ${escapeHtml(template?.morphology || map?.morphology || "not recorded")}</li>
             <li>Short arm (p) is above the centromere. Long arm (q) is below it.</li>
@@ -101,43 +207,137 @@ function chromosomePage(chromosome) {
             <p><strong>p arm bands in this map.</strong> ${escapeHtml(pBands.join(", ") || "none")}</p>
             <p><strong>q arm bands in this map.</strong> ${escapeHtml(qBands.join(", ") || "none")}</p>
           ` : `<p class="muted">This chromosome has a schematic drawing. A band-by-band map is not in the teaching library yet.</p>`}
-          <h3>Diseases on this chromosome</h3>
+          <h3>Teaching diseases on this chromosome</h3>
           <ul class="case-list">
-            ${diseases.map((d) => `
-              <li><a class="case-row" href="#/atlas/disease/${d.id}"><span class="case-title">${escapeHtml(d.disease_name)}</span><span class="muted">${escapeHtml(casesTouching(d, id).join("; "))}</span></a></li>
-            `).join("") || "<li class='muted'>No teaching disease in the library is centered here.</li>"}
+            ${diseases.map((d) => {
+              const iscn = diseaseIscn(d);
+              return `<li><a class="case-row" href="${diseaseHref(d.id, seen)}"><span class="case-title">${escapeHtml(d.disease_name)}</span>${iscn ? `<code class="atlas-row-iscn">${escapeHtml(iscn)}</code>` : ""}<span class="muted">${escapeHtml([casesTouching(d, id).join("; "), methodShort(d)].filter(Boolean).join(" · "))}</span></a></li>`;
+            }).join("") || `<li class='muted'>No teaching disease${seen ? ` for ${seen === "fish" ? "FISH" : "karyotyping"}` : ""} in the library is centered here.</li>`}
           </ul>
+          ${atlasReferenceSection(id)}
         </div>
       </div>
     </main>`;
 }
 
-function diseasePage(diseaseId) {
+function diseasePage(diseaseId, method) {
   const disease = diseaseById(state.diseases, diseaseId);
+  const seen = method === "fish" || method === "karyotype" ? method : null;
+  const atlasHref = seen ? `#/atlas/seen/${seen}` : "#/atlas";
   if (!disease) {
-    return `<main class="atlas"><p class="crumb"><a href="#/atlas">Atlas</a></p><h2>Unknown disease</h2><p><a href="#/atlas">Return to the atlas</a></p></main>`;
+    return `<main class="atlas"><p class="crumb"><a href="${atlasHref}">Atlas</a></p><h2>Unknown disease</h2><p><a href="${atlasHref}">Return to the atlas</a></p></main>`;
   }
   const ready = labReady(disease);
   const canonical = canonicalCase(disease);
+  const guide = disease.atlas_guide || {};
+  const fit = methodFit(disease);
+  const [tone, verdict] = VISIBILITY_VERDICT[canonical?.karyotype_visibility] || ["partial", "Visibility not recorded"];
+  const primary = String((canonical?.primary_chromosome || [])[0] || guide.compare?.chr || "");
+  const background = disease.clinical_background || {};
   return `
     <main class="atlas atlas-disease">
-      <p class="crumb"><a href="#/">Home</a> / <a href="#/atlas">Atlas</a> / ${escapeHtml(disease.disease_name)}</p>
-      <h2>${escapeHtml(disease.disease_name)}</h2>
-      <p class="lede">${escapeHtml(disease.teaching_notes || "This disease has more than one cytogenetic case. The simple lab uses the canonical case only.")}</p>
-      ${ready ? `
+      <p class="crumb"><a href="#/">Home</a> / <a href="${atlasHref}">Atlas</a> / ${escapeHtml(disease.disease_name)}</p>
+      ${seenByFilter(seen)}
+      <header class="disease-head">
+        <h2>${escapeHtml(disease.disease_name)}</h2>
+        ${guide.headline ? `<p class="disease-sub">${escapeHtml(guide.headline)}</p>` : ""}
+        <p class="disease-tags">
+          ${guide.category ? `<span class="tag">${escapeHtml(guide.category)}</span>` : ""}
+          ${canonical?.kind === "acquired" ? `<span class="tag">Acquired in tumor cells</span>` : ""}
+          ${fit.karyotype === "appropriate" ? `<span class="tag">Seen by karyotyping</span>` : ""}
+          ${fit.fish === "appropriate" ? `<span class="tag">Seen by FISH</span>` : ""}
+          <span class="tag vis-${tone}">${escapeHtml(verdict)}</span>
+        </p>
+        ${diseaseIscnBlock(disease)}
+        ${questionFlow()}
+      </header>
+
+      <section class="guide-step">
+        <h3><span class="step-n">1</span> What is the chromosomal defect?</h3>
+        <p>${escapeHtml(guide.defect || canonical?.visual_change || "")}</p>
+      </section>
+
+      <section class="guide-step guide-scope">
+        <h3><span class="step-n">2</span> What should I look for under the microscope?</h3>
+        ${compareFigure(disease, guide.compare, tone)}
+        <p>${escapeHtml(guide.look_for || canonical?.student_should_notice || "")}</p>
+        <p class="scope-note">Illustrative reference images. Actual detectability depends on deletion size, banding resolution and specimen quality.</p>
+      </section>
+
+      <section class="guide-step">
+        <h3><span class="step-n">3</span> What changes biologically?</h3>
+        ${guide.why ? `<aside class="why-box"><p class="eyebrow">Why does this abnormality matter?</p><p>${escapeHtml(guide.why)}</p></aside>` : ""}
+        ${guide.biology ? `<p>${escapeHtml(guide.biology)}</p>` : ""}
+      </section>
+
+      <section class="guide-step">
+        <h3><span class="step-n">4</span> How is it detected?</h3>
+        <p class="detect-verdict vis-${tone}">${escapeHtml(verdict)}</p>
+        <p>${escapeHtml(guide.detection || background.testing || "")}</p>
+      </section>
+
+      <section class="guide-step">
+        <h3><span class="step-n">5</span> Try identifying it</h3>
+        <p>${escapeHtml(guide.try_it || "")}</p>
         <div class="controls">
-          <a class="btn primary" href="#/disease/${disease.id}">Open the case</a>
+          ${ready ? `
+            <a class="btn primary" href="#/disease/${disease.id}">Open the blinded case</a>
+            <button type="button" class="btn" data-inspect-disease="${escapeHtml(disease.id)}">Inspect the chromosomes</button>
+          ` : ""}
+          ${primary ? `<a class="btn" href="#/atlas/chromosome/${escapeHtml(primary)}">Study chromosome ${escapeHtml(primary)}</a>` : ""}
         </div>
-        <p class="muted">The case hides the disease name and the finding until interpretation. This page stays the reference. The laboratory uses ${escapeHtml(canonical?.case_title || "the canonical teaching case")}.</p>
-      ` : `<p class="muted">The canonical case is not a simple karyotype exercise. The other mechanisms are listed so they are not mistaken for that exercise.</p>`}
-      ${referenceList(disease)}
-      <div class="atlas-chrom">
-        <div class="disease-art">${diseaseArt(disease)}</div>
+        ${ready ? `<p class="muted">The case hides the disease name and the finding until interpretation. It uses ${escapeHtml(canonical?.case_title || "the canonical teaching case")}.</p>` : ""}
+      </section>
+
+      <details class="atlas-advanced">
+        <summary>Advanced reference: clinical background, cytogenetic cases and notation</summary>
+        ${disease.teaching_notes ? `<p>${escapeHtml(disease.teaching_notes)}</p>` : ""}
+        ${background.summary ? `<p><strong>Overview.</strong> ${escapeHtml(background.summary)}</p>` : ""}
+        ${background.presentation ? `<p><strong>Presentation.</strong> ${escapeHtml(background.presentation)}</p>` : ""}
+        ${background.testing ? `<p><strong>Testing.</strong> ${escapeHtml(background.testing)}</p>` : ""}
         <div class="case-stack">
           ${cytogeneticCases(disease).map((item) => caseCard(item)).join("")}
         </div>
-      </div>
+        ${referenceList(disease)}
+      </details>
     </main>`;
+}
+
+function compareFigure(disease, compare, tone) {
+  if (!compare) return `<div class="scope-compare">${diseaseArt(disease)}</div>`;
+  if (compare.mode === "ideogram") return ideogramCompare(compare, tone);
+  return `
+    <div class="scope-compare">
+      <figure>${drawList(compare.normal, `guide-${disease.id}-n`, 1.9)}<figcaption>${escapeHtml(compare.normal_label || "Normal")}</figcaption></figure>
+      <figure class="abnormal">${drawList(compare.abnormal, `guide-${disease.id}-a`, 1.9)}<figcaption>${escapeHtml(compare.abnormal_label || "Abnormal")}</figcaption></figure>
+    </div>`;
+}
+
+function ideogramCompare(compare, tone) {
+  const map = state.maps?.chromosomes?.[String(compare.chr)];
+  if (!map?.segments?.length) return "";
+  const ids = map.segments.filter((seg) => compare.bands.some((band) => bandCovers(band, seg.id))).map((seg) => seg.id);
+  const hidden = tone === "hidden";
+  const opts = { width: 190, height: 380, showLabels: true };
+  const abnormal = ideogramSVG(map.segments, {
+    ...opts,
+    highlightIds: ids,
+    highlightTag: false,
+    marks: hidden ? {} : { missing: ids },
+  });
+  return `
+    <div class="scope-compare">
+      <figure>${ideogramSVG(map.segments, opts)}<figcaption>Normal chromosome ${escapeHtml(compare.chr)}</figcaption></figure>
+      <figure class="abnormal">${abnormal}<figcaption>${escapeHtml(compare.abnormal_label || "Region involved")}</figcaption></figure>
+    </div>
+    ${hidden ? `<p class="resolution-warn">The highlighted region is too small to see on a routine karyotype. Both homologs usually look the same; the deletion is found with FISH or microarray.</p>` : ""}`;
+}
+
+function bandCovers(band, id) {
+  if (id === band) return true;
+  if (!String(id).startsWith(band)) return false;
+  const rest = String(id).slice(band.length);
+  return rest.startsWith(".") || (band.includes(".") && /^\d+$/.test(rest));
 }
 
 function caseCard(item) {
@@ -180,7 +380,7 @@ function caseCard(item) {
         ${fact("Final interpretation", item.final_interpretation)}
         ${fact("Do not treat this case as", item.do_not_alter)}
       </ul>
-      ${notations.length ? `<p class="iscn-display">${notations.map((n) => escapeHtml(n)).join(" / ")}</p>` : ""}
+      ${notations.length ? `<p class="iscn-display">${notations.map((n) => escapeHtml(n)).join(" / ")}</p>${bandSpanNoteHTML(state.maps, notations)}` : ""}
       <p class="muted">${escapeHtml(optionLabel(state.diseases, "visibility", item.karyotype_visibility))}</p>
     </article>`;
 }
@@ -200,14 +400,77 @@ function referenceList(disease) {
   }).join("")}</ul>`;
 }
 
-function diseaseRows(list) {
-  return list.map((d) => `
+function isWrittenIscn(value) {
+  return /^\d/.test(String(value || "").trim());
+}
+
+function diseaseIscn(disease) {
+  const item = canonicalCase(disease);
+  const teaching = teachingKaryotype(item)?.iscn || "";
+  if (isWrittenIscn(teaching)) return teaching;
+  return (item?.example_notation || []).find((notation) => isWrittenIscn(notation)) || "";
+}
+
+function diseaseIscnBlock(disease) {
+  const iscn = diseaseIscn(disease);
+  const fit = methodFit(disease);
+  const item = canonicalCase(disease);
+  const fishPrimary = fit.fish === "appropriate" && fit.karyotype !== "appropriate";
+  const hidden = item?.karyotype_visibility === "usually_not_visible" || item?.karyotype_visibility === "potentially_visible";
+  if (!iscn) {
+    return `<p class="muted">${fishPrimary
+      ? "No routine teaching karyotype formula is stored. Detection is taught through FISH or another molecular method."
+      : "No teaching ISCN is stored for this disease."}</p>`;
+  }
+  const note = fishPrimary || hidden
+    ? `<p class="muted atlas-iscn-note">Written for reference. A routine G-banded karyotype may not show this change; FISH or microarray is often required.</p>`
+    : "";
+  return `<p class="atlas-disease-iscn"><span class="eyebrow">Teaching ISCN</span><code class="iscn-display">${escapeHtml(iscn)}</code></p>${note}`;
+}
+
+function diseaseRows(list, method = null) {
+  return list.map((d) => {
+    const iscn = diseaseIscn(d);
+    return `
     <li>
-      <a class="case-row" href="#/atlas/disease/${d.id}">
+      <a class="case-row" href="${diseaseHref(d.id, method)}">
         <span class="case-title">${escapeHtml(d.disease_name)}</span>
-        <span class="muted">${escapeHtml(visibilityShort(d))}</span>
+        ${iscn ? `<code class="atlas-row-iscn">${escapeHtml(iscn)}</code>` : `<span class="atlas-row-iscn muted">No written ISCN</span>`}
+        <span class="muted">${escapeHtml(atlasRowNote(d))}</span>
       </a>
-    </li>`).join("");
+    </li>`;
+  }).join("");
+}
+
+function methodShort(disease) {
+  const fit = methodFit(disease);
+  const item = canonicalCase(disease);
+  const reference = item?.lab_level && item.lab_level !== "default";
+  const karyotype = fit.karyotype === "appropriate";
+  const fish = fit.fish === "appropriate";
+  const fishLinked = Boolean(state.activityLinks?.[disease.id]?.fish);
+  let method = "";
+  if (karyotype && fish) method = "Karyotype · FISH";
+  else if (karyotype) method = "Karyotype only";
+  else if (fish) method = "FISH only";
+  if (!method) return reference ? "Reference" : "";
+  if (fish && !fishLinked) method = `${method} · no FISH assay yet`;
+  if (reference) method = `${method} · reference`;
+  return method;
+}
+
+function atlasRowNote(disease) {
+  const item = canonicalCase(disease);
+  const ids = [...new Set([...(item?.primary_chromosome || []), ...[].concat(item?.partner_chromosome || [])].map(String))];
+  const where = ids.length ? `Chromosome ${ids.join(" · ")}` : "";
+  const method = methodShort(disease);
+  const note = visibilityShort(disease);
+  const visibility = note.startsWith("Size-dependent") ? "size-dependent"
+    : note.startsWith("Sometimes") ? "sometimes visible"
+    : note.startsWith("Microdeletion") ? "microdeletion"
+    : note.startsWith("Reference only") ? "reference"
+    : "";
+  return [where, method, visibility].filter(Boolean).join(" · ") || note;
 }
 
 function breakpointText(item) {
@@ -371,6 +634,7 @@ function interpretBody(atlas) {
         <h3>${escapeHtml(d.disease_name)}</h3>
         <p>${escapeHtml(item?.patient_case_label || "")}</p>
         <p class="iscn-display">${escapeHtml(kt?.iscn || "")}</p>
+        ${bandSpanNoteHTML(state.maps, kt?.iscn || "")}
         <p><strong>This case.</strong> ${escapeHtml(item?.final_interpretation || "")}</p>
         <p><strong>Mechanism.</strong> ${escapeHtml(item?.mechanism || "")}</p>
         <p>${escapeHtml(d.teaching_notes || "")}</p>
@@ -413,6 +677,7 @@ export function atlasSummary() {
       <h2>${escapeHtml(d.disease_name)}</h2>
       <p>${escapeHtml(item?.patient_case_label || "")}</p>
       <p class="iscn-display">${escapeHtml(teachingKaryotype(item)?.iscn || "")}</p>
+      ${bandSpanNoteHTML(state.maps, teachingKaryotype(item)?.iscn || "")}
       <p><strong>This case.</strong> ${escapeHtml(item?.final_interpretation || "")}</p>
       <p><strong>Mechanism.</strong> ${escapeHtml(item?.mechanism || "")}</p>
       <p>${escapeHtml(d.teaching_notes || "")}</p>
@@ -453,19 +718,13 @@ export function handleAtlasAction(action, el) {
   const submit = action === "atlas-submit";
   const graded = gradeStep(step);
   if (!graded) return false;
-  const assessment = s.instructionMode === "assessment";
-  if (assessment && !submit) {
-    s.feedback = { ...s.feedback, [step]: { tone: "review", title: "Submit to record this response.", body: "Assessment does not explain the answer during the activity." } };
-    return true;
+  const upcoming = (s.steps || []).slice((s.stepIndex || 0) + 1).filter((id) => id !== "summary");
+  if (graded.ok && step === "inspect" && upcoming.length === 0) {
+    graded.title = "Identify the change is complete.";
+    graded.body = "The performance summary records this result.";
   }
-  if (assessment && submit) {
-    s.pedagogy = s.pedagogy || { hintLevel: {}, first: {} };
-    if (!s.pedagogy.first[step]) s.pedagogy.first[step] = { ok: graded.ok, title: graded.title, body: graded.body };
-    s.feedback = { ...s.feedback, [step]: { tone: "ok", title: "Response recorded.", body: "The explanation is withheld until the summary." } };
-  } else {
-    s.feedback = { ...s.feedback, [step]: { tone: graded.ok ? "ok" : "review", title: graded.title, body: graded.body } };
-  }
-  s.atlas.results = { ...(s.atlas.results || {}), [step]: assessment && s.pedagogy?.first?.[step] ? s.pedagogy.first[step].ok : graded.ok };
+  s.feedback = { ...s.feedback, [step]: { tone: graded.ok ? "ok" : "review", title: graded.title, body: graded.body } };
+  s.atlas.results = { ...(s.atlas.results || {}), [step]: graded.ok };
   if (step === "find") {
     const targets = teachingKaryotype(activeCase(s.atlas))?.chromosomes_to_find || [];
     s.scores.chromosome_identification = {
@@ -478,8 +737,13 @@ export function handleAtlasAction(action, el) {
       wrongNumber: graded.ok ? 0 : 1,
     };
   }
-  if (step === "inspect") s.scores.change_identification = { ok: graded.ok };
-  if (submit && (graded.ok || assessment)) {
+  if (step === "inspect") {
+    if (action === "atlas-check" || !s.scores.change_identification) {
+      s.attempts.abnormality = (s.attempts.abnormality || 0) + 1;
+    }
+    s.scores.change_identification = { ok: graded.ok };
+  }
+  if (submit && graded.ok) {
     s.stepIndex = Math.min(s.stepIndex + 1, s.steps.length - 1);
   }
   return true;

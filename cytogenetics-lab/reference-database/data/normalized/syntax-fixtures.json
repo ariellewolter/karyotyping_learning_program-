@@ -1,0 +1,18 @@
+{
+  "note": "Published-style ISCN strings used to test parsing separately from chromosome reconstruction and disease association. They are not new teaching cases.",
+  "fixtures": [
+    {"id": "normal-female", "iscn": "46,XX", "syntax": "validated", "structure": "validated", "events": []},
+    {"id": "normal-male", "iscn": "46,XY", "syntax": "validated", "structure": "validated", "events": []},
+    {"id": "trisomy-21", "iscn": "47,XY,+21", "syntax": "validated", "structure": "validated", "events": [{"kind": "numerical", "chromosomes": ["21"]}]},
+    {"id": "monosomy-x", "iscn": "45,X", "syntax": "validated", "structure": "validated", "events": []},
+    {"id": "deletion", "iscn": "46,XX,del(5)(p15.2)", "syntax": "validated", "structure": "not_checked", "events": [{"kind": "deletion", "chromosomes": ["5"], "bands": ["p15.2"]}]},
+    {"id": "duplication", "iscn": "46,XX,dup(17)(p11.2p12)", "syntax": "validated", "structure": "not_checked", "events": [{"kind": "duplication", "chromosomes": ["17"]}]},
+    {"id": "inversion", "iscn": "46,XX,inv(16)(p13.1q22)", "syntax": "validated", "structure": "not_checked", "events": [{"kind": "inversion", "chromosomes": ["16"], "bands": ["p13.1", "q22"]}]},
+    {"id": "translocation", "iscn": "46,XY,t(9;22)(q34;q11.2)", "syntax": "validated", "structure": "not_checked", "events": [{"kind": "translocation", "chromosomes": ["9", "22"]}]},
+    {"id": "derivative", "iscn": "46,XX,der(22)t(9;22)(q34;q11.2)", "syntax": "validated", "structure": "not_checked", "events": [{"kind": "derivative", "chromosomes": ["22"]}]},
+    {"id": "robertsonian", "iscn": "45,XX,rob(14;21)(q10;q10)", "syntax": "validated", "structure": "not_checked", "events": [{"kind": "robertsonian", "chromosomes": ["14", "21"]}]},
+    {"id": "ring", "iscn": "46,XY,r(18)(p11.2q23)", "syntax": "validated", "structure": "not_checked", "events": [{"kind": "ring", "chromosomes": ["18"], "bands": ["p11.2", "q23"]}]},
+    {"id": "mosaic", "iscn": "45,X[15]/46,XX[5]", "syntax": "validated", "structure": "not_checked", "events": []},
+    {"id": "unsupported-add", "iscn": "46,XX,add(1)(q21)", "syntax": "partial", "structure": "unavailable", "events": [{"kind": "unsupported"}]}
+  ]
+}

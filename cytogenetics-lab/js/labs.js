@@ -2,6 +2,7 @@
  * Laboratory categories and exercise types.
  * Session engines still use module ids (assembly, karyotype, fish, …).
  */
+import { fieldAvailable } from "./fish-field.js?v=20261025grade1";
 
 export const LABS = [
   {
@@ -21,7 +22,7 @@ export const LABS = [
   },
   {
     id: "karyotype",
-    title: "Karyotype & ISCN",
+    title: "Karyotyping Lab",
     kicker: "Whole-cell analysis",
     summary: "Construct and interpret karyotypes, apply ISCN nomenclature, and connect findings to genetic conditions.",
     tone: "green",
@@ -38,22 +39,23 @@ export const LABS = [
   },
   {
     id: "fish",
-    title: "FISH Analysis",
+    title: "FISH Lab",
     kicker: "Molecular cytogenetics",
     summary: "Analyze fluorescence signals, probe strategies, and molecular cytogenetic abnormalities.",
     tone: "violet",
-    defaultExercise: "dual-fusion",
+    defaultExercise: "enumeration",
     exercises: [
+      { id: "enumeration", title: "Enumeration probes", sessionModule: "fish", summary: "Count signals to assess chromosome or locus copy number. Start here." },
+      { id: "break-apart", title: "Break-apart probes", sessionModule: "fish", summary: "Decide whether flanking signals stay together or separate beyond the assay's threshold. A split does not name the partner." },
+      { id: "dual-fusion", title: "Dual-fusion probes", sessionModule: "fish", summary: "Distinguish separate signals from co-localized fusions, read by the specific assay design." },
+      { id: "quality", title: "Signal quality", sessionModule: "fish", summary: "Clear, overlapping, weak, and closely spaced signals: decide what can be scored." },
+      { id: "field", title: "Microscope workstation", sessionModule: "fish", summary: "Work a multi-field slide: switch channels, zoom, score or exclude each nucleus with a reason, then interpret the assay." },
       { id: "probe-localization", title: "Probe localization", sessionModule: "fish", summary: "Place a FISH probe on the chromosome-band map." },
       { id: "probe-type", title: "Probe-type identification", sessionModule: "fish", summary: "Identify what a probe targets and what question it can answer." },
       { id: "interphase", title: "Interphase FISH", sessionModule: "fish", summary: "Score nuclei in a demonstration fluorescence field." },
-      { id: "enumeration", title: "Enumeration FISH", sessionModule: "fish", summary: "Count copy-number signals across scorable nuclei." },
-      { id: "break-apart", title: "Break-apart FISH", sessionModule: "fish", summary: "Distinguish intact (fusion) from rearranged (split) loci." },
-      { id: "dual-fusion", title: "Dual-fusion FISH", sessionModule: "fish", summary: "Relate red, green, and fusion signals to a reciprocal translocation." },
       { id: "deletion", title: "Deletion / locus-specific FISH", sessionModule: "fish", summary: "Compare target and control probes for locus loss." },
       { id: "amplification", title: "Amplification / copy-number FISH", sessionModule: "fish", summary: "Calculate target-to-reference ratios from case rules." },
       { id: "metaphase", title: "Metaphase FISH", sessionModule: "fish", summary: "Connect fluorescent signals to chromosome identity and band." },
-      { id: "quality", title: "Signal quality / artifacts", sessionModule: "fish", summary: "Decide whether a nucleus is scorable before interpretation." },
       { id: "integrated_fish", title: "Integrated FISH cases", sessionModule: "integrated", summary: "Cases that combine karyotype or assembly with FISH and ISCN." },
     ],
   },
@@ -182,6 +184,7 @@ function fishExercisePlayable(entry, exerciseId) {
   if (exerciseId === "deletion") return fish.assay_type === "deletion" && interpreted;
   if (exerciseId === "amplification") return fish.assay_type === "amplification" && interpreted;
   if (exerciseId === "interphase") return hasNuclei && fish.specimen_type === "interphase";
+  if (exerciseId === "field") return fieldAvailable(fish);
   if (exerciseId === "metaphase") return hasNuclei && fish.specimen_type === "metaphase";
   if (exerciseId === "quality") return nuclei.some((nucleus) => nucleus && nucleus.scorable === false);
   if (exerciseId === "integrated_fish") {

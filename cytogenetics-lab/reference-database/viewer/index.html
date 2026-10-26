@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cytogenetics reference</title>
+  <link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+  <header>
+    <h1>Cytogenetics reference</h1>
+    <p>Local search of MedGen names, ClinGen dosage records, and labeled educational examples. This page is separate from the teaching lab.</p>
+  </header>
+  <main>
+    <form id="search-form">
+      <select id="search-type" aria-label="Search type">
+        <option value="disease">Disease</option>
+        <option value="iscn">ISCN</option>
+        <option value="chromosome">Chromosome</option>
+        <option value="gene">Gene</option>
+        <option value="fusion">Fusion</option>
+      </select>
+      <input id="search-query" aria-label="Search query" placeholder="Down syndrome, 47,XY,+21, 5p15.2, BCR, BCR::ABL1">
+      <button type="submit">Search</button>
+    </form>
+    <p id="disclaimer" class="disclaimer" hidden></p>
+    <p id="note" class="note" hidden></p>
+    <div class="layout">
+      <section class="card">
+        <h2>Results</h2>
+        <div id="results"></div>
+      </section>
+      <section class="card">
+        <h2>Details</h2>
+        <div id="details"><p>Select a result to see abnormalities, ISCN examples, fusions, and sources.</p></div>
+      </section>
+    </div>
+    <footer id="provenance"></footer>
+  </main>
+  <script src="viewer.js"></script>
+</body>
+</html>

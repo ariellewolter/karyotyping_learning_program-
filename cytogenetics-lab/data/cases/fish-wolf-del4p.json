@@ -224,6 +224,10 @@
       "probe_id": "whs-4p16",
       "expected": "4p16",
       "chromosome": "4"
+    },
+    "field_composition": {
+      "abnormal_fraction": 1.0,
+      "basis": "Constitutional, non-mosaic deletion: every scorable nucleus shows one target with both controls."
     }
   },
   "hints": [

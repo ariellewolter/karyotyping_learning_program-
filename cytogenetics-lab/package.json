@@ -10,7 +10,17 @@
     "desktop": "electron .",
     "package": "electron-builder --win",
     "postinstall": "node electron/ensure-binary.js",
-    "templates": "python3 scripts/generate_templates.py"
+    "templates": "python3 scripts/generate_templates.py",
+    "check:bands": "node scripts/check-band-span.mjs",
+    "check:lookup": "node scripts/check-lookup-engine.mjs",
+    "check:structure": "node scripts/check-structure.mjs",
+    "check:fish": "node scripts/check-fish-cases.mjs",
+    "check:drawing": "node scripts/check-drawing.mjs",
+    "check:derivatives": "node scripts/check-derivatives.mjs",
+    "check:analysis": "node scripts/check-analysis.mjs",
+    "check:cohort": "node scripts/check-cohort.mjs",
+    "check:polish": "node scripts/check-polish.mjs",
+    "check:interpretation": "python3 -m unittest discover -s reference-database/tests -v"
   },
   "devDependencies": {
     "electron": "^33.4.11",
@@ -29,6 +39,9 @@
       "data/**/*",
       "assets/**/*",
       "electron/main.js",
+      "reference-database/src/**/*",
+      "reference-database/data/cytogenetics.sqlite",
+      "reference-database/data/normalized/**/*",
       "package.json"
     ],
     "win": {

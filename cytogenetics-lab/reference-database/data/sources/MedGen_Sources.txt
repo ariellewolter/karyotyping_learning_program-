@@ -1,0 +1,124 @@
+#Source	Abbreviation	Description	URL|
+AIR	AIR	AI/RHEUM, 1993	http://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/source_vocabularies.html|
+ALT	ALT	Alternative Billing Concepts, 2009	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/ALT|
+AOD	AOD	Alcohol and Other Drug Thesaurus, 2000|
+AOT	AOT	Authorized Osteopathic Thesaurus, 2003	http://www.aacom.org/resources/bookstore/thesaurus/Pages/default.aspx|
+BI	BI	Beth Israel Vocabulary, 1.0|
+CCC	CCC	Clinical Care Classification, 2_5	http://www.sabacare.com|
+CCPSS	CCPSS	Canonical Clinical Problem Statement System, 1999|
+CCS	CCS	Clinical Classifications Software, 2005|
+CHV	CHV	Consumer Health Vocabulary	http://consumerhealthvocab.org|
+COSTAR	COSTAR	COSTAR, 1989-1995|
+CPIC	CPIC	Clinical Pharmacogenetics Implementation Consortium	http://www.pharmgkb.org/page/cpic|
+CPM	CPM	Medical Entities Dictionary, 2003|
+CPT	CPT	Current Procedural Terminology, 2026|
+CSP	CRISP	CRISP Thesaurus, 2006	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/CSP|
+CST	CST	COSTART, 1995|
+ClinPGx	ClinPGx	ClinPGx	https://www.clinpgx.org|
+ClinVar	ClinVar	ClinVar	http://www.ncbi.nlm.nih.gov/clinvar/|
+CureCMD	CureCMD	Cure Congenital Muscular Dystrophy	http://curecmd.org|
+DDB	DDB	Diseases Database, 2000|
+DXP	DXP	DXplain, 1994|
+FMA	FMA	Foundational Model of Anatomy Ontology, 2_0	http://sig.biostr.washington.edu/projects/fm|
+GENEREVIEWS	GeneReviews	GeneReviews	https://www.ncbi.nlm.nih.gov/books/|
+GO	GO	Gene Ontology	http://www.geneontology.org|
+GS	GS	Gold Standard Drug Database, 2026_02_04|
+GTR	GTR	Genetic Testing Registry	http://www.ncbi.nlm.nih.gov/gtr|
+GeneReviews	GeneReviews	GeneReviews	https://www.ncbi.nlm.nih.gov/books/NBK1116|
+Genetics Home Reference	GHR	GHR	http://ghr.nlm.nih.gov/|
+HCDT	HCDT	HCPCS Version of Current Dental Terminology (CDT), 2023|
+HCPCS	HCPCS	Healthcare Common Procedure Coding System, 2026|
+HCPT	HCPT	HCPCS Version of Current Procedural Terminology (CPT), 2026|
+HGNC	HGNC	HUGO Gene Nomenclature Committee, 2025_04|
+HHC	HHCC	Home Health Care Classification of Nursing Diagnoses and Interventions, 2003	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/HHC|
+HL7V2.5	HL7V2.5	HL7 Vocabulary Version 2.5, 2003_08_30|
+HL7V3.0	HL7	HL7 Vocabulary Version 3.0	http://www.hl7.org|
+HPO	HPO	Human Phenotype Ontology	http://www.human-phenotype-ontology.org|
+ICD10	ICD10	ICD10, 1998|
+ICD10	ICD10	ICD10, 2016|
+ICD10AE	ICD10AE	ICD10, American English Equivalents, 1998|
+ICD10AM	ICD10AM	International Statistical Classification of Diseases and Related Health Problems, 10th Revision, Australian Modification, January 2000 Release|
+ICD10AMAE	ICD10AMAE	International Statistical Classification of Diseases and Related Health Problems, Australian Modification, Americanized English Equivalents, 2000|
+ICD10CM	ICD10CM	International Classification of Diseases, 10th Edition, Clinical Modification, 2026|
+ICD10PCS	ICD10PCS	ICD-10-PCS, 2026|
+ICD9CM	ICD9CM	ICD-9-CM, 2005|
+ICD9CM	ICD9CM	International Classification of Diseases, Ninth Revision, Clinical Modification, 2014|
+ICF	ICF	International Classification of Functioning, Disability and Health	http://www.who.int/classifications/icf/en|
+ICF-CY	ICF-CY	International Classification of Functioning, Disability and Health for Children and Youth, 2008	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/ICF-CY/mrsab.html|
+ICNP	ICNP	International Classification for Nursing Practice, 2022|
+ICPC	ICPC	International Classification of Primary Care, 1993|
+ICPC2EENG	ICPC2EENG	International Classification of Primary Care 2nd Edition, Electronic, 2E, 200203|
+ICPC2ICD10ENG	ICPC2ICD10ENG	ICPC2 - ICD10 Thesaurus, 200412|
+ICPC2P	ICPC2P	ICPC-2 PLUS|
+JABL	MCA/MR	Online Congenital Multiple Anomaly/Mental Retardation Syndromes, 1999	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/JABL|
+LCH	LCH	Library of Congress Subject Headings, 1990|
+LNC	LNC	LOINC, 282|
+MCM	MCM	McMaster University Epidemiology Terms, 1992	http://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/source_vocabularies.html|
+MDR	MDR	Medical Dictionary for Regulatory Activities Terminology (MedDRA), 28_1|
+MEDCIN	MEDCIN	MEDCIN, 3_2025_12_19|
+MEDLINEPLUS	MedlinePlus	MedlinePlus Health Topics	http://www.nlm.nih.gov/medlineplus/healthtopics.html|
+MMSL	MMSL	Oracle Health Multum Drug Database, 2026_02_01|
+MMX	MMX	Micromedex RED BOOK, 2026_01_30|
+MONDO	MONDO	Monarch Initiative	https://monarchinitiative.org/|
+MSH	MeSH	Medical Subject Headings	http://www.nlm.nih.gov/pubs/factsheets/mesh.html|
+MTH	MTH	UMLS Metathesaurus|
+MTHICD9	MTHICD9	International Classification of Diseases, Ninth Revision, Clinical Modification, Metathesaurus additional entry terms, 2014|
+MTHICPC2EAE	MTHICPC2EAE	International Classification of Primary Care 2nd Edition, Electronic, 2E, American English Equivalents, 200203|
+MTHICPC2ICD10AE	MTHICPC2ICD10AE	ICPC2 - ICD10 Thesaurus, American English Equivalents, 0412|
+MTHMST	MTHMST	Metathesaurus Version of Minimal Standard Terminology Digestive Endoscopy, 2001|
+MTHSPL	MTHSPL	Metathesaurus FDA Structured Product Labels, 2026_02_21|
+Medical Genetics Summaries	Medical Genetics Summaries	Medical Genetics Summaries	http://www.ncbi.nlm.nih.gov/books/NBK61999|
+MedlinePlus Genetics	MedlinePlus Genetics	MedlinePlus Genetics	https://medlineplus.gov/genetics/|
+NAN	NANDA	NANDA nursing diagnoses: definitions & classification, 2004	http://www.nanda.org/Marketplace/NANDAIPublications.aspx|
+NANDA-I	NANDA-I	NANDA-I Taxonomy II, 2015-2017	http://kb.nanda.org/|
+NCBI	NCBI	NCBI Taxonomy, 2025_09_17|
+NCBI curation	NCBI	National Center for Biotechnology Information	http://www.ncbi.nlm.nih.gov/|
+NCI	NCI	NCI Thesaurus	http://ncit.nci.nih.gov|
+NCI_BRIDG	NCI_BRIDG	NCI Biomedical Research Integrated Domain Group Model	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NCI_BRIDG/|
+NCI_BRIDG_5_3	NCI_BRIDG_5_3	NCI Biomedical Research Integrated Domain Group	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NCI_BRIDG/|
+NCI_BioC	NCI_BioC	BioCarta online maps of molecular pathways, adapted for NCI use	https://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NCI_BIOC|
+NCI_CDISC	NCI_CDISC	Clinical Data Interchange Standards Consortium, 1403E	http://evs.nci.nih.gov/|
+NCI_CDISC-GLOSS	NCI_CDISC-GLOSS	The NCI_CDISC-GLOSS harmonizes the definitions used in various CDISC standards initiatives.	https://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NCI_CDISC-GLOSS/|
+NCI_CRCH	NCI_CRCH	Cancer Research Center of Hawaii Nutrition Terminology, 1509D|
+NCI_CTCAE	NCI_CTCAE	Common Terminology Criteria for Adverse Events, 1403E	http://evs.nci.nih.gov/|
+NCI_CTCAE_3	NCI_CTCAE_3	Common Terminology Criteria for Adverse Events, 1403E	http://evs.nci.nih.gov/|
+NCI_CareLex	NCI_CareLex	Content Archive Resource Exchange Lexicon	http://ncicb.nci.nih.gov/support|
+NCI_DICOM	NCI_DICOM	Digital Imaging Communications in Medicine	https://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NCI_DICOM|
+NCI_FDA	NCI_FDA	U.S. Food and Drug Administration, 1403E	http://evs.nci.nih.gov/|
+NCI_GAIA	NCI_GAIA	Global Alignment of Immunization safety Assessment in pregnancy (GAIA) consists of standards, tools and guidance to harmonize data on immunization in pregnancy for low income countries.	http://gaia-consortium.net|
+NCI_KEGG	NCI_KEGG	KEGG Pathway Database	https://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NCI_KEGG|
+NCI_NCI-GLOSS	NCI_NCI-GLOSS	NCI Dictionary of Cancer Terms, 1403E	http://evs.nci.nih.gov/|
+NCI_NICHD	NCI_NICHD	National Institute of Child Health and Human Development	http://ncicb.nci.nih.gov/support|
+NDDF	NDDF	FDB MedKnowledge (formerly NDDF Plus), 2026_02_04|
+NDFRT	NDF-RT	National Drug File	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NDFRT|
+NEU	NEU	Neuronames Brain Hierarchy, 2023_06_02|
+NIC	NIC	Nursing Interventions Classification (NIC), 2005	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/NIC|
+NOC	NOC	Nursing Outcomes Classification, 3rd Edition	http://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/source_vocabularies.html|
+OMIM	OMIM	Online Mendelian Inheritance in Man	http://www.omim.org|
+OMS	OMS	Omaha System, 2005	http://www.omahasystem.org|
+ORDO	ORDO	Orphanet Rare Disease Ontology (ORDO)	http://www.orphadata.org/cgi-bin/inc/ordo_orphanet.inc.php|
+ORPHANET	ORPHANET	Aggregated datasets from Orphanet are accessible via Orphadata, including the Orphanet Nomenclature and Classification of Rare Diseases	https://www.orpha.net/consor/cgi-bin/Disease.php?lng=EN|
+PCDS	PCDS	Patient Care Data Set, 1997|
+PDQ	PDQ	Physician Data Query	http://www.cancer.gov/cancertopics/pdq|
+PNDS	PNDS	Perioperative Nursing Data Set, 2nd edition, 2002	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/PNDS/sourcerepresentation.html|
+PPAC	PPAC	Pharmacy Practice Activity Classification, 1998|
+PSY	PSY	Thesaurus of Psychological Index Terms, 2004	http://www.nlm.nih.gov/research/umls/sourcereleasedocs/current/PSY|
+QMR	QMR	Quick Medical Reference (QMR), 1996|
+RAM	RAM	QMR clinically related terms from Randolph A. Miller, 1999|
+RCD	RCD	Clinical Terms Version 3 (CTV3) (Read Codes), 1999|
+RCDAE	RCDAE	Read thesaurus, American English Equivalents, 1999|
+RCDSA	RCDSA	Read thesaurus Americanized Synthesized Terms, 1999|
+RCDSY	RCDSY	Read thesaurus, Synthesized Terms, 1999|
+RXNORM	RXNORM	RxNorm Vocabulary, 20AA_260302F|
+SNM	SNM	SNOMED-2, 2|
+SNMI	SNMI	SNOMED International, 1998|
+SNOMEDCT	SNOMED CT	SNOMED Clinical Terms	http://www.ihtsdo.org/snomed-ct|
+SNOMEDCT_US	SNOMEDCT_US	US Edition of SNOMED CT	http://www.nlm.nih.gov/research/umls/Snomed/us_edition.html|
+SPN	SPN	Standard Product Nomenclature, 2003	http://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/source_vocabularies.html|
+SRC	SRC	Metathesaurus Source Terminology Names|
+ULT	ULT	UltraSTAR, 1993|
+UMD	UMDNS	UMDNS: product category thesaurus, 2010	https://www.ecri.org/Products/Pages/UMDNS.aspx|
+USPMG	USPMG	USP Medicare Model Guidelines, 2023|
+UWDA	UWDA	University of Washington Digital Anatomist, 1.7.3	http://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/source_vocabularies.html|
+VANDF	VANDF	Veterans Health Administration National Drug File, 2026_01_30|
+WHO	WHO	WHO Adverse Reaction Terminology, 1997|

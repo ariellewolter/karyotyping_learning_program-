@@ -89,11 +89,113 @@
       "label": "Other"
     }
   ],
+  "abnormality_types": [
+    {
+      "id": "numerical",
+      "label": "Numerical abnormalities",
+      "summary": "An extra or missing chromosome.",
+      "learn": "Students should first learn to count chromosome pairs and identify trisomy or monosomy.",
+      "example": {
+        "normal": [
+          {
+            "chr": "21"
+          },
+          {
+            "chr": "21"
+          }
+        ],
+        "abnormal": [
+          {
+            "chr": "21"
+          },
+          {
+            "chr": "21"
+          },
+          {
+            "chr": "21"
+          }
+        ],
+        "caption": "Trisomy 21"
+      }
+    },
+    {
+      "id": "deletion",
+      "label": "Deletions and duplications",
+      "summary": "A chromosome segment is missing or repeated.",
+      "learn": "Students compare chromosome lengths and banding patterns.",
+      "example": {
+        "normal": [
+          {
+            "chr": "5"
+          }
+        ],
+        "abnormal": [
+          {
+            "chr": "5",
+            "variant": "del(5)(p)"
+          }
+        ],
+        "caption": "5p deletion"
+      }
+    },
+    {
+      "id": "inversion",
+      "label": "Inversions",
+      "summary": "A segment has reversed orientation.",
+      "learn": "Students examine changes in band order rather than expecting a shorter chromosome.",
+      "example": {
+        "normal": [
+          {
+            "chr": "16"
+          }
+        ],
+        "abnormal": [
+          {
+            "chr": "16",
+            "variant": "inv(16)(p13.1q22)"
+          }
+        ],
+        "caption": "inv(16)"
+      }
+    },
+    {
+      "id": "translocation",
+      "label": "Translocations",
+      "summary": "Chromosome material has moved between chromosomes.",
+      "learn": "Students compare the banding patterns and derivative chromosome structures.",
+      "example": {
+        "normal": [
+          {
+            "chr": "9"
+          },
+          {
+            "chr": "22"
+          }
+        ],
+        "abnormal": [
+          {
+            "chr": "9",
+            "variant": "der(9)t(9;22)(q34;q11.2)"
+          },
+          {
+            "chr": "22",
+            "variant": "der(22)t(9;22)(q34;q11.2)"
+          }
+        ],
+        "caption": "t(9;22)"
+      }
+    }
+  ],
   "diseases": [
     {
       "id": "down-syndrome",
       "disease_name": "Down syndrome",
       "teaching_notes": "Down syndrome is the disease. Free trisomy 21, Robertsonian translocation, and mosaicism are different cytogenetic cases. The simple lab uses free trisomy 21 only.",
+      "clinical_background": {
+        "summary": "The most common chromosomal cause of intellectual disability, with a birth prevalence of about 1 in 700. Most cases arise from maternal meiotic nondisjunction, and risk rises with maternal age.",
+        "presentation": "Hypotonia, upslanting palpebral fissures, flat facial profile, single palmar crease, and mild to moderate developmental delay. About half have a congenital heart defect, most often an atrioventricular septal defect. Later risks include hypothyroidism, transient myeloproliferative disorder and leukemia, and early-onset Alzheimer disease.",
+        "testing": "A karyotype confirms the diagnosis and distinguishes free trisomy from a Robertsonian translocation or mosaicism. This matters for counseling: a translocation may be inherited from a balanced carrier parent and raises the recurrence risk."
+      },
       "cytogenetic_cases": [
         {
           "id": "free-trisomy-21",
@@ -262,12 +364,51 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Trisomy 21",
+        "category": "Numerical abnormality",
+        "type": "numerical",
+        "defect": "There are three copies of chromosome 21 instead of two. The extra chromosome is a complete, structurally normal chromosome 21, so the total count is 47.",
+        "look_for": "Count the chromosomes first. In group G, pair 21 has three members that match in size, centromere position and banding. Each chromosome 21 looks normal; the abnormality is the number, not the shape.",
+        "why": "An additional chromosome 21 increases the dosage of many genes and alters development.",
+        "biology": "Every gene on chromosome 21 is present in three copies instead of two. This extra dosage affects many developing tissues at once, which is why the features involve the brain, heart, muscle tone and blood.",
+        "detection": "A routine G-banded karyotype detects free trisomy 21 and distinguishes it from a Robertsonian translocation or mosaicism. Interphase FISH gives a rapid count, and prenatal screening often uses cell-free DNA.",
+        "try_it": "Count every chromosome before arranging. Then find group G and ask whether pair 21 has two or three members of identical appearance.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "21"
+            },
+            {
+              "chr": "21"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "21"
+            },
+            {
+              "chr": "21"
+            },
+            {
+              "chr": "21"
+            }
+          ],
+          "normal_label": "Normal chromosome 21 pair",
+          "abnormal_label": "Three copies of chromosome 21"
+        }
+      }
     },
     {
       "id": "edwards-syndrome",
       "disease_name": "Edwards syndrome",
       "teaching_notes": "Edwards syndrome is the disease. The simple lab uses complete trisomy 18. Mosaic trisomy 18 and partial trisomy 18 are different cases.",
+      "clinical_background": {
+        "summary": "The second most common autosomal trisomy in live births, about 1 in 5,000. Most affected pregnancies end in miscarriage or stillbirth, and median survival after birth is short.",
+        "presentation": "Growth restriction, clenched hands with overlapping fingers, rocker-bottom feet, small jaw, prominent occiput, and congenital heart defects. Severe developmental disability in survivors.",
+        "testing": "Often suspected on prenatal ultrasound or screening and confirmed by karyotype or rapid aneuploidy FISH. Confirmation guides perinatal care decisions, and the karyotype excludes a translocation that could recur."
+      },
       "cytogenetic_cases": [
         {
           "id": "free-trisomy-18",
@@ -424,12 +565,51 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Trisomy 18",
+        "category": "Numerical abnormality",
+        "type": "numerical",
+        "defect": "There are three copies of chromosome 18 instead of two, giving a count of 47.",
+        "look_for": "Pair 18 sits in group E with chromosomes 16 and 17. Look for three chromosomes of the same small submetacentric shape and matching bands. None of them is altered in structure.",
+        "why": "An extra chromosome 18 increases the dosage of its genes and severely disrupts the development of many organs.",
+        "biology": "Three copies of every chromosome 18 gene disturb growth and organ formation from early pregnancy. Many affected pregnancies do not reach term, and liveborn infants often have heart and other major malformations.",
+        "detection": "A routine G-banded karyotype detects it clearly. Interphase FISH with a chromosome 18 probe gives a rapid prenatal or newborn count.",
+        "try_it": "Count the chromosomes, then compare the members of group E. Decide which pair has an extra member.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "18"
+            },
+            {
+              "chr": "18"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "18"
+            },
+            {
+              "chr": "18"
+            },
+            {
+              "chr": "18"
+            }
+          ],
+          "normal_label": "Normal chromosome 18 pair",
+          "abnormal_label": "Three copies of chromosome 18"
+        }
+      }
     },
     {
       "id": "patau-syndrome",
       "disease_name": "Patau syndrome",
       "teaching_notes": "Patau syndrome is the disease. The simple lab uses complete trisomy 13. Robertsonian, mosaic, and partial forms are different cases.",
+      "clinical_background": {
+        "summary": "An autosomal trisomy of about 1 in 10,000 to 16,000 births with very high early mortality.",
+        "presentation": "Holoprosencephaly and midline facial clefts, microphthalmia, postaxial polydactyly, scalp defects (cutis aplasia), and congenital heart and kidney anomalies.",
+        "testing": "Usually suspected from ultrasound findings and confirmed by karyotype. About 1 in 5 cases involve a Robertsonian translocation, which changes recurrence risk and prompts parental studies."
+      },
       "cytogenetic_cases": [
         {
           "id": "free-trisomy-13",
@@ -629,12 +809,51 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Trisomy 13",
+        "category": "Numerical abnormality",
+        "type": "numerical",
+        "defect": "There are three copies of chromosome 13 instead of two, giving a count of 47.",
+        "look_for": "Chromosome 13 is the largest acrocentric, in group D with 14 and 15. Look for three chromosomes with the 13 banding pattern: a pale proximal long arm and dark distal bands.",
+        "why": "An extra chromosome 13 increases the dosage of its genes and disrupts early development of the brain, face and heart.",
+        "biology": "Extra copies of chromosome 13 genes interfere with how the forebrain and midline of the face form. Survival beyond the first year is uncommon.",
+        "detection": "A routine G-banded karyotype detects it and shows whether the extra 13 is free or part of a Robertsonian translocation. Interphase FISH gives a rapid count.",
+        "try_it": "Separate group D into its three pairs using the banding pattern, then count the members of each pair.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "13"
+            },
+            {
+              "chr": "13"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "13"
+            },
+            {
+              "chr": "13"
+            },
+            {
+              "chr": "13"
+            }
+          ],
+          "normal_label": "Normal chromosome 13 pair",
+          "abnormal_label": "Three copies of chromosome 13"
+        }
+      }
     },
     {
       "id": "turner",
       "disease_name": "Turner syndrome",
       "teaching_notes": "Turner syndrome is the disease. 45,X is the canonical case. Mosaic 45,X/46,XX, an X isochromosome, a ring X, and other structural X abnormalities are different cases.",
+      "clinical_background": {
+        "summary": "A sex chromosome condition affecting about 1 in 2,500 live-born females. Only about half of patients have a 45,X karyotype; the rest have mosaicism or a structurally abnormal X.",
+        "presentation": "Short stature, primary ovarian insufficiency with absent or arrested puberty, webbed neck, lymphedema in infancy, and coarctation of the aorta or bicuspid aortic valve. Intelligence is usually normal.",
+        "testing": "A karyotype of at least 30 cells is standard so that low-level mosaicism is not missed. Any Y chromosome material must be identified because it raises the risk of gonadoblastoma."
+      },
       "cytogenetic_cases": [
         {
           "id": "monosomy-x",
@@ -828,12 +1047,45 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Section on mosaicism and clone size notation."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Monosomy X",
+        "category": "Numerical abnormality",
+        "type": "numerical",
+        "defect": "One sex chromosome is missing. There is a single X and no second X or Y, written 45,X.",
+        "look_for": "Count 45 chromosomes. Find the X (a medium-sized submetacentric in the size range of group C) and confirm it has no partner and that there is no Y. The remaining X looks normal.",
+        "why": "Complete or partial loss of an X chromosome affects normal growth and development.",
+        "biology": "Some genes on the X are active on both copies in typical females. Having only one copy of these genes affects height, ovarian development and the heart and kidneys.",
+        "detection": "A routine karyotype detects it. Mosaicism is common, so laboratories count more cells than usual. FISH for X and Y can screen many cells quickly.",
+        "try_it": "Count the cell, then look for the sex chromosomes. Is there a partner for the X?",
+        "compare": {
+          "normal": [
+            {
+              "chr": "X"
+            },
+            {
+              "chr": "X"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "X"
+            }
+          ],
+          "normal_label": "Typical female sex chromosomes (XX)",
+          "abnormal_label": "Single X chromosome"
+        }
+      }
     },
     {
       "id": "klinefelter",
       "disease_name": "Klinefelter syndrome",
       "teaching_notes": "Klinefelter syndrome is the disease. 47,XXY is the canonical case. Mosaic 46,XY/47,XXY and rarer higher-order sex-chromosome aneuploidies are different cases.",
+      "clinical_background": {
+        "summary": "The most common sex chromosome aneuploidy in males, about 1 in 600. Many affected men are never diagnosed.",
+        "presentation": "Tall stature, small firm testes, hypergonadotropic hypogonadism, gynecomastia, and infertility from azoospermia. Learning and language difficulties are common but variable.",
+        "testing": "Often found during an infertility or hypogonadism workup. The karyotype confirms the diagnosis and detects mosaicism or higher-grade variants such as 48,XXXY."
+      },
       "cytogenetic_cases": [
         {
           "id": "xxy",
@@ -1000,12 +1252,51 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "47,XXY",
+        "category": "Numerical abnormality",
+        "type": "numerical",
+        "defect": "A male has an extra X chromosome, so the sex chromosomes are XXY and the count is 47.",
+        "look_for": "Count 47 chromosomes. Find the Y, then count two X chromosomes alongside it. Each sex chromosome looks normal.",
+        "why": "An extra X chromosome in a male alters testicular development and hormone production.",
+        "biology": "The extra X carries genes that escape inactivation. Their extra dosage affects the testes, leading to low testosterone and infertility, and can affect height and learning.",
+        "detection": "A routine karyotype detects it. Many people are diagnosed only in adulthood, often during evaluation for infertility.",
+        "try_it": "Count the cell and locate the Y. Then decide how many X chromosomes accompany it.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "X"
+            },
+            {
+              "chr": "Y"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "X"
+            },
+            {
+              "chr": "X"
+            },
+            {
+              "chr": "Y"
+            }
+          ],
+          "normal_label": "Typical male sex chromosomes (XY)",
+          "abnormal_label": "Two X chromosomes and a Y"
+        }
+      }
     },
     {
       "id": "cri-du-chat",
       "disease_name": "Cri-du-chat syndrome",
       "teaching_notes": "Cri-du-chat syndrome is the disease. The simple lab uses a terminal 5p deletion and does not pretend every patient has the same breakpoint. Interstitial 5p deletions and unbalanced rearrangements are different cases.",
+      "clinical_background": {
+        "summary": "A terminal deletion syndrome of about 1 in 15,000 to 50,000 births. Most deletions arise de novo; some come from a parental balanced translocation.",
+        "presentation": "A high-pitched, cat-like cry in infancy, microcephaly, round face with widely spaced eyes, hypotonia, and severe intellectual disability.",
+        "testing": "The deletion is often visible on a karyotype; FISH or a microarray defines small deletions. Parental studies are offered to exclude a balanced rearrangement."
+      },
       "cytogenetic_cases": [
         {
           "id": "terminal-5p",
@@ -1166,12 +1457,49 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Chromosome 5p deletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "A portion of the short arm (p) of chromosome 5 is missing. This is called a deletion, commonly written as 5p−.",
+        "look_for": "Compare the two chromosome 5 homologs. One has a shorter p arm: the distal bands above the centromere are absent, while the long arm matches its partner.",
+        "why": "Loss of part of chromosome 5p removes genetic material important for development.",
+        "biology": "Loss of genetic material from 5p can disrupt normal development. Clinical effects depend partly on which regions are deleted and how large the deletion is.",
+        "detection": "A sufficiently large deletion may be visible on a G-banded karyotype. Smaller deletions may require chromosomal microarray or targeted FISH.",
+        "try_it": "Compare the two homologs, locate the centromere, identify the short arm and determine whether genetic material appears missing.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "5"
+            },
+            {
+              "chr": "5"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "5"
+            },
+            {
+              "chr": "5",
+              "variant": "del(5)(p)"
+            }
+          ],
+          "normal_label": "Normal chromosome 5",
+          "abnormal_label": "Chromosome 5 with 5p deletion"
+        }
+      }
     },
     {
       "id": "wolf-hirschhorn",
       "disease_name": "Wolf-Hirschhorn syndrome",
       "teaching_notes": "Wolf-Hirschhorn syndrome is the disease. The simple lab uses a large terminal 4p deletion. Visibility is size-dependent: a small 4p16.3 deletion may not be obvious on a conventional karyotype. Unbalanced rearrangements are a different case.",
+      "clinical_background": {
+        "summary": "A contiguous gene deletion syndrome of about 1 in 50,000 births, caused by loss of the terminal short arm of chromosome 4.",
+        "presentation": "Characteristic \"Greek warrior helmet\" facial appearance, pre- and postnatal growth deficiency, seizures, hypotonia, and intellectual disability.",
+        "testing": "Larger deletions are visible on a karyotype; smaller ones need FISH or a microarray. Parental testing identifies balanced translocation carriers."
+      },
       "cytogenetic_cases": [
         {
           "id": "terminal-4p",
@@ -1291,12 +1619,49 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Chromosome 4p deletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "The end of the short arm of chromosome 4 is missing, a terminal deletion that always includes band 4p16.3.",
+        "look_for": "Compare the two chromosome 4 homologs. One p arm ends early. Large deletions are obvious; small ones change only the very tip and are easy to miss.",
+        "why": "Loss of material at the tip of 4p removes genes needed for growth and the development of the face and brain.",
+        "biology": "The missing segment contains several genes whose single remaining copy is not enough for normal development. Larger deletions generally cause more severe features.",
+        "detection": "Large deletions are visible on a G-banded karyotype. Many are too small and are found with chromosomal microarray or a 4p16.3 FISH probe.",
+        "try_it": "Line up the two chromosome 4s at their centromeres and compare the length and the last bands of each p arm.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "4"
+            },
+            {
+              "chr": "4"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "4"
+            },
+            {
+              "chr": "4",
+              "variant": "del(4)(p16)"
+            }
+          ],
+          "normal_label": "Normal chromosome 4",
+          "abnormal_label": "Chromosome 4 with 4p deletion"
+        }
+      }
     },
     {
       "id": "cml",
       "disease_name": "Chronic myeloid leukemia",
       "teaching_notes": "Chronic myeloid leukemia is the disease. The simple lab uses the visible t(9;22) and asks the student to follow both derivative chromosomes. A cryptic or complex BCR::ABL1 rearrangement is a different case.",
+      "clinical_background": {
+        "summary": "A myeloproliferative neoplasm defined by the BCR::ABL1 fusion, a constitutively active tyrosine kinase. It mainly affects adults.",
+        "presentation": "Marked leukocytosis with a left shift and basophilia, splenomegaly, fatigue, and weight loss. Many patients are diagnosed on a routine blood count.",
+        "testing": "Detecting the Philadelphia chromosome or BCR::ABL1 fusion establishes the diagnosis and predicts response to tyrosine kinase inhibitors such as imatinib. Additional abnormalities can signal disease progression."
+      },
       "cytogenetic_cases": [
         {
           "id": "t9-22",
@@ -1304,6 +1669,7 @@
           "lab_level": "default",
           "case_title": "t(9;22) Philadelphia chromosome",
           "patient_case_label": "This patient's case: t(9;22)(q34;q11.2), with der(22) as the Philadelphia chromosome.",
+          "assigned_context": "An adult with fatigue, splenomegaly, marked leukocytosis, and a left shift is referred for bone marrow cytogenetic analysis.",
           "kind": "acquired",
           "primary_chromosome": [
             "9",
@@ -1435,12 +1801,50 @@
           "label": "WHO",
           "citation": "Khoury JD, et al. The 5th edition of the World Health Organization classification of haematolymphoid tumours: myeloid and histiocytic/dendritic neoplasms. Leukemia. 2022;36:1703-1719."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Translocation t(9;22)",
+        "category": "Structural abnormality",
+        "type": "translocation",
+        "defect": "The ends of the long arms of chromosomes 9 and 22 have swapped places. The small derivative chromosome 22 is called the Philadelphia chromosome.",
+        "look_for": "One chromosome 22 is noticeably shorter than its partner, and one chromosome 9 has extra material at the end of its long arm. The count stays 46: material has moved, not been lost.",
+        "why": "A rearrangement between chromosomes 9 and 22 creates the BCR::ABL1 fusion, which promotes abnormal cell proliferation.",
+        "biology": "The exchange joins part of one gene to part of another. The fused gene makes a signal that is always switched on, driving blood-forming cells to divide. The change is acquired: it is found in the leukemia cells, not inherited.",
+        "detection": "A bone marrow karyotype shows the translocation at diagnosis. FISH confirms the BCR::ABL1 fusion, and molecular testing (RT-PCR) tracks it during treatment.",
+        "try_it": "Compare each chromosome 9 and 22 with its partner. Which member is too short, which has gained material, and do the two changes account for each other?",
+        "compare": {
+          "normal": [
+            {
+              "chr": "9"
+            },
+            {
+              "chr": "22"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "9",
+              "variant": "der(9)t(9;22)(q34;q11.2)"
+            },
+            {
+              "chr": "22",
+              "variant": "der(22)t(9;22)(q34;q11.2)"
+            }
+          ],
+          "normal_label": "Normal chromosomes 9 and 22",
+          "abnormal_label": "Derivative 9 and Philadelphia chromosome 22"
+        }
+      }
     },
     {
       "id": "apl",
       "disease_name": "Acute promyelocytic leukemia",
       "teaching_notes": "Acute promyelocytic leukemia is the disease. The simple lab uses t(15;17) with PML::RARA. Variant RARA rearrangements are a different case and are not this chromosome pair.",
+      "clinical_background": {
+        "summary": "A subtype of acute myeloid leukemia driven by the PML::RARA fusion. It is a medical emergency because of its bleeding risk.",
+        "presentation": "Pancytopenia with abnormal promyelocytes containing many granules and Auer rods, and disseminated intravascular coagulation causing bleeding.",
+        "testing": "Rapid confirmation of PML::RARA is urgent because all-trans retinoic acid and arsenic trioxide target the fusion, giving cure rates above 90%. Treatment often starts on suspicion while the result is pending."
+      },
       "cytogenetic_cases": [
         {
           "kind": "acquired",
@@ -1581,12 +1985,50 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Includes the 15q24.1 band used for PML."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Translocation t(15;17)",
+        "category": "Structural abnormality",
+        "type": "translocation",
+        "defect": "Segments of the long arms of chromosomes 15 and 17 have exchanged places.",
+        "look_for": "One chromosome 15 and one chromosome 17 each have a changed band pattern at the distal long arm. The lengths change only a little, so compare the bands carefully.",
+        "why": "A rearrangement between chromosomes 15 and 17 creates the PML::RARA fusion, which stops white blood cells from maturing.",
+        "biology": "The fusion interferes with the signal that tells myeloid cells to mature, so immature promyelocytes accumulate. The change is acquired in the leukemia cells.",
+        "detection": "A karyotype can show the translocation, but FISH or RT-PCR for PML::RARA is used urgently because effective treatment depends on a rapid diagnosis.",
+        "try_it": "Compare the distal long arms of each chromosome 15 and 17 pair. Is the change in one partner matched by the other?",
+        "compare": {
+          "normal": [
+            {
+              "chr": "15"
+            },
+            {
+              "chr": "17"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "15",
+              "variant": "der(15)t(15;17)(q24.1;q21.2)"
+            },
+            {
+              "chr": "17",
+              "variant": "der(17)t(15;17)(q24.1;q21.2)"
+            }
+          ],
+          "normal_label": "Normal chromosomes 15 and 17",
+          "abnormal_label": "Derivative chromosomes 15 and 17"
+        }
+      }
     },
     {
       "id": "burkitt",
       "disease_name": "Burkitt lymphoma",
       "teaching_notes": "Burkitt lymphoma is the disease. The simple lab uses t(8;14) with IGH::MYC. t(2;8) and t(8;22) are different MYC rearrangements.",
+      "clinical_background": {
+        "summary": "A highly aggressive mature B-cell lymphoma driven by MYC deregulation, usually through juxtaposition to the IGH locus. It has endemic, sporadic, and immunodeficiency-associated forms.",
+        "presentation": "Rapidly enlarging masses, classically in the jaw in endemic cases or the abdomen in sporadic cases. A \"starry sky\" pattern on histology and a very high proliferation rate.",
+        "testing": "Showing a MYC rearrangement supports the diagnosis and separates Burkitt lymphoma from other high-grade B-cell lymphomas, which affects the intensity of treatment."
+      },
       "cytogenetic_cases": [
         {
           "kind": "acquired",
@@ -1774,12 +2216,50 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Translocation t(8;14)",
+        "category": "Structural abnormality",
+        "type": "translocation",
+        "defect": "The ends of the long arms of chromosomes 8 and 14 have exchanged places.",
+        "look_for": "One chromosome 8 has a shortened long arm carrying different end bands, and one chromosome 14 is longer than its partner. The count stays 46.",
+        "why": "The rearrangement moves a growth-control gene (MYC) next to an immune gene region that is very active in B cells, switching growth on continuously.",
+        "biology": "In B cells the immunoglobulin region is constantly active. Placing MYC beside it keeps the cells dividing, producing a very fast-growing lymphoma. The change is acquired in the tumor cells.",
+        "detection": "A karyotype of tumor cells shows the translocation. FISH for IGH::MYC or a MYC break-apart probe confirms it, including in tissue sections.",
+        "try_it": "Compare each chromosome 8 and 14 with its partner. Which one lost long-arm material, and where did it go?",
+        "compare": {
+          "normal": [
+            {
+              "chr": "8"
+            },
+            {
+              "chr": "14"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "8",
+              "variant": "der(8)t(8;14)(q24;q32)"
+            },
+            {
+              "chr": "14",
+              "variant": "der(14)t(8;14)(q24;q32)"
+            }
+          ],
+          "normal_label": "Normal chromosomes 8 and 14",
+          "abnormal_label": "Derivative chromosomes 8 and 14"
+        }
+      }
     },
     {
       "id": "del-1p36",
       "disease_name": "1p36 deletion syndrome",
       "teaching_notes": "1p36 deletion syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "clinical_background": {
+        "summary": "One of the most common terminal deletion syndromes, about 1 in 5,000 to 10,000 births.",
+        "presentation": "Straight eyebrows, deep-set eyes, large late-closing anterior fontanelle, hypotonia, seizures, cardiomyopathy, and developmental delay.",
+        "testing": "Deletions are often too small for a karyotype, so FISH or a microarray is used. Deletion size helps predict severity."
+      },
       "cytogenetic_cases": [
         {
           "id": "del-1p36-deletion",
@@ -1859,12 +2339,36 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Chromosome 1p36 deletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "The tip of the short arm of chromosome 1 (band 1p36) is missing.",
+        "look_for": "The deletion affects only the very end of 1p. Large deletions shorten the tip slightly; many are too small to see on a routine karyotype.",
+        "why": "Loss of the 1p36 tip removes many genes at once, affecting brain development, muscle tone and the heart.",
+        "biology": "1p36 is gene-dense, so even a small deletion removes many genes. The size of the deletion partly predicts the severity.",
+        "detection": "Chromosomal microarray is the usual test. Large deletions may be seen on a high-resolution karyotype; FISH with a 1p36 probe can confirm.",
+        "try_it": "On the chromosome 1 page, find band 1p36 at the top of the short arm and notice how little of the chromosome it represents.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "1",
+          "bands": [
+            "1p36"
+          ],
+          "abnormal_label": "Region lost in 1p36 deletion"
+        }
+      }
     },
     {
       "id": "del-8p",
       "disease_name": "8p deletion syndrome",
       "teaching_notes": "8p deletion syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "clinical_background": {
+        "summary": "A rare deletion of the distal short arm of chromosome 8, sometimes accompanied by an inverted duplication of adjacent 8p.",
+        "presentation": "Congenital heart defects, developmental delay, and behavioral differences. Severity varies with deletion size.",
+        "testing": "Microarray defines the extent of loss and any associated duplication, and parental studies identify inherited rearrangements."
+      },
       "cytogenetic_cases": [
         {
           "id": "del-8p-deletion",
@@ -1944,12 +2448,36 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Chromosome 8p deletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "Part of the short arm of chromosome 8, usually including band 8p23, is missing.",
+        "look_for": "A large deletion shortens one 8p arm compared with its partner. Smaller deletions in 8p23 are hard to see.",
+        "why": "Loss of 8p material can affect heart and brain development.",
+        "biology": "Genes in the deleted region contribute to heart formation and neurodevelopment; having one copy may not be enough.",
+        "detection": "Large deletions may be seen on a karyotype. Chromosomal microarray defines the size and breakpoints.",
+        "try_it": "Compare the two chromosome 8 homologs at the tip of the short arm.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "8",
+          "bands": [
+            "8p23"
+          ],
+          "abnormal_label": "Region lost in 8p deletion"
+        }
+      }
     },
     {
       "id": "del-9p",
       "disease_name": "9p deletion syndrome",
       "teaching_notes": "9p deletion syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "clinical_background": {
+        "summary": "A rare terminal deletion of the short arm of chromosome 9.",
+        "presentation": "Trigonocephaly, upslanting palpebral fissures, long philtrum, hypotonia, and developmental delay. Genital anomalies can occur in 46,XY individuals.",
+        "testing": "Karyotype or microarray defines the deletion. Parental studies exclude a balanced translocation."
+      },
       "cytogenetic_cases": [
         {
           "id": "del-9p-deletion",
@@ -2029,12 +2557,37 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Chromosome 9p deletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "The distal part of the short arm of chromosome 9 is missing.",
+        "look_for": "One chromosome 9 has a shorter p arm. Larger terminal deletions are usually visible.",
+        "why": "Loss of distal 9p removes genes involved in development of the face, brain and sometimes the gonads.",
+        "biology": "The deleted genes are dosage-sensitive, so one copy is not enough. Features vary with the extent of the deletion.",
+        "detection": "Larger deletions are visible on a G-banded karyotype; microarray defines the exact extent.",
+        "try_it": "Compare the two chromosome 9 p arms from the centromere to the tip.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "9",
+          "bands": [
+            "9p24",
+            "9p23"
+          ],
+          "abnormal_label": "Region lost in 9p deletion"
+        }
+      }
     },
     {
       "id": "angelman",
       "disease_name": "Angelman syndrome",
       "teaching_notes": "Angelman syndrome has more than one mechanism. The laboratory uses the maternal 15q11-q13 deletion case. The chromosome region overlaps the Prader-Willi teaching region; parent of origin changes the consequence. Deletion FISH does not establish that origin.",
+      "clinical_background": {
+        "summary": "A neurodevelopmental imprinting disorder of about 1 in 12,000 to 20,000 births caused by loss of maternal UBE3A function, most often through a maternal 15q11.2-q13 deletion.",
+        "presentation": "Severe developmental delay, absent speech, ataxic gait, seizures, microcephaly, and a characteristically happy demeanor with frequent laughter.",
+        "testing": "FISH or a microarray detects the deletion, but methylation testing is needed to diagnose the other mechanisms (uniparental disomy, imprinting defects, UBE3A variants)."
+      },
       "cytogenetic_cases": [
         {
           "id": "as-no-single-karyotype",
@@ -2256,12 +2809,38 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "15q11.2–q13 deletion (maternal)",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "A small region of the long arm of chromosome 15 is missing from the copy inherited from the mother.",
+        "look_for": "Usually nothing obvious. The deleted region is near the centromere of an acrocentric chromosome and is below routine karyotype resolution, so both chromosome 15s typically look alike.",
+        "why": "In this region only the mother's copy of an essential brain gene is active, so losing it leaves neurons without a working copy.",
+        "biology": "Some genes here are imprinted: they are switched on from only one parent's copy. Losing the maternal copy removes gene activity that neurons need, affecting speech, movement and seizures.",
+        "detection": "FISH or chromosomal microarray detects the deletion. Methylation testing detects the deletion and the other mechanisms, such as uniparental disomy, that a karyotype cannot show.",
+        "try_it": "Use the FISH lab: compare the signal count for the 15q11.2 probe with the control probe on the same chromosome.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "15",
+          "bands": [
+            "15q11.2",
+            "15q12",
+            "15q13"
+          ],
+          "abnormal_label": "Deleted region — usually looks normal"
+        }
+      }
     },
     {
       "id": "digeorge",
       "disease_name": "DiGeorge / 22q11.2 deletion syndrome",
       "teaching_notes": "22q11.2 deletion syndrome in this laboratory is the heterozygous 22q11.2 microdeletion. A conventional karyotype can look normal. A TBX1 sequence variant without the deletion remains a different case.",
+      "clinical_background": {
+        "summary": "The most common microdeletion syndrome, about 1 in 4,000 births, also called 22q11.2 deletion syndrome or velocardiofacial syndrome.",
+        "presentation": "Conotruncal heart defects such as tetralogy of Fallot and interrupted aortic arch, palatal anomalies, hypocalcemia from hypoparathyroidism, thymic hypoplasia with immune deficiency, and learning or psychiatric differences.",
+        "testing": "The deletion is not visible on a routine karyotype, so FISH or a microarray is required. About 1 in 10 cases are inherited, so parental testing is offered."
+      },
       "cytogenetic_cases": [
         {
           "id": "micro-22q11",
@@ -2355,12 +2934,36 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "22q11.2 microdeletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "A small segment near the centromere of the long arm of chromosome 22 is missing on one homolog.",
+        "look_for": "Usually nothing. The deletion is about 3 million base pairs, below routine karyotype resolution, so both chromosome 22s look normal.",
+        "why": "Loss of a small group of neighboring genes affects development of the heart, thymus, parathyroid glands and palate.",
+        "biology": "These structures form from the same embryonic region, the pharyngeal arches. One copy of the deleted genes is not enough for that region to develop normally.",
+        "detection": "FISH with a 22q11.2 probe or chromosomal microarray detects the deletion. A routine karyotype usually appears normal.",
+        "try_it": "Use the FISH lab: compare the 22q11.2 test probe with the control probe on chromosome 22.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "22",
+          "bands": [
+            "22q11.2"
+          ],
+          "abnormal_label": "Deleted region — usually looks normal"
+        }
+      }
     },
     {
       "id": "jacobsen",
       "disease_name": "Jacobsen syndrome",
       "teaching_notes": "Jacobsen syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "clinical_background": {
+        "summary": "A terminal deletion of the long arm of chromosome 11, about 1 in 100,000 births.",
+        "presentation": "Developmental delay, congenital heart defects, and Paris-Trousseau syndrome, a bleeding disorder with abnormal platelets.",
+        "testing": "The deletion is often visible on a karyotype; microarray defines the breakpoint. Recognizing the platelet disorder matters before any surgery."
+      },
       "cytogenetic_cases": [
         {
           "id": "jacobsen-deletion",
@@ -2440,12 +3043,38 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Chromosome 11q terminal deletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "The end of the long arm of chromosome 11, from about 11q23 to the tip, is missing.",
+        "look_for": "One chromosome 11 has a shorter long arm; the distal bands are absent. Large deletions are often visible.",
+        "why": "Loss of distal 11q affects development, the heart and the production of platelets.",
+        "biology": "The deleted region includes genes needed for brain and heart development and for megakaryocytes, which make platelets, so bleeding problems are common.",
+        "detection": "Many deletions are visible on a G-banded karyotype. Microarray defines the size.",
+        "try_it": "Compare the two chromosome 11 long arms from the centromere to the tip.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "11",
+          "bands": [
+            "11q23",
+            "11q24",
+            "11q25"
+          ],
+          "abnormal_label": "Region lost in 11q deletion"
+        }
+      }
     },
     {
       "id": "miller-dieker",
       "disease_name": "Miller-Dieker syndrome",
       "teaching_notes": "Miller-Dieker syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "clinical_background": {
+        "summary": "A contiguous gene deletion at 17p13.3 including PAFAH1B1 (LIS1) and YWHAE.",
+        "presentation": "Severe lissencephaly (smooth brain), distinctive facial features, intractable seizures, and profound developmental disability.",
+        "testing": "FISH or a microarray confirms the deletion, often after brain imaging shows lissencephaly. Parental studies exclude a balanced translocation."
+      },
       "cytogenetic_cases": [
         {
           "id": "miller-dieker-deletion",
@@ -2525,12 +3154,36 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "17p13.3 deletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "The tip of the short arm of chromosome 17 (band 17p13.3) is missing.",
+        "look_for": "The deletion is at the very end of a short arm and is often too small to see. Larger cases slightly shorten the tip of 17p.",
+        "why": "Loss of 17p13.3 disrupts the migration of neurons in the developing brain, producing a smooth brain surface.",
+        "biology": "Neurons must move to their final position during brain development. Genes in this region are needed for that movement, so the brain does not form its normal folds.",
+        "detection": "FISH or chromosomal microarray detects the deletion; a high-resolution karyotype may show larger cases.",
+        "try_it": "Find 17p13.3 on the chromosome 17 page and compare its size with the whole chromosome.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "17",
+          "bands": [
+            "17p13.3"
+          ],
+          "abnormal_label": "Region lost in 17p13.3 deletion"
+        }
+      }
     },
     {
       "id": "prader-willi",
       "disease_name": "Prader-Willi syndrome",
       "teaching_notes": "Prader-Willi syndrome has more than one mechanism. The laboratory uses the paternal 15q11-q13 deletion case. A normal deletion-FISH result does not exclude the syndrome, and the signal pattern does not prove paternal origin.",
+      "clinical_background": {
+        "summary": "An imprinting disorder of about 1 in 10,000 to 30,000 births caused by loss of paternally expressed genes at 15q11.2-q13, most often through a paternal deletion.",
+        "presentation": "Severe neonatal hypotonia and feeding difficulty, followed in childhood by hyperphagia and obesity, short stature, hypogonadism, and behavioral problems.",
+        "testing": "Methylation testing is the first-line diagnostic test. FISH or a microarray then shows whether a deletion is present, which informs recurrence risk."
+      },
       "cytogenetic_cases": [
         {
           "id": "pws-no-single-karyotype",
@@ -2713,12 +3366,38 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "15q11.2–q13 deletion (paternal)",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "A small region of the long arm of chromosome 15 is missing from the copy inherited from the father.",
+        "look_for": "Usually nothing obvious. The same region as Angelman syndrome is involved, and it is below routine karyotype resolution.",
+        "why": "In this region some genes are active only on the father's copy, so losing it removes their function entirely.",
+        "biology": "Loss of paternally active genes affects the hypothalamus, which controls appetite, growth and hormone release. Infants have low muscle tone; later, excessive appetite develops.",
+        "detection": "FISH or chromosomal microarray detects the deletion. Methylation testing detects all the main mechanisms, including maternal uniparental disomy.",
+        "try_it": "Use the FISH lab to count the 15q11.2 probe signals, then explain why a normal-looking karyotype does not exclude the diagnosis.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "15",
+          "bands": [
+            "15q11.2",
+            "15q12",
+            "15q13"
+          ],
+          "abnormal_label": "Deleted region — usually looks normal"
+        }
+      }
     },
     {
       "id": "smith-magenis",
       "disease_name": "Smith-Magenis syndrome",
       "teaching_notes": "Smith-Magenis syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "clinical_background": {
+        "summary": "A microdeletion syndrome of about 1 in 15,000 to 25,000 births, caused by loss of RAI1 at 17p11.2.",
+        "presentation": "Sleep disturbance from an inverted melatonin rhythm, self-injurious behaviors, brachycephaly, and intellectual disability.",
+        "testing": "The deletion is usually detected by microarray; RAI1 sequencing covers cases without a deletion."
+      },
       "cytogenetic_cases": [
         {
           "id": "smith-magenis-deletion",
@@ -2798,12 +3477,36 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "17p11.2 microdeletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "A small segment of the short arm of chromosome 17, near the centromere, is missing.",
+        "look_for": "Usually nothing at routine resolution. Occasionally visible on a high-resolution karyotype.",
+        "why": "Loss of this region affects sleep regulation, behavior and development.",
+        "biology": "One of the deleted genes is dosage-sensitive and influences the body clock, so sleep patterns are disturbed alongside developmental differences.",
+        "detection": "Chromosomal microarray or FISH detects it; a routine karyotype often appears normal.",
+        "try_it": "Locate 17p11.2 on the chromosome 17 page and explain why a missing segment this small would be hard to see.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "17",
+          "bands": [
+            "17p11.2"
+          ],
+          "abnormal_label": "Deleted region — usually looks normal"
+        }
+      }
     },
     {
       "id": "triple-x",
       "disease_name": "Triple X syndrome",
       "teaching_notes": "Triple X syndrome remains in the atlas. It is not in the first lab set, which already includes sex-chromosome aneuploidy through Turner syndrome and Klinefelter syndrome.",
+      "clinical_background": {
+        "summary": "A common sex chromosome aneuploidy of about 1 in 1,000 females, often undiagnosed.",
+        "presentation": "Tall stature, mild learning or speech delays in some, and occasionally premature ovarian insufficiency. Many have no obvious features.",
+        "testing": "Often found incidentally on prenatal or postnatal testing. A karyotype confirms the diagnosis and detects mosaicism."
+      },
       "cytogenetic_cases": [
         {
           "id": "xxx",
@@ -2899,12 +3602,51 @@
           "karyotype_visibility": "potentially_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "47,XXX",
+        "category": "Numerical abnormality",
+        "type": "numerical",
+        "defect": "A female has an extra X chromosome, so there are three X chromosomes and the count is 47.",
+        "look_for": "Count 47 chromosomes, no Y, and three chromosomes with the X banding pattern.",
+        "why": "An extra X chromosome usually has mild effects because most of it is inactivated.",
+        "biology": "Two of the three X chromosomes are largely switched off. Genes that escape inactivation are present in extra dosage, which can lead to taller stature and learning differences. Many people are never diagnosed.",
+        "detection": "A routine karyotype detects it, often incidentally during prenatal testing.",
+        "try_it": "Count the cell, then count the chromosomes that match the X.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "X"
+            },
+            {
+              "chr": "X"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "X"
+            },
+            {
+              "chr": "X"
+            },
+            {
+              "chr": "X"
+            }
+          ],
+          "normal_label": "Typical female sex chromosomes (XX)",
+          "abnormal_label": "Three X chromosomes"
+        }
+      }
     },
     {
       "id": "wagr",
       "disease_name": "WAGR syndrome",
       "teaching_notes": "WAGR syndrome is the disease. Deletion size varies. The common case is not used as a simple karyotype lab, because a drawing of one large deletion would teach the wrong picture for smaller cases.",
+      "clinical_background": {
+        "summary": "A contiguous gene deletion at 11p13 that includes WT1 and PAX6.",
+        "presentation": "The name lists the features: Wilms tumor, aniridia, genitourinary anomalies, and a range of developmental delay.",
+        "testing": "A child with aniridia is tested by FISH or microarray; if WT1 is deleted, regular kidney ultrasound screening for Wilms tumor is needed."
+      },
       "cytogenetic_cases": [
         {
           "id": "wagr-deletion",
@@ -2984,12 +3726,36 @@
           "karyotype_visibility": "usually_not_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "11p13 deletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "A segment of the short arm of chromosome 11 at band 11p13 is missing.",
+        "look_for": "Larger deletions may shorten 11p slightly. Many are at or below routine resolution.",
+        "why": "One deletion removes several neighboring genes, so unrelated features (eye, kidney and development) occur together.",
+        "biology": "This is a contiguous gene syndrome: each feature reflects a different gene within the deleted segment, including one needed for the iris and one that protects against a childhood kidney tumor.",
+        "detection": "Chromosomal microarray or FISH confirms the deletion; a high-resolution karyotype sometimes shows it.",
+        "try_it": "Find 11p13 on the chromosome 11 page and compare its position with the centromere.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "11",
+          "bands": [
+            "11p13"
+          ],
+          "abnormal_label": "Region lost in 11p13 deletion"
+        }
+      }
     },
     {
       "id": "williams",
       "disease_name": "Williams syndrome",
       "teaching_notes": "Williams syndrome in this laboratory is the 7q11.23 microdeletion, including the ELN region. A conventional karyotype can look normal. A larger atypical 7q deletion remains a different case.",
+      "clinical_background": {
+        "summary": "A microdeletion syndrome of about 1 in 7,500 to 10,000 births, caused by loss of about 1.5 to 1.8 Mb at 7q11.23 including ELN.",
+        "presentation": "Supravalvular aortic stenosis, distinctive \"elfin\" facial features, hypercalcemia in infancy, and a highly sociable personality with strong verbal skills and weak visuospatial skills.",
+        "testing": "The deletion is not visible on a routine karyotype; FISH or a microarray is required."
+      },
       "cytogenetic_cases": [
         {
           "id": "micro-7q11",
@@ -3083,12 +3849,36 @@
           "karyotype_visibility": "potentially_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "7q11.23 microdeletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "A small segment of the long arm of chromosome 7, near the centromere, is missing on one homolog.",
+        "look_for": "Usually nothing. The deletion is about 1.5 million base pairs, well below routine karyotype resolution, so both chromosome 7s look normal.",
+        "why": "Loss of a small set of neighboring genes, including one for elastin, affects blood vessels, connective tissue and development.",
+        "biology": "Half the normal amount of elastin narrows large arteries, especially above the aortic valve. Other deleted genes affect growth, learning and a characteristic sociable personality.",
+        "detection": "FISH with a 7q11.23 probe or chromosomal microarray detects the deletion. A routine karyotype usually appears normal.",
+        "try_it": "Use the FISH lab to count the 7q11.23 signals relative to the control probe.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "7",
+          "bands": [
+            "7q11.23"
+          ],
+          "abnormal_label": "Deleted region — usually looks normal"
+        }
+      }
     },
     {
       "id": "xyy",
       "disease_name": "XYY syndrome",
       "teaching_notes": "XYY syndrome remains in the atlas. It is not in the first lab set, which already includes sex-chromosome aneuploidy through Turner syndrome and Klinefelter syndrome.",
+      "clinical_background": {
+        "summary": "A sex chromosome aneuploidy of about 1 in 1,000 males, usually undiagnosed.",
+        "presentation": "Tall stature and an increased risk of speech delay, learning differences, and attention or autism-spectrum features. Fertility is usually normal.",
+        "testing": "Often found incidentally on prenatal or postnatal karyotype."
+      },
       "cytogenetic_cases": [
         {
           "id": "xyy-free",
@@ -3185,12 +3975,51 @@
           "karyotype_visibility": "potentially_visible",
           "answers": null
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "47,XYY",
+        "category": "Numerical abnormality",
+        "type": "numerical",
+        "defect": "A male has an extra Y chromosome, so the count is 47.",
+        "look_for": "Count 47 chromosomes. Find one X and two Y chromosomes; the Y is a small acrocentric with a variable, often dark, distal long arm.",
+        "why": "An extra Y chromosome usually has mild effects such as tall stature; many people are never diagnosed.",
+        "biology": "The Y carries few genes. Their extra dosage can increase height and is associated with learning or attention differences, but fertility is typically normal.",
+        "detection": "A routine karyotype detects it, often incidentally.",
+        "try_it": "Count the cell, then find every small acrocentric and decide which are Y chromosomes.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "X"
+            },
+            {
+              "chr": "Y"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "X"
+            },
+            {
+              "chr": "Y"
+            },
+            {
+              "chr": "Y"
+            }
+          ],
+          "normal_label": "Typical male sex chromosomes (XY)",
+          "abnormal_label": "One X and two Y chromosomes"
+        }
+      }
     },
     {
       "id": "cll-del13q",
       "disease_name": "CLL with del(13q)",
       "teaching_notes": "The teaching case is an acquired heterozygous deletion at 13q14. It is not offered as a basic G-band recognition exercise, and this signal pattern is the representative case rather than every CLL 13q result.",
+      "clinical_background": {
+        "summary": "Chronic lymphocytic leukemia is the most common adult leukemia in Western countries. Deletion of 13q14 is the most frequent CLL abnormality.",
+        "presentation": "Often an incidental absolute lymphocytosis in an older adult; later lymphadenopathy, splenomegaly, and cytopenias.",
+        "testing": "An interphase FISH panel (13q14, trisomy 12, 11q22 ATM, 17p13 TP53) is standard because CLL cells divide poorly in culture. Isolated del(13q) is associated with a favorable prognosis."
+      },
       "cytogenetic_cases": [
         {
           "role": "canonical",
@@ -3270,12 +4099,36 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "13q14 deletion",
+        "category": "Structural abnormality",
+        "type": "deletion",
+        "defect": "A small segment of the long arm of chromosome 13 at 13q14 is missing in the leukemia cells.",
+        "look_for": "Usually nothing. The deletion is small, and CLL cells divide poorly in culture, so a karyotype often misses it.",
+        "why": "Loss of a region that normally restrains B-cell growth allows the cells to accumulate. As the only abnormality, it is linked to a more favorable course.",
+        "biology": "The deleted segment contains regulators that limit B-cell survival. The change is acquired in the leukemia cells, not inherited.",
+        "detection": "Interphase FISH on blood cells is the standard test, usually as part of a CLL panel.",
+        "try_it": "Use the FISH lab to compare the 13q14 probe with the control probe in many nuclei.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "13",
+          "bands": [
+            "13q14"
+          ],
+          "abnormal_label": "Deleted region — usually looks normal"
+        }
+      }
     },
     {
       "id": "aml-runx1",
       "disease_name": "AML with RUNX1::RUNX1T1",
       "teaching_notes": "The canonical teaching abnormality is t(8;21)(q22;q22). RUNX1T1 is at 8q22. RUNX1 is at 21q22.",
+      "clinical_background": {
+        "summary": "A core-binding factor acute myeloid leukemia defined by RUNX1::RUNX1T1, more common in younger patients.",
+        "presentation": "Cytopenias with myeloblasts, often with Auer rods and maturation. Myeloid sarcoma can occur.",
+        "testing": "This fusion defines a WHO AML category with a favorable prognosis and guides chemotherapy choice. A KIT mutation can modify the risk."
+      },
       "cytogenetic_cases": [
         {
           "role": "canonical",
@@ -3376,12 +4229,50 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Translocation t(8;21)",
+        "category": "Structural abnormality",
+        "type": "translocation",
+        "defect": "Segments of the long arms of chromosomes 8 and 21 have exchanged places.",
+        "look_for": "One chromosome 21 is longer than its partner and one chromosome 8 has a shorter long arm with different distal bands. The count stays 46.",
+        "why": "The fusion disrupts a master regulator of blood cell development, so myeloid cells fail to mature.",
+        "biology": "RUNX1 normally controls which genes switch on as blood cells mature. The fusion protein blocks that program, so immature cells build up. The change is acquired in the leukemia cells.",
+        "detection": "A bone marrow karyotype usually shows it. FISH or RT-PCR for RUNX1::RUNX1T1 confirms it and is used for monitoring.",
+        "try_it": "Compare each chromosome 8 and 21 with its partner and explain where the exchanged material went.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "8"
+            },
+            {
+              "chr": "21"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "8",
+              "variant": "der(8)t(8;21)(q22;q22)"
+            },
+            {
+              "chr": "21",
+              "variant": "der(21)t(8;21)(q22;q22)"
+            }
+          ],
+          "normal_label": "Normal chromosomes 8 and 21",
+          "abnormal_label": "Derivative chromosomes 8 and 21"
+        }
+      }
     },
     {
       "id": "aml-inv16",
       "disease_name": "AML with CBFB::MYH11",
       "teaching_notes": "The canonical teaching abnormality is the pericentric inversion inv(16)(p13.1q22). The breakpoints are on opposite arms, so the reversed segment includes the centromere. FISH asks whether CBFB is rearranged.",
+      "clinical_background": {
+        "summary": "A core-binding factor acute myeloid leukemia defined by CBFB::MYH11, from inv(16) or t(16;16).",
+        "presentation": "Acute myeloid leukemia with monocytic features and abnormal eosinophils in the bone marrow.",
+        "testing": "This rearrangement defines a favorable-risk WHO category. The inversion is subtle on a karyotype, so FISH or RT-PCR is used to confirm it."
+      },
       "cytogenetic_cases": [
         {
           "role": "canonical",
@@ -3468,12 +4359,49 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Inversion inv(16)",
+        "category": "Structural abnormality",
+        "type": "inversion",
+        "defect": "A segment of chromosome 16 that spans the centromere has broken out and been reinserted upside down.",
+        "look_for": "Do not expect a shorter chromosome. The length is almost unchanged; instead the band order is reversed, so one chromosome 16 does not match its partner band for band. It is subtle and easy to miss.",
+        "why": "The inversion joins two genes (CBFB and MYH11) into a fusion that blocks blood cell maturation.",
+        "biology": "The fusion interferes with the same blood-development program affected in t(8;21). The change is acquired in the leukemia cells.",
+        "detection": "A karyotype can show it, but it is easily overlooked. FISH or RT-PCR for CBFB::MYH11 is used to confirm.",
+        "try_it": "Line up the two chromosome 16s and read the bands from top to bottom. Where does the order stop matching?",
+        "compare": {
+          "normal": [
+            {
+              "chr": "16"
+            },
+            {
+              "chr": "16"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "16"
+            },
+            {
+              "chr": "16",
+              "variant": "inv(16)(p13.1q22)"
+            }
+          ],
+          "normal_label": "Normal chromosome 16",
+          "abnormal_label": "Chromosome 16 with an inversion"
+        }
+      }
     },
     {
       "id": "kmt2a",
       "disease_name": "KMT2A-rearranged acute leukemia",
       "teaching_notes": "The teaching question is whether KMT2A at 11q23.3 is rearranged. Patients do not all share one partner, so this case does not assign one universal karyotype or one derivative.",
+      "clinical_background": {
+        "summary": "KMT2A (MLL) rearrangements occur in acute leukemias, especially infant leukemia and therapy-related AML after topoisomerase II inhibitors. More than 80 partner genes are known.",
+        "presentation": "Acute leukemia with high white cell counts, often with monocytic or mixed lineage features and central nervous system involvement.",
+        "testing": "Detecting a KMT2A rearrangement generally indicates adverse risk. The partner is identified by karyotype or molecular testing because it affects the prognosis."
+      },
       "cytogenetic_cases": [
         {
           "role": "canonical",
@@ -3554,12 +4482,36 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "11q23.3 rearrangement",
+        "category": "Structural abnormality",
+        "type": "other",
+        "defect": "The KMT2A gene at 11q23.3 is broken and joined to one of many possible partner chromosomes.",
+        "look_for": "Sometimes a translocation involving the distal long arm of chromosome 11 is visible, but the partner varies and some rearrangements are hidden.",
+        "why": "The broken gene fuses with a partner and reprograms gene activity in blood-forming cells, usually causing an aggressive leukemia.",
+        "biology": "KMT2A helps keep developmental genes switched on at the right time. Fusion proteins lock that program on. The change is acquired in the leukemia cells.",
+        "detection": "Break-apart FISH shows that KMT2A is split, without naming the partner. Karyotype or molecular tests identify the partner.",
+        "try_it": "Use the FISH lab: decide whether the two colors of the break-apart probe stay together or separate.",
+        "compare": {
+          "mode": "ideogram",
+          "chr": "11",
+          "bands": [
+            "11q23.3"
+          ],
+          "abnormal_label": "Region of the rearrangement"
+        }
+      }
     },
     {
       "id": "alk-alcl",
       "disease_name": "ALK-positive anaplastic large cell lymphoma",
       "teaching_notes": "t(2;5)(p23;q35), NPM1::ALK, is the canonical teaching variant. ALK can have other partners. The karyotype and derivative maps use t(2;5). FISH is an ALK break-apart assay and does not identify the partner.",
+      "clinical_background": {
+        "summary": "ALK-positive anaplastic large cell lymphoma is a T-cell lymphoma, usually in children and young adults. NPM1::ALK is the most common fusion.",
+        "presentation": "Lymphadenopathy, often with fever and weight loss and extranodal involvement. Large \"hallmark\" cells that express CD30.",
+        "testing": "Demonstrating an ALK rearrangement confirms the subtype, which has a better prognosis than ALK-negative ALCL and can respond to ALK inhibitors."
+      },
       "cytogenetic_cases": [
         {
           "role": "canonical",
@@ -3660,12 +4612,50 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Translocation t(2;5)",
+        "category": "Structural abnormality",
+        "type": "translocation",
+        "defect": "The short arm of chromosome 2 and the long arm of chromosome 5 have exchanged material.",
+        "look_for": "One chromosome 2 has a changed short-arm tip and one chromosome 5 has a changed long-arm tip. The count stays 46.",
+        "why": "The fusion switches on ALK, a growth signal that is normally silent in lymphocytes.",
+        "biology": "The partner gene provides a strong, always-on promoter, so the fused ALK signal drives lymphocyte growth. The change is acquired in the lymphoma cells.",
+        "detection": "ALK protein staining and break-apart FISH on tumor tissue are the usual tests; a karyotype can show the translocation.",
+        "try_it": "Compare chromosome 2's short arm and chromosome 5's long arm with their partners.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "2"
+            },
+            {
+              "chr": "5"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "2",
+              "variant": "der(2)t(2;5)(p23;q35)"
+            },
+            {
+              "chr": "5",
+              "variant": "der(5)t(2;5)(p23;q35)"
+            }
+          ],
+          "normal_label": "Normal chromosomes 2 and 5",
+          "abnormal_label": "Derivative chromosomes 2 and 5"
+        }
+      }
     },
     {
       "id": "ewing",
       "disease_name": "Ewing sarcoma",
       "teaching_notes": "t(11;22)(q24;q12), EWSR1::FLI1, is the canonical teaching mechanism. Conventional karyotyping is not the primary activity. Chromosome analysis shows the canonical breakpoints. FISH is an EWSR1 break-apart assay and does not prove the partner is FLI1.",
+      "clinical_background": {
+        "summary": "Ewing sarcoma is a small round cell sarcoma of bone and soft tissue in children and young adults. EWSR1::FLI1 is the most common fusion.",
+        "presentation": "Localized bone pain and swelling, often in the pelvis or long bones, sometimes with fever. Small, uniform round blue cells on histology.",
+        "testing": "An EWSR1 rearrangement supports the diagnosis and separates Ewing sarcoma from other small round cell tumors. EWSR1 rearrangements also occur in other sarcomas, so the result is read with the histology."
+      },
       "cytogenetic_cases": [
         {
           "role": "canonical",
@@ -3766,7 +4756,40 @@
           "label": "ISCN",
           "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
         }
-      ]
+      ],
+      "atlas_guide": {
+        "headline": "Translocation t(11;22)",
+        "category": "Structural abnormality",
+        "type": "translocation",
+        "defect": "Segments of the long arms of chromosomes 11 and 22 have exchanged places.",
+        "look_for": "One chromosome 22 and one chromosome 11 each have changed distal long-arm bands. The change can be subtle.",
+        "why": "The fusion creates an abnormal regulator that switches on a growth program in bone and soft tissue cells.",
+        "biology": "EWSR1 and FLI1 join into a fusion that binds DNA and activates genes that normal cells keep off. The change is acquired in the tumor cells.",
+        "detection": "Break-apart FISH for EWSR1 or molecular testing on tumor tissue is standard; a karyotype can show the translocation when cells grow.",
+        "try_it": "Compare the distal long arms of chromosomes 11 and 22 with their partners.",
+        "compare": {
+          "normal": [
+            {
+              "chr": "11"
+            },
+            {
+              "chr": "22"
+            }
+          ],
+          "abnormal": [
+            {
+              "chr": "11",
+              "variant": "der(11)t(11;22)(q24;q12)"
+            },
+            {
+              "chr": "22",
+              "variant": "der(22)t(11;22)(q24;q12)"
+            }
+          ],
+          "normal_label": "Normal chromosomes 11 and 22",
+          "abnormal_label": "Derivative chromosomes 11 and 22"
+        }
+      }
     }
   ]
 }

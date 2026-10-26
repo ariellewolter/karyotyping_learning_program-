@@ -1,0 +1,47 @@
+{
+  "case_id": "iscn-mosaic-plus8",
+  "title": "Mosaic clone notation",
+  "difficulty": "advanced",
+  "case_type": "technical",
+  "modules": ["iscn_interpretation", "iscn_construction", "abnormality"],
+  "clinical_history": "Two cell lines are written in one ISCN string. Read the slash and the numbers in square brackets. This exercise teaches the notation. It does not assign a syndrome.",
+  "chromosome_count": 47,
+  "sex_chromosomes": "XX",
+  "abnormality_category": "numerical",
+  "abnormality_type": ["trisomy", "mosaicism"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy", "mosaicism"]
+  },
+  "chromosomes_involved": ["8"],
+  "expected_iscn": "47,XX,+8[6]/46,XX[14]",
+  "accepted_iscn_variants": [
+    "47,XX,+8[6]/46,XX[14]",
+    "47,XX,+8/46,XX"
+  ],
+  "iscn_prompt": "47,XX,+8[6]/46,XX[14]",
+  "plain_language_interpretation": "Two cell lines: 6 cells have an extra chromosome 8, and 14 cells are 46,XX. A slash separates cell lines. Numbers in square brackets are cell counts, not chromosome counts. No syndrome is assigned here.",
+  "interpretation_items": {
+    "chromosome_count": "47 and 46 (two cell lines)",
+    "sex_chromosomes": "XX",
+    "numerical": "trisomy",
+    "structural": "none",
+    "chromosomes_involved": "8",
+    "arm": "none",
+    "band": "none"
+  },
+  "explanation": "ISCN writes more than one cell line with a slash. The number in square brackets is how many cells were counted in that line. 47,XX,+8[6]/46,XX[14] means six cells with an extra chromosome 8 and fourteen cells with a normal female complement. The exercise stops at that reading.",
+  "hints": [
+    "A slash in ISCN separates cell lines, not chromosomes.",
+    "The number in square brackets is the number of cells in that line, not the chromosome count.",
+    "The first line has 47 chromosomes because one chromosome 8 is extra. The second line is 46,XX."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. Section on mosaicism and clone size notation."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

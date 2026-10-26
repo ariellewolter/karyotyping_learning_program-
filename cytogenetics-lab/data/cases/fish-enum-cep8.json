@@ -1,0 +1,233 @@
+{
+  "case_id": "fish-enum-cep8",
+  "title": "Enumeration FISH — CEP 8",
+  "difficulty": "introductory",
+  "case_type": "technical",
+  "modules": [
+    "fish"
+  ],
+  "clinical_history": "Teaching interphase nuclei hybridized with a chromosome 8 centromeric probe. Count green signals in scorable nuclei. Demonstration graphics; not a clinical specimen.",
+  "fish": {
+    "assay_type": "enumeration",
+    "specimen_type": "interphase",
+    "exercises": [
+      "enumeration",
+      "interphase",
+      "quality"
+    ],
+    "synthetic_images": true,
+    "channels": [
+      "dapi",
+      "green",
+      "merge"
+    ],
+    "probe_ids": [
+      "cep8"
+    ],
+    "count_fields": [
+      "green"
+    ],
+    "signal_tolerance": 22,
+    "case_specific_cutoff": {
+      "pattern": "3 green signals",
+      "minimum_percent_scorable": 60,
+      "note": "This teaching case treats ≥60% of scorable nuclei with 3 green signals as an abnormal enumeration result. It is not a universal clinical cutoff.",
+      "normal_counts": {
+        "green": 2
+      },
+      "abnormal_counts": {
+        "green": 3
+      }
+    },
+    "expected_interpretation": "abnormal_gain",
+    "interpretation_options": [
+      "normal_disomy",
+      "abnormal_gain",
+      "abnormal_loss",
+      "unscorable_study"
+    ],
+    "nuclei": [
+      {
+        "nucleus_id": "n1",
+        "cx": 200,
+        "cy": 170,
+        "rx": 88,
+        "ry": 96,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 168,
+            "y": 148
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 214,
+            "y": 132
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 228,
+            "y": 188
+          }
+        ],
+        "expected_counts": {
+          "green": 3
+        },
+        "expected_classification": "3G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 200,
+        "cy": 170,
+        "rx": 92,
+        "ry": 90,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 160,
+            "y": 160
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 206,
+            "y": 128
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 236,
+            "y": 176
+          }
+        ],
+        "expected_counts": {
+          "green": 3
+        },
+        "expected_classification": "3G"
+      },
+      {
+        "nucleus_id": "n3",
+        "cx": 200,
+        "cy": 170,
+        "rx": 86,
+        "ry": 92,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 174,
+            "y": 150
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 226,
+            "y": 178
+          }
+        ],
+        "expected_counts": {
+          "green": 2
+        },
+        "expected_classification": "2G"
+      },
+      {
+        "nucleus_id": "n4",
+        "cx": 168,
+        "cy": 160,
+        "rx": 80,
+        "ry": 86,
+        "overlap": {
+          "cx": 248,
+          "cy": 176,
+          "rx": 78,
+          "ry": 82
+        },
+        "scorable": false,
+        "artifact_type": "overlapping_nuclei",
+        "artifact_reason": "Two nuclei overlap, so signals cannot be assigned to one nucleus.",
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 150,
+            "y": 148
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 186,
+            "y": 172
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 236,
+            "y": 158
+          }
+        ],
+        "expected_counts": {
+          "green": null
+        },
+        "expected_classification": "unscorable"
+      },
+      {
+        "nucleus_id": "n5",
+        "cx": 200,
+        "cy": 175,
+        "rx": 90,
+        "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          {
+            "id": "g1",
+            "type": "green",
+            "x": 164,
+            "y": 154
+          },
+          {
+            "id": "g2",
+            "type": "green",
+            "x": 208,
+            "y": 136
+          },
+          {
+            "id": "g3",
+            "type": "green",
+            "x": 232,
+            "y": 192
+          }
+        ],
+        "expected_counts": {
+          "green": 3
+        },
+        "expected_classification": "3G"
+      }
+    ]
+  },
+  "hints": [
+    "CEP 8 is an enumeration probe: each green signal represents one chromosome 8 centromere.",
+    "Do not count a nucleus if two nuclear outlines overlap.",
+    "In this teaching case, three green signals in most scorable nuclei support gain of chromosome 8."
+  ],
+  "explanation": "A centromeric probe reports chromosome copy number. Three CEP 8 signals in a scorable nucleus correspond to three copies of chromosome 8. Overlapping nuclei are excluded before percentages are calculated. The 60% teaching cutoff belongs to this case file and is not a laboratory-wide rule.",
+  "plain_language_interpretation": "Most scorable nuclei show three chromosome-8 centromere signals, consistent with an extra copy of chromosome 8 in this demonstration set.",
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020. FISH signal nomenclature."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

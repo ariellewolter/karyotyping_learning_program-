@@ -217,7 +217,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 1.0,
+      "basis": "Constitutional, non-mosaic deletion: every scorable nucleus shows one target with both controls."
+    }
   },
   "hints": [
     "The pattern shows loss of one 15q11-q13 target.",

@@ -1,0 +1,626 @@
+{
+  "description": "Coordinates facet built from downloaded ClinGen GRCh38 lists and the UCSC hg38 cytoband ideogram.",
+  "diseases": {
+    "down-syndrome": [
+      {
+        "kind": "cytoband span",
+        "name": "chromosome 21",
+        "cytoband": "chromosome 21",
+        "grch38": "chr21:1-46709983",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr21 0 46709983 chromosome 21"
+        }
+      }
+    ],
+    "edwards-syndrome": [
+      {
+        "kind": "cytoband span",
+        "name": "chromosome 18",
+        "cytoband": "chromosome 18",
+        "grch38": "chr18:1-80373285",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr18 0 80373285 chromosome 18"
+        }
+      }
+    ],
+    "patau-syndrome": [
+      {
+        "kind": "cytoband span",
+        "name": "chromosome 13",
+        "cytoband": "chromosome 13",
+        "grch38": "chr13:1-114364328",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr13 0 114364328 chromosome 13"
+        }
+      }
+    ],
+    "turner": [
+      {
+        "kind": "cytoband span",
+        "name": "chromosome X",
+        "cytoband": "chromosome X",
+        "grch38": "chrX:1-156040895",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chrX 0 156040895 chromosome X"
+        }
+      }
+    ],
+    "klinefelter": [
+      {
+        "kind": "cytoband span",
+        "name": "chromosome X",
+        "cytoband": "chromosome X",
+        "grch38": "chrX:1-156040895",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chrX 0 156040895 chromosome X"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "chromosome Y",
+        "cytoband": "chromosome Y",
+        "grch38": "chrY:1-57227415",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chrY 0 57227415 chromosome Y"
+        }
+      }
+    ],
+    "triple-x": [
+      {
+        "kind": "cytoband span",
+        "name": "chromosome X",
+        "cytoband": "chromosome X",
+        "grch38": "chrX:1-156040895",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chrX 0 156040895 chromosome X"
+        }
+      }
+    ],
+    "xyy": [
+      {
+        "kind": "cytoband span",
+        "name": "chromosome Y",
+        "cytoband": "chromosome Y",
+        "grch38": "chrY:1-57227415",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chrY 0 57227415 chromosome Y"
+        }
+      }
+    ],
+    "cri-du-chat": [
+      {
+        "kind": "ClinGen region",
+        "name": "5p15 terminal (Cri du chat syndrome) region",
+        "cytoband": "5p15.33-p15.2",
+        "grch38": "chr5:37695-11347150",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37390",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37390\t5p15 terminal (Cri du chat syndrome) region\t5p15.33-p15.2\tchr5:37695-11347150"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "5p15.33-p15.2",
+        "cytoband": "5p15.33-p15.2",
+        "grch38": "chr5:1-15000000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr5 0 15000000 5p15.33-p15.2"
+        }
+      }
+    ],
+    "wolf-hirschhorn": [
+      {
+        "kind": "ClinGen region",
+        "name": "4p16.3 terminal (Wolf-Hirschhorn syndrome) region",
+        "cytoband": "4p16.3",
+        "grch38": "chr4:337779-2009235",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37429",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37429\t4p16.3 terminal (Wolf-Hirschhorn syndrome) region\t4p16.3\tchr4:337779-2009235"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "4p16.3",
+        "cytoband": "4p16.3",
+        "grch38": "chr4:1-4500000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr4 0 4500000 4p16.3"
+        }
+      }
+    ],
+    "cml": [
+      {
+        "kind": "cytoband span",
+        "name": "9q34",
+        "cytoband": "9q34",
+        "grch38": "chr9:127500001-138394717",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr9 127500000 138394717 9q34"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "22q11.2",
+        "cytoband": "22q11.2",
+        "grch38": "chr22:17400001-25500000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr22 17400000 25500000 22q11.2"
+        }
+      }
+    ],
+    "apl": [
+      {
+        "kind": "cytoband span",
+        "name": "15q24.1",
+        "cytoband": "15q24.1",
+        "grch38": "chr15:72400001-74900000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr15 72400000 74900000 15q24.1"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "17q21.2",
+        "cytoband": "17q21.2",
+        "grch38": "chr17:40200001-42800000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr17 40200000 42800000 17q21.2"
+        }
+      }
+    ],
+    "burkitt": [
+      {
+        "kind": "cytoband span",
+        "name": "8q24",
+        "cytoband": "8q24",
+        "grch38": "chr8:116700001-145138636",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr8 116700000 145138636 8q24"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "14q32",
+        "cytoband": "14q32",
+        "grch38": "chr14:89300001-107043718",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr14 89300000 107043718 14q32"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "2p12",
+        "cytoband": "2p12",
+        "grch38": "chr2:74800001-83100000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr2 74800000 83100000 2p12"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "22q11",
+        "cytoband": "22q11",
+        "grch38": "chr22:15000001-25500000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr22 15000000 25500000 22q11"
+        }
+      }
+    ],
+    "aml-runx1": [
+      {
+        "kind": "cytoband span",
+        "name": "8q22",
+        "cytoband": "8q22",
+        "grch38": "chr8:92300001-105100000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr8 92300000 105100000 8q22"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "21q22",
+        "cytoband": "21q22",
+        "grch38": "chr21:30200001-46709983",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr21 30200000 46709983 21q22"
+        }
+      }
+    ],
+    "aml-inv16": [
+      {
+        "kind": "cytoband span",
+        "name": "16p13.1",
+        "cytoband": "16p13.1",
+        "grch38": "chr16:10400001-16700000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr16 10400000 16700000 16p13.1"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "16q22",
+        "cytoband": "16q22",
+        "grch38": "chr16:66600001-74100000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr16 66600000 74100000 16q22"
+        }
+      }
+    ],
+    "alk-alcl": [
+      {
+        "kind": "cytoband span",
+        "name": "2p23",
+        "cytoband": "2p23",
+        "grch38": "chr2:23800001-31800000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr2 23800000 31800000 2p23"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "5q35",
+        "cytoband": "5q35",
+        "grch38": "chr5:169000001-181538259",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr5 169000000 181538259 5q35"
+        }
+      }
+    ],
+    "angelman": [
+      {
+        "kind": "ClinGen region",
+        "name": "15q11.2q13 recurrent (PWS/AS) region (Class I, BP1-BP3 and Class II, BP2-BP3)",
+        "cytoband": "15q11.2-q13.1",
+        "grch38": "chr15:23465365-28134728",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37478",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37478\t15q11.2q13 recurrent (PWS/AS) region (Class I, BP1-BP3 and Class II, BP2-BP3)\t15q11.2-q13.1\tchr15:23465365-28134728"
+        }
+      },
+      {
+        "kind": "ClinGen gene",
+        "name": "UBE3A",
+        "cytoband": "15q11.2",
+        "grch38": "chr15:25333728-25439056",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, gene list (GRCh38)",
+          "identifier": "NCBI Gene 7337",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_gene_curation_list_GRCh38.tsv",
+          "excerpt": "UBE3A\t7337\t15q11.2\tchr15:25333728-25439056"
+        }
+      }
+    ],
+    "prader-willi": [
+      {
+        "kind": "ClinGen region",
+        "name": "15q11.2q13 recurrent (PWS/AS) region (Class I, BP1-BP3 and Class II, BP2-BP3)",
+        "cytoband": "15q11.2-q13.1",
+        "grch38": "chr15:23465365-28134728",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37478",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37478\t15q11.2q13 recurrent (PWS/AS) region (Class I, BP1-BP3 and Class II, BP2-BP3)\t15q11.2-q13.1\tchr15:23465365-28134728"
+        }
+      }
+    ],
+    "digeorge": [
+      {
+        "kind": "ClinGen region",
+        "name": "22q11.2 recurrent (DGS) region (proximal, A-B, A-C, or A-D) (includes TBX1)",
+        "cytoband": "22q11.21",
+        "grch38": "chr22:18924718-21111383",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37446",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37446\t22q11.2 recurrent (DGS) region (proximal, A-B, A-C, or A-D) (includes TBX1)\t22q11.21\tchr22:18924718-21111383"
+        }
+      },
+      {
+        "kind": "ClinGen gene",
+        "name": "TBX1",
+        "cytoband": "22q11.21",
+        "grch38": "chr22:19756703-19783593",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, gene list (GRCh38)",
+          "identifier": "NCBI Gene 6899",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_gene_curation_list_GRCh38.tsv",
+          "excerpt": "TBX1\t6899\t22q11.21\tchr22:19756703-19783593"
+        }
+      }
+    ],
+    "williams": [
+      {
+        "kind": "ClinGen region",
+        "name": "7q11.23 recurrent (Williams-Beuren syndrome) region (proximal) (includes ELN)",
+        "cytoband": "7q11.23",
+        "grch38": "chr7:73330452-74728173",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37392",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37392\t7q11.23 recurrent (Williams-Beuren syndrome) region (proximal) (includes ELN)\t7q11.23\tchr7:73330452-74728173"
+        }
+      },
+      {
+        "kind": "ClinGen gene",
+        "name": "ELN",
+        "cytoband": "7q11.23",
+        "grch38": "chr7:74028173-74069907",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, gene list (GRCh38)",
+          "identifier": "NCBI Gene 2006",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_gene_curation_list_GRCh38.tsv",
+          "excerpt": "ELN\t2006\t7q11.23\tchr7:74028173-74069907"
+        }
+      }
+    ],
+    "cll-del13q": [
+      {
+        "kind": "cytoband span",
+        "name": "13q14.2-q14.3",
+        "cytoband": "13q14.2-q14.3",
+        "grch38": "chr13:46700001-54700000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr13 46700000 54700000 13q14.2-q14.3"
+        }
+      }
+    ],
+    "kmt2a": [
+      {
+        "kind": "ClinGen gene",
+        "name": "KMT2A",
+        "cytoband": "11q23.3",
+        "grch38": "chr11:118436492-118526832",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, gene list (GRCh38)",
+          "identifier": "NCBI Gene 4297",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_gene_curation_list_GRCh38.tsv",
+          "excerpt": "KMT2A\t4297\t11q23.3\tchr11:118436492-118526832"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "11q23",
+        "cytoband": "11q23",
+        "grch38": "chr11:110600001-121300000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr11 110600000 121300000 11q23"
+        }
+      }
+    ],
+    "ewing": [
+      {
+        "kind": "cytoband span",
+        "name": "11q24",
+        "cytoband": "11q24",
+        "grch38": "chr11:121300001-130900000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr11 121300000 130900000 11q24"
+        }
+      },
+      {
+        "kind": "cytoband span",
+        "name": "22q12",
+        "cytoband": "22q12",
+        "grch38": "chr22:25500001-37200000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr22 25500000 37200000 22q12"
+        }
+      }
+    ],
+    "del-1p36": [
+      {
+        "kind": "ClinGen region",
+        "name": "1p36 terminal region (includes GABRD)",
+        "cytoband": "1p36.33-p36.31",
+        "grch38": "chr1:898703-6229913",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37434",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37434\t1p36 terminal region (includes GABRD)\t1p36.33-p36.31\tchr1:898703-6229913"
+        }
+      }
+    ],
+    "del-8p": [
+      {
+        "kind": "cytoband span",
+        "name": "8p23.3-p23.1",
+        "cytoband": "8p23.3-p23.1",
+        "grch38": "chr8:1-12800000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr8 0 12800000 8p23.3-p23.1"
+        }
+      }
+    ],
+    "del-9p": [
+      {
+        "kind": "cytoband span",
+        "name": "9p24.3-p22.1",
+        "cytoband": "9p24.3-p22.1",
+        "grch38": "chr9:1-19900000",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr9 0 19900000 9p24.3-p22.1"
+        }
+      }
+    ],
+    "jacobsen": [
+      {
+        "kind": "cytoband span",
+        "name": "11q23.3-q25",
+        "cytoband": "11q23.3-q25",
+        "grch38": "chr11:114600001-135086622",
+        "source": {
+          "citation": "UCSC Genome Browser hg38 cytoBandIdeo",
+          "identifier": "hg38 cytoBandIdeo",
+          "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/cytoBandIdeo.txt.gz",
+          "excerpt": "chr11 114600000 135086622 11q23.3-q25"
+        }
+      }
+    ],
+    "miller-dieker": [
+      {
+        "kind": "ClinGen region",
+        "name": "17p13.3 (Miller-Dieker syndrome) region (includes YWHAE and PAFAH1B1)",
+        "cytoband": "17p13.3",
+        "grch38": "chr17:1344539-2685615",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37430",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37430\t17p13.3 (Miller-Dieker syndrome) region (includes YWHAE and PAFAH1B1)\t17p13.3\tchr17:1344539-2685615"
+        }
+      }
+    ],
+    "smith-magenis": [
+      {
+        "kind": "ClinGen region",
+        "name": "17p11.2 recurrent (SMS/PLS) region (includes RAI1)",
+        "cytoband": "17p11.2",
+        "grch38": "chr17:16906714-20309889",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37418",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37418\t17p11.2 recurrent (SMS/PLS) region (includes RAI1)\t17p11.2\tchr17:16906714-20309889"
+        }
+      }
+    ],
+    "wagr": [
+      {
+        "kind": "ClinGen region",
+        "name": "11p13 (WAGR syndrome) region",
+        "cytoband": "11p13",
+        "grch38": "chr11:31781961-32489442",
+        "haploinsufficiency_score": "3",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, region list (GRCh38)",
+          "identifier": "ISCA-37401",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_region_curation_list_GRCh38.tsv",
+          "excerpt": "ISCA-37401\t11p13 (WAGR syndrome) region\t11p13\tchr11:31781961-32489442"
+        }
+      },
+      {
+        "kind": "ClinGen gene",
+        "name": "WT1",
+        "cytoband": "11p13",
+        "grch38": "chr11:32387775-32435539",
+        "source": {
+          "citation": "ClinGen Dosage Sensitivity Curation, gene list (GRCh38)",
+          "identifier": "NCBI Gene 7490",
+          "url": "https://ftp.clinicalgenome.org/ClinGen_gene_curation_list_GRCh38.tsv",
+          "excerpt": "WT1\t7490\t11p13\tchr11:32387775-32435539"
+        }
+      }
+    ]
+  },
+  "unresolved": []
+}

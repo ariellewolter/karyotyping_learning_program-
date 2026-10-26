@@ -169,7 +169,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 1.0,
+      "basis": "Constitutional, non-mosaic monosomy: every scorable nucleus shows the abnormal count."
+    }
   },
   "hints": [
     "Green counts X. Red counts Y.",

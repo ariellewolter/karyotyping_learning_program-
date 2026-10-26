@@ -184,7 +184,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 0.92,
+      "basis": "Constitutional, non-mosaic aneuploidy: nearly every nucleus shows the abnormal count. One nucleus shows the disomic count, as when a signal is hidden by overlap or fails to hybridize."
+    }
   },
   "hints": [
     "Each green signal is one chromosome 21 centromere.",

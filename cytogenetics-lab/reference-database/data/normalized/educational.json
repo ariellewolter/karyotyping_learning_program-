@@ -1,0 +1,193 @@
+{
+  "record_class": "educational",
+  "note": "Independently written teaching examples of widely published associations. They are not MedGen or ClinGen records, and they are not a diagnosis.",
+  "examples": [
+    {
+      "disease_name": "Down syndrome",
+      "iscn": ["47,XX,+21", "47,XY,+21"],
+      "abnormality_type": "aneuploidy",
+      "chromosomes": ["21"],
+      "bands": [],
+      "genes": []
+    },
+    {
+      "disease_name": "Edwards syndrome",
+      "iscn": ["47,XX,+18", "47,XY,+18"],
+      "abnormality_type": "aneuploidy",
+      "chromosomes": ["18"],
+      "bands": [],
+      "genes": []
+    },
+    {
+      "disease_name": "Patau syndrome",
+      "iscn": ["47,XX,+13", "47,XY,+13"],
+      "abnormality_type": "aneuploidy",
+      "chromosomes": ["13"],
+      "bands": [],
+      "genes": []
+    },
+    {
+      "disease_name": "Turner syndrome",
+      "iscn": ["45,X"],
+      "abnormality_type": "aneuploidy",
+      "chromosomes": ["X"],
+      "bands": [],
+      "genes": []
+    },
+    {
+      "disease_name": "Klinefelter syndrome",
+      "iscn": ["47,XXY"],
+      "abnormality_type": "aneuploidy",
+      "chromosomes": ["X", "Y"],
+      "bands": [],
+      "genes": []
+    },
+    {
+      "disease_name": "Cri-du-chat syndrome",
+      "iscn": ["46,XX,del(5)(p15.2)", "46,XY,del(5)(p15.2)"],
+      "abnormality_type": "deletion",
+      "chromosomes": ["5"],
+      "bands": ["5p15.2"],
+      "genes": []
+    },
+    {
+      "disease_name": "Wolf-Hirschhorn syndrome",
+      "iscn": ["46,XX,del(4)(p16.3)", "46,XY,del(4)(p16.3)"],
+      "abnormality_type": "deletion",
+      "chromosomes": ["4"],
+      "bands": ["4p16.3"],
+      "genes": []
+    },
+    {
+      "disease_name": "Chronic myeloid leukemia",
+      "iscn": ["46,XY,t(9;22)(q34;q11.2)", "46,XX,t(9;22)(q34;q11.2)"],
+      "abnormality_type": "translocation",
+      "chromosomes": ["9", "22"],
+      "bands": ["9q34", "22q11.2"],
+      "genes": ["BCR", "ABL1"],
+      "fusion": "BCR::ABL1"
+    },
+    {
+      "disease_name": "Acute promyelocytic leukemia",
+      "iscn": ["46,XX,t(15;17)(q24;q21)", "46,XY,t(15;17)(q24;q21)"],
+      "abnormality_type": "translocation",
+      "chromosomes": ["15", "17"],
+      "bands": ["15q24", "17q21"],
+      "genes": ["PML", "RARA"],
+      "fusion": "PML::RARA"
+    },
+    {
+      "disease_name": "Burkitt lymphoma",
+      "iscn": ["46,XY,t(8;14)(q24;q32)", "46,XX,t(8;14)(q24;q32)"],
+      "abnormality_type": "translocation",
+      "chromosomes": ["8", "14"],
+      "bands": ["8q24", "14q32"],
+      "genes": ["MYC", "IGH"],
+      "fusion": "IGH::MYC"
+    }
+  ],
+  "probes": [
+    {
+      "probe_id": "edu-bcr-abl1-df",
+      "probe_name": "BCR/ABL1 dual-fusion, educational",
+      "strategy": "dual-fusion",
+      "disease_name": "Chronic myeloid leukemia",
+      "documentation": "Educational summary of a dual-fusion configuration for BCR and ABL1. The red and green assignment is an example. A manufacturer assay can reverse the colors.",
+      "targets": [
+        {"gene": "ABL1", "locus": "9q34", "fluorophore": "red"},
+        {"gene": "BCR", "locus": "22q11.2", "fluorophore": "green"}
+      ],
+      "patterns": [
+        {"role": "normal", "pattern": "2R2G", "note": "Two separated red signals and two separated green signals."},
+        {"role": "abnormal", "pattern": "1R1G2F", "note": "A typical reciprocal dual-fusion pattern. Atypical patterns also occur."}
+      ]
+    },
+    {
+      "probe_id": "edu-pml-rara-df",
+      "probe_name": "PML/RARA dual-fusion, educational",
+      "strategy": "dual-fusion",
+      "disease_name": "Acute promyelocytic leukemia",
+      "documentation": "Educational summary of a dual-fusion configuration for PML and RARA. Colors are an example, not a manufacturer specification.",
+      "targets": [
+        {"gene": "PML", "locus": "15q24", "fluorophore": "red"},
+        {"gene": "RARA", "locus": "17q21", "fluorophore": "green"}
+      ],
+      "patterns": [
+        {"role": "normal", "pattern": "2R2G", "note": "Two signals of each color, not fused."},
+        {"role": "abnormal", "pattern": "1R1G2F", "note": "Typical reciprocal fusion pattern for this configuration."}
+      ]
+    },
+    {
+      "probe_id": "edu-igh-myc-df",
+      "probe_name": "IGH/MYC dual-fusion, educational",
+      "strategy": "dual-fusion",
+      "disease_name": "Burkitt lymphoma",
+      "documentation": "Educational summary. A break-apart MYC probe is a different assay and does not name the partner.",
+      "targets": [
+        {"gene": "MYC", "locus": "8q24", "fluorophore": "red"},
+        {"gene": "IGH", "locus": "14q32", "fluorophore": "green"}
+      ],
+      "patterns": [
+        {"role": "normal", "pattern": "2R2G", "note": "Signals remain separate."},
+        {"role": "abnormal", "pattern": "1R1G2F", "note": "Typical pattern when this dual-fusion pair is rearranged."}
+      ]
+    },
+    {
+      "probe_id": "edu-alk-ba",
+      "probe_name": "ALK break-apart, educational",
+      "strategy": "break-apart",
+      "disease_name": "ALK-positive anaplastic large cell lymphoma",
+      "documentation": "Educational break-apart summary. Separation shows that ALK is rearranged. It does not identify the partner gene.",
+      "targets": [
+        {"gene": "ALK", "locus": "2p23", "fluorophore": "red"},
+        {"gene": "ALK", "locus": "2p23", "fluorophore": "green"}
+      ],
+      "patterns": [
+        {"role": "normal", "pattern": "2F", "note": "The two colors stay together on each allele."},
+        {"role": "abnormal", "pattern": "1F1R1G", "note": "One allele remains fused and the other splits into separated red and green signals."}
+      ]
+    },
+    {
+      "probe_id": "edu-5p-del",
+      "probe_name": "5p deletion, educational",
+      "strategy": "deletion",
+      "disease_name": "Cri-du-chat syndrome",
+      "documentation": "Educational deletion summary for the distal short arm of chromosome 5. A control probe is part of many assays and is not drawn here.",
+      "targets": [
+        {"gene": "", "locus": "5p15.2", "fluorophore": "red"}
+      ],
+      "patterns": [
+        {"role": "normal", "pattern": "2 target signals", "note": "Both chromosome 5 homologs retain the target."},
+        {"role": "abnormal", "pattern": "1 target signal", "note": "One copy of the target region is absent."}
+      ]
+    },
+    {
+      "probe_id": "edu-4p-del",
+      "probe_name": "4p deletion, educational",
+      "strategy": "deletion",
+      "disease_name": "Wolf-Hirschhorn syndrome",
+      "documentation": "Educational deletion summary for the distal short arm of chromosome 4.",
+      "targets": [
+        {"gene": "", "locus": "4p16.3", "fluorophore": "red"}
+      ],
+      "patterns": [
+        {"role": "normal", "pattern": "2 target signals", "note": "Both homologs retain the target."},
+        {"role": "abnormal", "pattern": "1 target signal", "note": "One copy of the target region is absent."}
+      ]
+    },
+    {
+      "probe_id": "edu-cep21",
+      "probe_name": "Chromosome 21 enumeration, educational",
+      "strategy": "enumeration",
+      "disease_name": "Down syndrome",
+      "documentation": "Educational centromeric enumeration summary. It reports copy number of chromosome 21, not the cause of an extra copy.",
+      "targets": [
+        {"gene": "", "locus": "21cen", "fluorophore": "green"}
+      ],
+      "patterns": [
+        {"role": "normal", "pattern": "2 signals", "note": "Two copies of the target."},
+        {"role": "abnormal", "pattern": "3 signals", "note": "Three copies of the target."}
+      ]
+    }
+  ]
+}

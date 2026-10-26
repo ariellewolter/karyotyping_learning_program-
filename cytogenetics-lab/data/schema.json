@@ -68,6 +68,26 @@
       }
     },
     "chromosomes_involved": { "type": "array", "items": { "type": "string" } },
+    "learning_focus_slots": {
+      "type": "array",
+      "description": "Optional chromosome identities used for representative-pair work in Learn mode; full-cell Practice and Assessment remain unchanged.",
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "learning_rounds": {
+      "type": "array",
+      "description": "Optional Learn-mode comparison rounds. Each round uses the pair bench for its slots. Practice and Assessment stay whole-cell.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "note": { "type": "string" },
+          "slots": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["slots"]
+      }
+    },
     "bands_involved": { "type": "array", "items": { "type": "string" } },
     "arms_involved": { "type": "array", "items": { "type": "string" } },
     "expected_iscn": { "type": "string" },

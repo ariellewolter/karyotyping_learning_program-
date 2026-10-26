@@ -4,7 +4,7 @@
   "difficulty": "advanced",
   "case_type": "acquired",
   "modules": ["karyotype", "assembly", "fish", "abnormality", "iscn_interpretation", "iscn_construction", "disease", "integrated"],
-  "clinical_history": "A 48-year-old man has fatigue, splenomegaly, and marked leukocytosis with a left shift. Bone marrow cytogenetic analysis is requested. This is an acquired (cancer) cytogenetics teaching case, not a constitutional study.",
+  "clinical_history": "A 48-year-old man has fatigue, splenomegaly, and marked leukocytosis with a left shift. Bone marrow cytogenetic analysis is requested. This is an acquired (cancer) cytogenetics teaching case, not a constitutional study. The FISH field is simulated and does not represent measured patient percentages or a clinical cutoff.",
   "unknown_prompt": "An adult with leukocytosis and splenomegaly undergoes bone marrow karyotyping. Identify any structural rearrangement, write the ISCN, and name the associated neoplasm. Chromosome images are demonstration schematics.",
   "chromosome_count": 46,
   "sex_chromosomes": "XY",
@@ -55,6 +55,272 @@
           { "id": "f2", "type": "fusion", "x": 214, "y": 124 },
           { "id": "r1", "type": "red", "x": 246, "y": 176 },
           { "id": "g1", "type": "green", "x": 186, "y": 204 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n2",
+        "cx": 198, "cy": 168, "rx": 88, "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 143, "y": 145 },
+          { "id": "f2", "type": "fusion", "x": 215, "y": 127 },
+          { "id": "r1", "type": "red", "x": 250, "y": 181 },
+          { "id": "g1", "type": "green", "x": 183, "y": 211 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n3-normal",
+        "cx": 201, "cy": 172, "rx": 91, "ry": 91,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "r1", "type": "red", "x": 151, "y": 145 },
+          { "id": "r2", "type": "red", "x": 216, "y": 122 },
+          { "id": "g1", "type": "green", "x": 247, "y": 180 },
+          { "id": "g2", "type": "green", "x": 185, "y": 207 }
+        ],
+        "expected_counts": { "red": 2, "green": 2, "fusion": 0 },
+        "expected_classification": "2R2G"
+      },
+      {
+        "nucleus_id": "n4",
+        "cx": 202, "cy": 168, "rx": 94, "ry": 96,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 159, "y": 143 },
+          { "id": "f2", "type": "fusion", "x": 220, "y": 132 },
+          { "id": "r1", "type": "red", "x": 250, "y": 184 },
+          { "id": "g1", "type": "green", "x": 183, "y": 213 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n5",
+        "cx": 199, "cy": 171, "rx": 90, "ry": 95,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 151, "y": 151 },
+          { "id": "f2", "type": "fusion", "x": 218, "y": 126 },
+          { "id": "r1", "type": "red", "x": 245, "y": 188 },
+          { "id": "g1", "type": "green", "x": 181, "y": 208 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n6-normal",
+        "cx": 201, "cy": 169, "rx": 89, "ry": 93,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "r1", "type": "red", "x": 154, "y": 141 },
+          { "id": "r2", "type": "red", "x": 218, "y": 121 },
+          { "id": "g1", "type": "green", "x": 244, "y": 178 },
+          { "id": "g2", "type": "green", "x": 183, "y": 207 }
+        ],
+        "expected_counts": { "red": 2, "green": 2, "fusion": 0 },
+        "expected_classification": "2R2G"
+      },
+      {
+        "nucleus_id": "n7",
+        "cx": 200, "cy": 170, "rx": 92, "ry": 92,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 156, "y": 147 },
+          { "id": "f2", "type": "fusion", "x": 218, "y": 125 },
+          { "id": "r1", "type": "red", "x": 247, "y": 179 },
+          { "id": "g1", "type": "green", "x": 184, "y": 207 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n8",
+        "cx": 199, "cy": 172, "rx": 93, "ry": 95,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 149, "y": 149 },
+          { "id": "f2", "type": "fusion", "x": 212, "y": 128 },
+          { "id": "r1", "type": "red", "x": 244, "y": 185 },
+          { "id": "g1", "type": "green", "x": 180, "y": 211 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n9",
+        "cx": 202, "cy": 170, "rx": 91, "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 162, "y": 144 },
+          { "id": "f2", "type": "fusion", "x": 221, "y": 125 },
+          { "id": "r1", "type": "red", "x": 251, "y": 182 },
+          { "id": "g1", "type": "green", "x": 186, "y": 211 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n10-normal",
+        "cx": 200, "cy": 170, "rx": 90, "ry": 92,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "r1", "type": "red", "x": 150, "y": 147 },
+          { "id": "r2", "type": "red", "x": 216, "y": 124 },
+          { "id": "g1", "type": "green", "x": 246, "y": 181 },
+          { "id": "g2", "type": "green", "x": 183, "y": 208 }
+        ],
+        "expected_counts": { "red": 2, "green": 2, "fusion": 0 },
+        "expected_classification": "2R2G"
+      },
+      {
+        "nucleus_id": "n11",
+        "cx": 201, "cy": 168, "rx": 93, "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 155, "y": 142 },
+          { "id": "f2", "type": "fusion", "x": 218, "y": 132 },
+          { "id": "r1", "type": "red", "x": 248, "y": 188 },
+          { "id": "g1", "type": "green", "x": 182, "y": 210 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n12",
+        "cx": 199, "cy": 170, "rx": 89, "ry": 95,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 148, "y": 145 },
+          { "id": "f2", "type": "fusion", "x": 214, "y": 121 },
+          { "id": "r1", "type": "red", "x": 243, "y": 181 },
+          { "id": "g1", "type": "green", "x": 179, "y": 209 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n13-normal",
+        "cx": 200, "cy": 171, "rx": 94, "ry": 94,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "r1", "type": "red", "x": 156, "y": 144 },
+          { "id": "r2", "type": "red", "x": 220, "y": 126 },
+          { "id": "g1", "type": "green", "x": 250, "y": 185 },
+          { "id": "g2", "type": "green", "x": 188, "y": 211 }
+        ],
+        "expected_counts": { "red": 2, "green": 2, "fusion": 0 },
+        "expected_classification": "2R2G"
+      },
+      {
+        "nucleus_id": "n14",
+        "cx": 202, "cy": 171, "rx": 91, "ry": 93,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 160, "y": 146 },
+          { "id": "f2", "type": "fusion", "x": 222, "y": 128 },
+          { "id": "r1", "type": "red", "x": 252, "y": 183 },
+          { "id": "g1", "type": "green", "x": 185, "y": 210 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n15",
+        "cx": 198, "cy": 170, "rx": 92, "ry": 96,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 147, "y": 149 },
+          { "id": "f2", "type": "fusion", "x": 213, "y": 127 },
+          { "id": "r1", "type": "red", "x": 245, "y": 189 },
+          { "id": "g1", "type": "green", "x": 179, "y": 212 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n16",
+        "cx": 201, "cy": 169, "rx": 90, "ry": 92,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 157, "y": 142 },
+          { "id": "f2", "type": "fusion", "x": 221, "y": 124 },
+          { "id": "r1", "type": "red", "x": 249, "y": 180 },
+          { "id": "g1", "type": "green", "x": 185, "y": 207 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n17",
+        "cx": 199, "cy": 172, "rx": 94, "ry": 93,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 149, "y": 151 },
+          { "id": "f2", "type": "fusion", "x": 216, "y": 132 },
+          { "id": "r1", "type": "red", "x": 246, "y": 186 },
+          { "id": "g1", "type": "green", "x": 181, "y": 213 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n18",
+        "cx": 201, "cy": 170, "rx": 91, "ry": 95,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 161, "y": 145 },
+          { "id": "f2", "type": "fusion", "x": 220, "y": 125 },
+          { "id": "r1", "type": "red", "x": 251, "y": 184 },
+          { "id": "g1", "type": "green", "x": 186, "y": 210 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n19",
+        "cx": 198, "cy": 168, "rx": 89, "ry": 91,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 145, "y": 143 },
+          { "id": "f2", "type": "fusion", "x": 212, "y": 123 },
+          { "id": "r1", "type": "red", "x": 242, "y": 177 },
+          { "id": "g1", "type": "green", "x": 179, "y": 206 }
+        ],
+        "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
+        "expected_classification": "2F1R1G"
+      },
+      {
+        "nucleus_id": "n20",
+        "cx": 202, "cy": 172, "rx": 92, "ry": 96,
+        "scorable": true,
+        "artifact_type": null,
+        "expected_signals": [
+          { "id": "f1", "type": "fusion", "x": 160, "y": 149 },
+          { "id": "f2", "type": "fusion", "x": 222, "y": 131 },
+          { "id": "r1", "type": "red", "x": 252, "y": 186 },
+          { "id": "g1", "type": "green", "x": 187, "y": 213 }
         ],
         "expected_counts": { "red": 1, "green": 1, "fusion": 2 },
         "expected_classification": "2F1R1G"

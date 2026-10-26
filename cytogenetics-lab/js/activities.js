@@ -4,7 +4,8 @@
  */
 
 import { canonicalCase, diseaseList, karyotypeActivityEnabled, labDiseases, splitBreakpointArms, teachingKaryotype } from "./atlas.js?v=20261006j";
-import { piecesForExercise } from "./banding.js?v=20261006l";
+import { seedFrom, shuffle } from "./util.js?v=20261006j";
+import { piecesForExercise } from "./banding.js?v=20261024c";
 import { placeSyntheticDemo, resolveProbes } from "./fish.js?v=20261006j";
 
 export const HIDDEN_CASE_IDS = new Set([
@@ -55,6 +56,10 @@ export const HIDDEN_CASE_IDS = new Set([
   "fish-kmt2a-ba",
   "fish-alk-ba",
   "fish-ewing-ba",
+  "iscn-mosaic-45x",
+  "fish-enum-cep21",
+  "fish-locus-9q34",
+  "fish-breakapart-16q22",
 ]);
 
 export const CASE_ALIASES = {
@@ -105,6 +110,12 @@ export function methodFit(disease) {
     chromosome: declared.chromosome || derived.chromosome,
     fish: declared.fish || derived.fish,
   };
+}
+
+/** True when the canonical teaching case is appropriate for karyotyping or FISH. */
+export function isSeenByMethod(disease, method) {
+  if (method !== "karyotype" && method !== "fish") return true;
+  return methodFit(disease)[method] === "appropriate";
 }
 
 function deriveMethodFit(item) {
@@ -193,6 +204,27 @@ export function linkedPayload(diseaseId, links, packs) {
   return { assemblies, fish };
 }
 
+/**
+ * True when casework can open a drawn specimen for this disease and laboratory.
+ * Atlas may list more diseases as theoretically seen by a method; casework needs a pack or formula.
+ */
+export function isCaseworkSpecimenReady(disease, method, links, packs, probes) {
+  if (!disease || (method !== "karyotype" && method !== "fish")) return false;
+  if (!isSeenByMethod(disease, method)) return false;
+  if (method === "fish") {
+    const fish = linkedPayload(disease.id, links, packs).fish;
+    return fishReadiness(fish, probes).ready;
+  }
+  const item = canonicalCase(disease);
+  if (item?.lab_level && item.lab_level !== "default") return false;
+  if (item?.karyotype_visibility === "usually_not_visible") return false;
+  if (item?.default_karyotype_activity === false) return false;
+  const iscn = teachingKaryotype(item)?.iscn
+    || (item?.example_notation || []).find((notation) => /^\d/.test(String(notation || "").trim()))
+    || "";
+  return Boolean(iscn) && karyotypeActivityEnabled(item);
+}
+
 export function activityCatalog(disease, library, links, packs, maps, probes) {
   const item = canonicalCase(disease);
   const kt = teachingKaryotype(item);
@@ -213,7 +245,7 @@ export function activityCatalog(disease, library, links, packs, maps, probes) {
   const karyotypeStatus = karyotypeOn ? "available" : (karyotypeOff ? "not_applicable" : "not_yet");
   const chromosomeStatus = (ready) => (ready ? "available" : (chromosomeFit ? "not_yet" : "not_applicable"));
 
-  add("karyotype", "Build karyotype", karyotypeStatus);
+  add("karyotype", "Compare and interpret", karyotypeStatus);
   add("chromosome_identification", "Identify affected chromosomes", karyotypeStatus);
   add("change", "Identify the change", karyotypeOn && item?.answers?.change && item?.answers?.place ? "available" : (karyotypeOff ? "not_applicable" : "not_yet"));
   add("anatomy", "Chromosome anatomy", chromosomeStatus(mappedAssemblies.some((spec) => spec.include_anatomy)));
@@ -224,7 +256,7 @@ export function activityCatalog(disease, library, links, packs, maps, probes) {
   add("fish", "FISH", !fishFit ? "not_applicable" : (fishCheck.ready ? "available" : "not_yet"));
   add("iscn_interpretation", "Interpret ISCN", karyotypeOff ? "not_applicable" : (kt?.iscn ? "available" : "not_yet"));
   add("iscn_construction", "Construct ISCN", karyotypeOff ? "not_applicable" : (kt?.iscn ? "available" : "not_yet"));
-  add("disease_association", "Associate the disease", karyotypeOff ? "not_applicable" : (disease?.disease_name ? "available" : "not_yet"));
+  add("disease_association", "Match the finding", karyotypeOff ? "not_applicable" : (disease?.disease_name ? "available" : "not_yet"));
   add("integrated", "Integrated case", (karyotypeOn || mappedAssemblies.length || fishReady) ? "available" : "not_yet");
   return rows;
 }
@@ -236,7 +268,7 @@ export function availableActivities(disease, library, links, packs, maps, probes
 export const METHOD_FAMILIES = [
   {
     id: "karyotype",
-    title: "Karyotype & ISCN",
+    title: "Karyotyping Lab",
     activities: ["karyotype", "chromosome_identification", "change", "abnormality", "iscn_interpretation", "iscn_construction", "disease_association"],
   },
   {
@@ -246,7 +278,7 @@ export const METHOD_FAMILIES = [
   },
   {
     id: "fish",
-    title: "FISH Analysis",
+    title: "FISH Lab",
     activities: ["fish"],
   },
   {
@@ -263,8 +295,68 @@ export function familyActivities(disease, library, links, packs, maps, familyId,
   return family.activities.map((id) => available.find((row) => row.id === id)).filter(Boolean);
 }
 
+/** Internal check only. The student chooser does not show these groups. */
+export function karyotypeCaseGroups(diseases) {
+  const whole = [];
+  const rearranged = [];
+  for (const disease of diseases || []) {
+    if (isNumericalFinding(canonicalCase(disease))) whole.push(disease);
+    else rearranged.push(disease);
+  }
+  return [
+    {
+      id: "whole",
+      title: "Whole chromosome",
+      lede: "An extra chromosome or a missing chromosome. The count changes.",
+      diseases: whole,
+    },
+    {
+      id: "rearrangement",
+      title: "Rearrangement",
+      lede: "Material is missing, reversed, or moved between chromosomes.",
+      diseases: rearranged,
+    },
+  ].filter((group) => group.diseases.length);
+}
+
 export function diseasesForMethod(library, links, packs, maps, method, probes) {
   return laboratoryDiseases(library).filter((disease) => familyActivities(disease, library, links, packs, maps, method, probes).length);
+}
+
+/** Two laboratory periods. Guided cases are instructor examples, not independent selections. */
+export const LAB_PERIODS = {
+  karyotype: {
+    number: 1,
+    title: "Karyotyping and Chromosome Analysis",
+    casework: "Karyotyping Casework",
+    guidedDiseaseId: "down-syndrome",
+  },
+  fish: {
+    number: 2,
+    title: "FISH Analysis",
+    casework: "FISH Casework",
+    guidedDiseaseId: "down-syndrome",
+  },
+};
+
+/** Cases a student may investigate alone. The guided example is omitted. */
+export function independentCaseworkDiseases(library, links, packs, maps, method, probes) {
+  const guided = LAB_PERIODS[method]?.guidedDiseaseId || "";
+  return diseasesForMethod(library, links, packs, maps, method, probes).filter((disease) => {
+    if (disease.id === guided) return false;
+    const fit = methodFit(disease);
+    const item = canonicalCase(disease);
+    if (method === "karyotype") {
+      if (fit.karyotype !== "appropriate") return false;
+      if (item?.karyotype_visibility === "usually_not_visible") return false;
+      if (item?.default_karyotype_activity === false) return false;
+      return true;
+    }
+    if (fit.fish !== "appropriate") return false;
+    const fish = linkedPayload(disease.id, links, packs).fish;
+    if (!fishReadiness(fish, probes).ready) return false;
+    return Boolean((fish.nuclei || []).length || fish.case_specific_cutoff);
+  });
 }
 
 export function methodAudit(disease, library, links, packs, maps, probes) {
@@ -348,7 +440,7 @@ export function caseTeaching(disease, method, links, packs) {
     if (assemblies.some((spec) => spec.nomenclature?.expected)) return "Locus identification";
     return "";
   }
-  if (method === "karyotype") return "Build the karyotype, classify the finding, and write the ISCN";
+  if (method === "karyotype") return "Compare the chromosomes, characterize the change, and interpret the result";
   return "";
 }
 
@@ -365,21 +457,23 @@ function deletionTeaching(item) {
 
 export const SKILL_PRACTICE = {
   chromosome: [
-    { title: "Chromosome 7 anatomy", summary: "Start here. Name pter, the arms, the centromere, and qter on a normal chromosome.", href: "#/lab/chromosome/anatomy/assembly-chr7-anatomy" },
+    { title: "Assemble each chromosome", summary: "Start with chromosome 1. Order its pieces from pter to qter, then continue to the next chromosome.", href: "#/lab/chromosome/chromosome_assembly/chromosome-sequence" },
+    { title: "Chromosome 7 anatomy", summary: "Name pter, the arms, the centromere, and qter on a normal chromosome.", href: "#/lab/chromosome/anatomy/assembly-chr7-anatomy" },
     { title: "Chromosome 7 band assembly", summary: "Rebuild chromosome 7 from pter to qter using the stain pattern.", href: "#/lab/chromosome/chromosome_assembly/assembly-chr7-bands" },
     { title: "Chromosome 7 locus identification", summary: "Read the marked address 7q22.1: chromosome, arm, region, band, sub-band.", href: "#/lab/chromosome/band_identification/assembly-chr7-bands" },
     { title: "Paracentric inversion practice", summary: "After the normal chromosome, reverse one arm segment and name the change.", href: "#/lab/chromosome/structural_abnormalities/assembly-inv7" },
+    { title: "Schematic deletion", summary: "Remove one long-arm band from chromosome 6 and compare it with the normal map.", href: "#/lab/chromosome/structural_abnormalities/assembly-del6q" },
   ],
   karyotype: [
     { title: "Normal male karyotype", summary: "Start here for this laboratory. Pair homologs into numbered boxes.", href: "#/lab/karyotype/karyotype_construction/normal-46xy" },
     { title: "Normal female karyotype", summary: "The same worksheet with two X chromosomes and no Y.", href: "#/lab/karyotype/karyotype_construction/normal-46xx" },
-    { title: "Mosaic notation practice", summary: "Read a slash and the cell counts in square brackets.", href: "#/lab/karyotype/iscn_interpretation/iscn-mosaic-45x" },
+    { title: "Mosaic notation practice", summary: "Read two cell lines, a slash, and the cell counts in square brackets.", href: "#/lab/karyotype/iscn_interpretation/iscn-mosaic-plus8" },
   ],
   fish: [
-    { title: "Chromosome 21 enumeration", summary: "Start here. Count signals in one nucleus and decide whether it is scorable.", href: "#/lab/fish/enumeration/fish-enum-cep21" },
-    { title: "16q22 break-apart", summary: "Decide whether flanking signals stayed together or split.", href: "#/lab/fish/break-apart/fish-breakapart-16q22" },
-    { title: "Probe localization", summary: "Place a probe on its chromosome, arm, and band.", href: "#/lab/fish/probe-localization/fish-locus-9q34" },
-    { title: "Signal quality", summary: "Reject a nucleus when its signals cannot be assigned to one cell.", href: "#/lab/fish/quality/fish-enum-cep21" },
+    { title: "Chromosome 8 enumeration", summary: "Start here. Count two or three centromere signals and decide whether the nucleus is scorable.", href: "#/lab/fish/enumeration/fish-enum-cep8" },
+    { title: "Educational break-apart", summary: "Score an educational flank pair at 7q22.1: together, or split. A split does not name a partner.", href: "#/lab/fish/break-apart/fish-breakapart-7q22" },
+    { title: "Probe localization", summary: "Place a teaching probe at 7q22.1, the address from the chromosome 7 band lesson.", href: "#/lab/fish/probe-localization/fish-locus-7q22" },
+    { title: "Signal quality", summary: "Reject a nucleus when its signals cannot be assigned to one cell.", href: "#/lab/fish/quality/fish-enum-cep8" },
   ],
 };
 
@@ -456,13 +550,26 @@ export function planActivity(activityId, disease, links, packs) {
   const { assemblies, fish } = linkedPayload(disease.id, links, packs);
   const grading = structuralKeys(disease.id, links, packs);
   const empty = { steps: ["unavailable"], stepAssembly: {}, stepTitles: { unavailable: "Unavailable" }, assembly: null, fish: null, grading };
-  if (activityId === "karyotype") return { steps: ["karyotype"], stepAssembly: {}, stepTitles: { karyotype: "Build the karyotype" }, assembly: assemblies[0] || null, fish: null, grading, scoreFocus: "karyotype_construction" };
+  if (activityId === "karyotype") return {
+    steps: ["karyotype", "abnormality", "iscn_interpretation", "audit"],
+    stepAssembly: {},
+    stepTitles: {
+      karyotype: "Identify the abnormal chromosome",
+      abnormality: "Characterize the abnormality",
+      iscn_interpretation: "Interpret the result",
+      audit: "Check a proposed result",
+    },
+    assembly: assemblies[0] || null,
+    fish: null,
+    grading,
+    scoreFocus: "karyotype_construction",
+  };
   if (activityId === "chromosome_identification") return { steps: ["find"], stepAssembly: {}, stepTitles: { find: "Identify the affected chromosomes" }, assembly: null, fish: null, grading, scoreFocus: "chromosome_identification", autoPlace: true };
   if (activityId === "change") return { steps: ["inspect"], stepAssembly: {}, stepTitles: { inspect: "Identify the change" }, assembly: null, fish: null, grading, autoPlace: true };
   if (activityId === "abnormality") return { steps: ["abnormality"], stepAssembly: {}, stepTitles: { abnormality: "Classify the abnormality" }, assembly: null, fish: null, grading, autoPlace: true };
   if (activityId === "iscn_interpretation") return { steps: ["iscn_interpretation"], stepAssembly: {}, stepTitles: { iscn_interpretation: "Interpret ISCN" }, assembly: null, fish: null, grading, autoPlace: true };
   if (activityId === "iscn_construction") return { steps: ["iscn_construction"], stepAssembly: {}, stepTitles: { iscn_construction: "Construct ISCN" }, assembly: null, fish: null, grading, autoPlace: true };
-  if (activityId === "disease_association") return { steps: ["disease"], stepAssembly: {}, stepTitles: { disease: "Associate the disease" }, assembly: null, fish: null, grading, autoPlace: true };
+  if (activityId === "disease_association") return { steps: ["disease"], stepAssembly: {}, stepTitles: { disease: "Match the finding" }, assembly: null, fish: null, grading, autoPlace: true };
   if (activityId === "anatomy") {
     const round = assemblyRounds(assemblies, { anatomy: true });
     return round.steps.length ? { ...round, assembly: assemblies[0], fish: null, grading, autoPlace: true } : empty;
@@ -482,7 +589,8 @@ export function planActivity(activityId, disease, links, packs) {
   }
   if (activityId === "fish") {
     const steps = diseaseFishSteps(fish);
-    return steps.length ? { steps, stepAssembly: {}, stepTitles: {}, assembly: null, fish, grading, autoPlace: false } : empty;
+    if (fish?.assay_type === "break-apart") steps.push("audit");
+    return steps.length ? { steps, stepAssembly: {}, stepTitles: { audit: "Check a proposed interpretation" }, assembly: null, fish, grading, autoPlace: false } : empty;
   }
   if (activityId === "complete" && canonicalCase(disease)?.default_karyotype_activity === false) {
     const item = canonicalCase(disease);
@@ -511,9 +619,9 @@ export function planActivity(activityId, disease, links, packs) {
     const steps = ["karyotype", "find", "inspect", "abnormality"];
     const stepTitles = {
       karyotype: "Build the karyotype",
-      find: "Identify the affected chromosomes",
-      inspect: "Identify the change",
-      abnormality: "Classify the abnormality",
+      find: "Identify the abnormal chromosome",
+      inspect: "Characterize the change",
+      abnormality: "Characterize the abnormality",
     };
     let stepAssembly = {};
     if (!numerical && assemblies.length) {
@@ -523,9 +631,12 @@ export function planActivity(activityId, disease, links, packs) {
       stepAssembly = round.stepAssembly;
     }
     steps.push(...placeSyntheticDemo(fishChain(fish).filter((step) => ["probe_strategy", "probe_locus", "fish_scope", "fish_interpret"].includes(step))));
-    steps.push("iscn_interpretation", "disease");
-    stepTitles.iscn_interpretation = "Interpret ISCN";
-    stepTitles.disease = "Associate the disease";
+    steps.push("iscn_construction", "disease");
+    stepTitles.find = "Identify the abnormal chromosome";
+    stepTitles.inspect = "Characterize the change";
+    stepTitles.abnormality = "Characterize the abnormality";
+    stepTitles.iscn_construction = "Write the ISCN";
+    stepTitles.disease = "Explain possible associations";
     return { steps, stepAssembly, stepTitles, assembly: assemblies[0] || null, fish, grading, autoPlace: false };
   }
   if (activityId === "integrated") {
@@ -546,10 +657,10 @@ export function planActivity(activityId, disease, links, packs) {
       steps,
       stepAssembly: asm.stepAssembly,
       stepTitles: {
-        karyotype: "Build the karyotype",
+        karyotype: "Identify the abnormal chromosome",
         find: "Identify the affected chromosomes",
         inspect: "Identify the change",
-        abnormality: "Classify the abnormality",
+        abnormality: "Characterize the abnormality",
         iscn_construction: "Construct ISCN",
         disease: "Associate the disease",
         narrative: "Written interpretation",
@@ -608,6 +719,40 @@ export function diseaseOptionList(library) {
   return labDiseases(library).map((disease) => disease.disease_name).filter(Boolean);
 }
 
+export function findingLabel(disease) {
+  const item = canonicalCase(disease);
+  const notation = teachingKaryotype(item)?.iscn || item?.example_notation?.[0] || "";
+  const name = disease?.disease_name || "";
+  const detail = String(item?.student_should_notice || item?.visual_change || "")
+    .split(name).join("")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+  return [notation, detail].filter(Boolean).join(" — ");
+}
+
+export function findingChoices(disease, library) {
+  const item = canonicalCase(disease);
+  const chromosomes = new Set([].concat(item?.primary_chromosome || [], item?.partner_chromosome || []).map(String));
+  const numerical = isNumericalFinding(item);
+  const sexCase = chromosomes.has("X") || chromosomes.has("Y");
+  const others = labDiseases(library).filter((row) => row.id !== disease?.id);
+  const ranked = others.map((row) => {
+    const other = canonicalCase(row);
+    const involved = [].concat(other?.primary_chromosome || [], other?.partner_chromosome || []).map(String);
+    let score = 0;
+    if (structuralClass(other) && structuralClass(other) === structuralClass(item)) score += 3;
+    if (involved.some((id) => chromosomes.has(id))) score += 2;
+    if (numerical && isNumericalFinding(other)) score += 2;
+    if (sexCase && involved.some((id) => id === "X" || id === "Y")) score += 4;
+    if (other?.kind && other.kind === item?.kind) score += 1;
+    return { row, score };
+  }).sort((a, b) => b.score - a.score || a.row.id.localeCompare(b.row.id));
+  const choices = [disease, ...ranked.slice(0, 4).map((entry) => entry.row)]
+    .filter(Boolean)
+    .map((row) => ({ id: row.id, label: findingLabel(row) }));
+  return shuffle(choices, seedFrom(`${disease?.id || "case"}-finding`));
+}
+
 export function buildDiseaseCase(disease, library, plan, mode) {
   const item = canonicalCase(disease);
   const kt = item?.representative_teaching_karyotype || {};
@@ -618,7 +763,7 @@ export function buildDiseaseCase(disease, library, plan, mode) {
     title: assigned ? "Assigned case" : (disease.disease_name || item?.case_title || "Disease case"),
     case_type: item?.kind || "constitutional",
     clinical_history: assigned
-      ? `Assigned case. ${item?.kind === "acquired" ? "Acquired cytogenetics." : "Constitutional cytogenetics."} Identify the chromosome finding from the activity. The condition is named only at the interpretation step.`
+      ? (item?.assigned_context || `Assigned case. ${item?.kind === "acquired" ? "Acquired cytogenetics." : "Constitutional cytogenetics."} Identify the chromosome finding from the activity. The condition is named only at the interpretation step.`)
       : (item?.patient_case_label || ""),
     unknown_prompt: assigned ? "The diagnosis is withheld until the disease step." : "",
     origin_context: assigned ? (item?.assigned_origin_context || "") : "",
@@ -651,8 +796,8 @@ export function buildDiseaseCase(disease, library, plan, mode) {
     strictAdvance: true,
     returnHref: `#/disease/${disease.id}${assigned ? "" : "/explore"}`,
     hints: [
-      "Arrange every chromosome into its numbered place before deciding which chromosomes are abnormal.",
-      "Compare each chromosome with its partner: length, centromere position, and band pattern.",
+      "Start by comparing the chromosomes in front of you. A full karyotype is available when you want to arrange the whole cell.",
+      "Compare each chromosome with its partner: length, centromere position, and band pattern. A small difference in the drawing can be ordinary variation.",
       "The formal name of the condition comes after the cytogenetic finding, not before it.",
     ],
     placeholder_assets: true,

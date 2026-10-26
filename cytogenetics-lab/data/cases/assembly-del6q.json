@@ -1,0 +1,46 @@
+{
+  "case_id": "assembly-del6q",
+  "title": "Chromosome 6 — one band deleted",
+  "difficulty": "intermediate",
+  "case_type": "technical",
+  "modules": ["assembly"],
+  "clinical_history": "Compare this chromosome 6 map with a normal chromosome 6. Band 6q21 has been removed. Neighboring bands stay in order. This is a schematic teaching deletion, not a disease case.",
+  "assembly": {
+    "chromosome": "6",
+    "resolution": "band",
+    "include_anatomy": false,
+    "transform": {
+      "type": "deletion",
+      "from": "6q21",
+      "to": "6q21",
+      "labels": ["6q21"]
+    },
+    "reference_normal": true
+  },
+  "abnormality_category": "structural",
+  "abnormality_type": ["deletion"],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["deletion", "duplication", "inversion", "translocation"]
+  },
+  "chromosomes_involved": ["6"],
+  "arms_involved": ["q"],
+  "bands_involved": ["q21"],
+  "expected_iscn": "46,XX,del(6)(q21)",
+  "accepted_iscn_variants": ["46,XX,del(6)(q21)", "46,XY,del(6)(q21)"],
+  "hints": [
+    "A deletion removes material. The bands on either side stay in their original order.",
+    "The missing band is on the long arm. The short arm and the centromere are unchanged.",
+    "This map is a teaching deletion of 6q21. It is not one of the disease cases."
+  ],
+  "explanation": "The teaching map removes segment 6q21 and leaves the rest of chromosome 6 in order. That is an interstitial deletion, written del(6)(q21). No syndrome is attached to this exercise.",
+  "plain_language_interpretation": "Chromosome 6 is missing band 6q21. The rest of the chromosome is unchanged.",
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020. Basel: Karger; 2020."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

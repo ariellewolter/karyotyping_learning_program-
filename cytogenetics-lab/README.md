@@ -27,13 +27,12 @@ npm run desktop
 
 ## What students can do
 
-Home opens three laboratories. Each one can be entered on its own.
+Home opens two laboratories, each with a Learn and a Casework destination. Learn / Practice / Assessment are exercise modes, not separate top-level areas.
 
-1. **Chromosome Analysis** — build one chromosome from G-band segments, name anatomy and loci, and compare a structural rearrangement.
-2. **Karyotype & ISCN** — arrange a whole-cell karyotype, classify the finding, and read or write ISCN.
-3. **FISH Analysis** — place a probe or score nuclei for the assay that case actually contains.
+1. **Karyotyping Lab** — chromosome anatomy and banding, whole-cell karyotypes, abnormality classification, and ISCN. Single-chromosome analysis is a foundation skill here.
+2. **FISH Lab** — probe strategy and localization, signal quality, nucleus scoring, and interpretation.
 
-**Cases** lists each teaching disease once. Opening a disease from a laboratory shows that laboratory's activities. Opening it from Cases or the Atlas shows every applicable method. **Complete case** is the integrated sequence and may cross methods. **Atlas** is the chromosome and disease reference.
+**Casework** separates curated teaching cases from **My cases**, which are learner-owned, de-identified study records stored in this browser. **Atlas** is the chromosome and disease reference. Learn, Practice, and Assessment are chosen for each activity.
 
 Each activity can run as Learn, Practice, or Assessment. The mode is chosen before the session and stays fixed.
 

@@ -1,0 +1,19 @@
+{
+  "built": "2026-10-25",
+  "medgen_diseases": 54776,
+  "medgen_synonyms": 150126,
+  "medgen_identifiers": 39782,
+  "clingen": {
+    "regions": 513,
+    "genes": 1540,
+    "associations": 1303
+  },
+  "clingen_region_file_date": "28 Apr 2026",
+  "clingen_gene_file_date": "25 Oct 2026",
+  "educational_examples": 10,
+  "educational_probes": 7,
+  "teaching_catalog_iscn": 66,
+  "verified_iscn": 0,
+  "verification_pending": 78,
+  "verification_incomplete": []
+}

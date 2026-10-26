@@ -1,9 +1,10 @@
 import { BAND_DESIGNATIONS, BAND_DIGIT_OPTIONS, COMPARE_ARM_OPTIONS, CHROM_WITH_NONE, REGION_OPTIONS, SLOT_IDS, STRUCTURAL_OPTIONS, SUBBAND_OPTIONS, escapeHtml, joinPair, selectField, splitPair } from "./util.js?v=20261006j";
 import { state, patchSession } from "./store.js?v=20261006j";
-import { divergence, gradeAssembly, gradeComparison, gradeLocus, movePiece, nomenclaturePieces, parseBandLabel, shiftSelected } from "./banding.js?v=20261006l";
-import { ideogramSVG, pieceChipSVG, stainLegendHTML } from "./ideogram.js?v=20261015a";
+import { divergence, gradeAssembly, gradeComparison, gradeLocus, movePiece, nomenclaturePieces, parseBandLabel, shiftSelected } from "./banding.js?v=20261024c";
+import { ideogramSVG, pieceChipSVG, stainLegendHTML } from "./ideogram.js?v=20261024j";
 import { compareISCN } from "./iscn.js";
-import { applyMode, applyStep, isTeachStep } from "./pedagogy.js?v=20261006l";
+import { bandSpanNoteHTML } from "./band-span.js?v=20261025span3";
+import { applyStep, isTeachStep } from "./pedagogy.js?v=20261025dropmodes";
 
 function baseStep(step) {
   return String(step || "").replace(/_\d+$/, "");
@@ -15,11 +16,7 @@ export function isAssemblyStep(step) {
 
 function labelsFor(step) {
   if (isTeachStep(step)) return true;
-  const s = state.session;
-  const mode = s?.instructionMode;
   const applied = baseStep(applyStep(step));
-  if (mode === "assessment") return false;
-  if (mode === "practice") return Boolean(s?.pedagogy?.revealLabels);
   if (applied === "nomenclature" || applied === "anatomy") return false;
   return true;
 }
@@ -169,7 +166,9 @@ function assembleView(a, labels, teaching) {
         <p class="muted">${teaching
           ? "Names are on the map for this explanation."
           : (show
-            ? "Each segment is labeled with its G-band name. Order them pter → centromere → qter."
+            ? (a.spec?.schematic_note
+              ? "Each piece is labeled by arm and shade, counting from pter. These are not official band addresses. Order them pter → centromere → qter."
+              : "Each segment is labeled with its G-band name. Order them pter → centromere → qter.")
             : "Band names stay off this screen. Use the shade pattern inside each region, and the centromere.")}</p>
         ${show ? "" : stainLegendHTML(a.expected)}
       </aside>
@@ -230,19 +229,37 @@ function field(id, label, value) {
   return `<label class="stack">${escapeHtml(label)}<input id="${id}" value="${escapeHtml(value || "")}" /></label>`;
 }
 
+function breakpointHighlights(spec) {
+  const transform = spec?.transform || {};
+  const attach = transform.attach_from || {};
+  return [...new Set([
+    spec?.nomenclature?.highlight,
+    transform.keep_through,
+    transform.keep_from,
+    transform.from,
+    transform.to,
+    transform.terminal_through,
+    attach.band,
+    attach.from,
+    ...(transform.labels || []),
+  ].filter(Boolean))];
+}
+
 function comparisonView(a, labels, teaching) {
   const show = labels === true;
   const assembled = stackPieces(a);
   const marks = divergence(a.normal || [], assembled);
+  const breaks = show ? breakpointHighlights(a.spec) : [];
+  const marked = { highlightIds: breaks, highlightTag: false };
   return `
     <div class="compare-grid">
       <div>
         <p class="group-label">Normal chromosome ${escapeHtml(a.spec.chromosome)}</p>
-        ${ideogramSVG(a.normal || [], { width: 120, height: 520, showLabels: show, marks: { missing: marks.missing } })}
+        ${ideogramSVG(a.normal || [], { width: 120, height: 520, showLabels: show, marks: { missing: marks.missing }, ...marked })}
       </div>
       <div>
         <p class="group-label">Assembled / abnormal</p>
-        ${ideogramSVG(assembled, { width: 120, height: 520, showLabels: show, marks: { extra: marks.extra, inverted: marks.inverted, translocated: marks.translocated } })}
+        ${ideogramSVG(assembled, { width: 120, height: 520, showLabels: show, marks: { extra: marks.extra, inverted: marks.inverted, translocated: marks.translocated }, ...marked })}
       </div>
       <div class="assembly-copy">
         <h3>${teaching ? "What changed on the map" : "Structural interpretation"}</h3>
@@ -284,7 +301,7 @@ export function assemblyControls(step) {
   if (kind === "anatomy") buttons.push(`<button type="button" class="btn" data-action="anatomy-check">Check anatomy</button>`);
   if (kind === "nomenclature") buttons.push(`<button type="button" class="btn" data-action="loc-check">Check locus</button>`);
   if (kind === "comparison") buttons.push(`<button type="button" class="btn" data-action="cmp-check">Check interpretation</button>`);
-  if (state.session?.instructionMode !== "assessment") buttons.push(`<button type="button" class="btn" data-action="hint">Hint</button>`);
+  buttons.push(`<button type="button" class="btn" data-action="hint">Hint</button>`);
   buttons.push(`<button type="button" class="btn primary" data-action="submit-step">Submit</button>`);
   return buttons.join("");
 }
@@ -344,9 +361,9 @@ export function dropPiece(id, dest, index) {
   patchSession({ assembly: movePiece(a, id, dest, index) });
 }
 
-function writeFb(step, fb, lock = false) {
+function writeFb(step, fb) {
   const s = state.session;
-  s.feedback = { ...s.feedback, [step]: applyMode(s, step, fb, { lock }) };
+  s.feedback = { ...s.feedback, [step]: fb };
 }
 
 function checkAssembly(isSubmit) {
@@ -364,9 +381,11 @@ function checkAssembly(isSubmit) {
   writeFb(s.steps[s.stepIndex] || "assemble", {
     tone: grade.perfect ? "ok" : "review",
     scored: true,
-    title: grade.perfect ? "Assembly matches the case map." : "Assembly is not yet correct.",
+    title: grade.perfect ? "Assembly matches this chromosome." : "Assembly is not yet correct.",
     body: grade.perfect
-      ? "Numbering increases from the centromere toward each telomere."
+      ? (s.assembly.spec?.schematic_note
+        ? "The pieces run from pter at the top through the centromere to qter. Continue when you are ready for the next chromosome."
+        : "Numbering increases from the centromere toward each telomere.")
       : `${grade.placed}/${grade.expected} segments placed. Identities of misplaced bands are not listed.`,
     extra,
   }, isSubmit);
@@ -443,9 +462,10 @@ function checkComparison(isSubmit) {
   const typeOk = components.type === "correct";
   const placementOk = ["chromosomes", "arms", "breakpoints"].every((k) => components[k] === "correct" || components[k] === "na");
   const ok = typeOk && placementOk;
-  const extra = `<ul class="comp-list">${Object.entries(components).filter(([, v]) => v !== "na").map(([k, v]) => `<li>${k}: <strong>${v}</strong></li>`).join("")}</ul>`;
-  s.scores.abnormality_recognition = { ok, detail: "from assembly comparison" };
   const guided = s.instructionMode;
+  const spanNote = isSubmit && !guided ? bandSpanNoteHTML(state.maps, s.caseData.expected_iscn) : "";
+  const extra = `<ul class="comp-list">${Object.entries(components).filter(([, v]) => v !== "na").map(([k, v]) => `<li>${k}: <strong>${v}</strong></li>`).join("")}</ul>${spanNote}`;
+  s.scores.abnormality_recognition = { ok, detail: "from assembly comparison" };
   writeFb(s.steps[s.stepIndex] || "comparison", {
     tone: ok ? "ok" : "review",
     scored: true,
@@ -459,7 +479,7 @@ function checkComparison(isSubmit) {
       : (isSubmit
         ? `This case applies a ${t.type} to the reference map${s.caseData.expected_iscn ? ` (${s.caseData.expected_iscn})` : ""}.`
         : "The expected ISCN is not shown until you submit this step."),
-    extra: guided === "assessment" ? "" : extra,
+    extra,
   }, isSubmit);
 }
 

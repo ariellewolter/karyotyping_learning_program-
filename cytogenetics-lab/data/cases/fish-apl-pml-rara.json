@@ -273,7 +273,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 0.85,
+      "basis": "Acquired abnormality in a neoplastic specimen: diagnostic marrow with a high blast and promyelocyte content, so normal nuclei remain alongside the abnormal clone. Authored teaching proportion, not a population estimate."
+    }
   },
   "hints": [
     "Red marks PML on chromosome 15. Green marks RARA on chromosome 17.",

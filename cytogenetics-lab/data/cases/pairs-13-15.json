@@ -1,0 +1,55 @@
+{
+  "case_id": "pairs-13-15",
+  "title": "Chromosomes 13, 14, and 15",
+  "difficulty": "introductory",
+  "case_type": "constitutional",
+  "modules": ["karyotype", "abnormality", "iscn_interpretation", "iscn_construction"],
+  "clinical_history": "Demonstration metaphase prepared for laboratory teaching. The task is to separate the group D chromosomes. No clinical abnormality is provided.",
+  "unknown_prompt": "Chromosomes 13, 14, and 15 are medium acrocentric chromosomes. Use the long-arm band order to pair them, then write the karyotype.",
+  "chromosome_count": 46,
+  "sex_chromosomes": "XY",
+  "learning_rounds": [
+    {
+      "id": "group-d",
+      "title": "13, 14, and 15",
+      "note": "Chromosomes 13, 14, and 15 are medium acrocentrics. Use the long-arm band order to tell them apart. The short arms and satellites are not a reliable way to number them.",
+      "slots": ["13", "14", "15"]
+    }
+  ],
+  "chromosome_set": { "sex": "XY" },
+  "abnormality_category": "normal",
+  "abnormality_type": [],
+  "abnormality_options": {
+    "categories": ["normal", "numerical", "structural"],
+    "types": ["trisomy", "monosomy", "Robertsonian translocation"]
+  },
+  "chromosomes_involved": [],
+  "expected_iscn": "46,XY",
+  "accepted_iscn_variants": ["46,XY"],
+  "iscn_prompt": "46,XY",
+  "plain_language_interpretation": "A normal male diploid karyotype. Chromosomes 13, 14, and 15 are each present as a normal pair.",
+  "interpretation_items": {
+    "chromosome_count": "46",
+    "sex_chromosomes": "XY",
+    "numerical": "none",
+    "structural": "none",
+    "chromosomes_involved": "none",
+    "arm": "none",
+    "band": "none"
+  },
+  "diagnosis": "No cytogenetic abnormality identified (normal male karyotype)",
+  "explanation": "Group D contains three pairs of medium acrocentric chromosomes. The long-arm band pattern distinguishes 13, 14, and 15. This demonstration cell has 46 chromosomes, one X, and one Y, with no extra, missing, or rearranged chromosome.",
+  "hints": [
+    "All three pairs are acrocentric. The centromere position does not choose the number.",
+    "Read the q-arm bands from the centromere toward the end of the arm.",
+    "A normal male study is written 46,XY when no further change is present."
+  ],
+  "references": [
+    {
+      "label": "ISCN",
+      "citation": "McGowan-Jordan J, Hastings RJ, Moore S, eds. ISCN 2020: An International System for Human Cytogenomic Nomenclature. Basel: Karger; 2020."
+    }
+  ],
+  "placeholder_assets": true,
+  "educational_use_only": true
+}

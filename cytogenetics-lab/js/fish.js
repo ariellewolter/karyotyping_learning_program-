@@ -3,7 +3,8 @@
  * Educational use only — not for clinical diagnostic interpretation.
  */
 
-import { flattenToLevel, parseBandLabel, gradeLocus, attachFromMap, applyTransform, cloneSegments } from "./banding.js?v=20261006k";
+import { fieldAvailable } from "./fish-field.js?v=20261025grade1";
+import { flattenToLevel, parseBandLabel, gradeLocus, attachFromMap, applyTransform, cloneSegments, segmentMatches } from "./banding.js?v=20261024c";
 
 export const ASSAY_FIELDS = {
   enumeration: ["green", "red"],
@@ -87,6 +88,9 @@ function fishExerciseSteps(f, exerciseId) {
   }
   if (exerciseId === "probe-type") {
     return f.include_probe_type && f.probe_type_expected ? ["probe_type"] : ["unavailable"];
+  }
+  if (exerciseId === "field") {
+    return fieldAvailable(f) ? ["fish_field"] : ["unavailable"];
   }
   if (exerciseId === "metaphase" || exerciseId === "quality" || exerciseId === "interphase") {
     return (f.nuclei || []).length ? ["fish_scope"] : ["unavailable"];
@@ -253,6 +257,14 @@ export function gradeSignalIdentification(studentMarks, expected, tolerance) {
   };
 }
 
+export function expectedSignalRelationship(spec, fields) {
+  const relevant = (fields || []).some((field) => field === "fusion" || field === "split");
+  if (!relevant || !spec?.scorable) return "";
+  if (Number(spec.expected_counts?.split) > 0) return "split";
+  if (Number(spec.expected_counts?.fusion) > 0) return "fused";
+  return "separate";
+}
+
 export function gradeNucleus(student, spec, fields) {
   const scorableOk = String(student.scorable) === String(spec.scorable);
   const artifactRequired = !spec.scorable && Boolean(spec.artifact_type);
@@ -266,20 +278,44 @@ export function gradeNucleus(student, spec, fields) {
         counts[f] = "na";
         continue;
       }
-      const got = Number(student.counts?.[f]);
-      const ok = Number.isFinite(got) && got === Number(exp);
-      counts[f] = ok ? "correct" : (student.counts?.[f] === "" || student.counts?.[f] == null ? "missing" : "incorrect");
+      const value = student.counts?.[f];
+      const got = Number(value);
+      const supplied = value != null && String(value).trim() !== "";
+      const ok = supplied && Number.isInteger(got) && got >= 0 && got === Number(exp);
+      counts[f] = ok ? "correct" : (!supplied ? "missing" : "incorrect");
       if (!ok) countsOk = false;
     }
   }
+  const expectedRelationship = expectedSignalRelationship(spec, fields);
+  const relationship = !expectedRelationship
+    ? "na"
+    : (!student.relationship ? "missing" : (student.relationship === expectedRelationship ? "correct" : "incorrect"));
+  const relationshipOk = relationship === "na" || relationship === "correct";
   return {
     scorable: scorableOk ? "correct" : (student.scorable === "" ? "missing" : "incorrect"),
     artifact: spec.scorable ? "na" : (artifactOk ? "correct" : "incorrect"),
     counts,
+    relationship,
     countsOk: spec.scorable ? countsOk : true,
     qualityOk: scorableOk,
-    complete: scorableOk && (spec.scorable ? countsOk : true) && artifactOk,
+    complete: scorableOk && (spec.scorable ? countsOk : true) && artifactOk && relationshipOk,
   };
+}
+
+export function nucleusRecordStatus(fish, student = {}) {
+  const decision = String(student.scorable);
+  const fields = countFieldsFor(fish.spec.assay_type, fish.spec.count_fields);
+  const validCounts = fields.every((field) => {
+    const value = student.counts?.[field];
+    return value != null && String(value).trim() !== "" && Number.isInteger(Number(value)) && Number(value) >= 0 && Number(value) <= 99;
+  });
+  const annotationsComplete = !fish.spec.require_signal_annotations || fish.spec.assay_type === "enumeration" || Boolean(student.marks?.length);
+  const relationshipNeeded = decision === "true" && expectedSignalRelationship(fish.spec.nuclei?.find((nucleus) => nucleus.nucleus_id === student.id) || {}, fields);
+  const relationshipComplete = !relationshipNeeded || Boolean(student.relationship);
+  if ((decision === "false" && student.artifact) || (decision === "true" && validCounts && annotationsComplete && relationshipComplete)) return "Recorded";
+  const started = decision === "true" || decision === "false" || Boolean(student.artifact) || Boolean(student.marks?.length)
+    || Object.values(student.counts || {}).some((value) => value != null && String(value).trim() !== "");
+  return started ? "Incomplete" : "Pending";
 }
 
 export function summarizeEnumeration(fish) {
@@ -288,7 +324,8 @@ export function summarizeEnumeration(fish) {
     const st = fish.nuclei[i] || {};
     return {
       id: spec.nucleus_id,
-      scorable: st.scorable === "" ? null : st.scorable === "true" || st.scorable === true,
+      status: nucleusRecordStatus(fish, st),
+      scorable: String(st.scorable) === "true" ? true : String(st.scorable) === "false" ? false : null,
       counts: st.counts,
       expected: spec.expected_counts,
       classification: spec.expected_classification,
@@ -298,11 +335,14 @@ export function summarizeEnumeration(fish) {
   const cutoff = fish.spec.case_specific_cutoff;
   let percent = null;
   const expected = cutoff?.abnormal_counts;
-  if (expected && scorable.length) {
+  const reviewed = rows.filter((row) => row.status === "Recorded").length;
+  const incomplete = rows.filter((row) => row.status === "Incomplete").length;
+  const excluded = rows.filter((row) => row.status === "Recorded" && row.scorable === false).length;
+  if (expected && scorable.length && reviewed === rows.length) {
     const hits = scorable.filter((r) => Object.entries(expected).every(([key, value]) => Number(r.counts?.[key]) === Number(value))).length;
     percent = Math.round((hits / scorable.length) * 100);
   }
-  return { rows, scorable: scorable.length, total: rows.length, percent, cutoff, fields };
+  return { rows, scorable: scorable.length, total: rows.length, reviewed, incomplete, pending: rows.length - reviewed - incomplete, excluded, percent, cutoff, fields };
 }
 
 export function gradeInterpretation(choice, expected) {
@@ -349,14 +389,14 @@ export function segmentForLocus(maps, locus) {
   const parsed = parseBandLabel(locus);
   if (!parsed) return null;
   const segs = maps?.chromosomes?.[String(parsed.chromosome)]?.segments || [];
-  return segs.find((s) => s.id === locus || s.label === locus || s.id === parsed.label) || null;
+  return segs.find((s) => segmentMatches(s, locus) || s.id === parsed.label) || null;
 }
 
 export function probeHitsOnSegments(probe, segments) {
   const loc = probe.target_locus || probe.reference_segment || probe.band;
   return (segments || []).filter((s) => {
-    if (probe.reference_segment && (s.id === probe.reference_segment || s.label === probe.reference_segment)) return true;
-    if (probe.target_locus && (s.id === probe.target_locus || s.label === probe.target_locus)) return true;
+    if (probe.reference_segment && segmentMatches(s, probe.reference_segment)) return true;
+    if (probe.target_locus && segmentMatches(s, probe.target_locus)) return true;
     if (String(s.chromosome) === String(probe.chromosome) && s.arm === "cen" && /cen/i.test(String(loc))) return true;
     return false;
   });

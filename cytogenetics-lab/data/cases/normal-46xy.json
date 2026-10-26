@@ -8,6 +8,33 @@
   "unknown_prompt": "Arrange the chromosomes from this demonstration metaphase into a standard karyotype and report the ISCN.",
   "chromosome_count": 46,
   "sex_chromosomes": "XY",
+  "learning_focus_slots": ["1", "4", "7", "21", "22"],
+  "learning_rounds": [
+    {
+      "id": "landmarks",
+      "title": "Landmark pairs",
+      "note": "Click a row to choose its reference chromosome, then click a candidate in the tray to compare it. You can also drag a candidate into the row. Compare relative length, centromere position, and band order before recording why the chromosomes match.",
+      "slots": ["1", "4", "7", "21", "22"]
+    },
+    {
+      "id": "group-b",
+      "title": "4 and 5",
+      "note": "Chromosomes 4 and 5 are both large and submetacentric. The tray contains both. Match each homolog by band order. Size alone does not separate them.",
+      "slots": ["4", "5"]
+    },
+    {
+      "id": "nine-x",
+      "title": "9 and X",
+      "note": "Chromosome 9 and the X both belong to the C group. Compare length and the band pattern before you accept a match.",
+      "slots": ["9", "X"]
+    },
+    {
+      "id": "group-d",
+      "title": "13, 14, and 15",
+      "note": "Chromosomes 13, 14, and 15 are medium acrocentrics. Use the long-arm band order to tell them apart.",
+      "slots": ["13", "14", "15"]
+    }
+  ],
   "chromosome_set": { "sex": "XY" },
   "abnormality_category": "normal",
   "abnormality_type": [],

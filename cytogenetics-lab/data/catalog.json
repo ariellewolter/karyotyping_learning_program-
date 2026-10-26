@@ -42,6 +42,67 @@
       ]
     },
     {
+      "case_id": "pairs-4-5",
+      "path": "data/cases/pairs-4-5.json",
+      "title": "Chromosomes 4 and 5",
+      "difficulty": "introductory",
+      "case_type": "constitutional",
+      "modules": ["karyotype", "abnormality", "iscn_interpretation", "iscn_construction"],
+      "exercise_types": [
+        "chromosome_identification",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_interpretation",
+        "iscn_construction"
+      ]
+    },
+    {
+      "case_id": "pairs-9-x",
+      "path": "data/cases/pairs-9-x.json",
+      "title": "Chromosomes 9 and X",
+      "difficulty": "introductory",
+      "case_type": "constitutional",
+      "modules": ["karyotype", "abnormality", "iscn_interpretation", "iscn_construction"],
+      "exercise_types": [
+        "chromosome_identification",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_interpretation",
+        "iscn_construction"
+      ]
+    },
+    {
+      "case_id": "pairs-13-15",
+      "path": "data/cases/pairs-13-15.json",
+      "title": "Chromosomes 13, 14, and 15",
+      "difficulty": "introductory",
+      "case_type": "constitutional",
+      "modules": ["karyotype", "abnormality", "iscn_interpretation", "iscn_construction"],
+      "exercise_types": [
+        "chromosome_identification",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_interpretation",
+        "iscn_construction"
+      ]
+    },
+    {
+      "case_id": "near-normal-inv9",
+      "path": "data/cases/near-normal-inv9.json",
+      "title": "Pericentric inversion of chromosome 9",
+      "difficulty": "introductory",
+      "case_type": "constitutional",
+      "modules": ["karyotype", "abnormality", "iscn_interpretation", "iscn_construction", "disease"],
+      "exercise_types": [
+        "chromosome_identification",
+        "karyotype_construction",
+        "abnormality_identification",
+        "iscn_interpretation",
+        "iscn_construction",
+        "disease_association"
+      ]
+    },
+    {
       "case_id": "trisomy21-47xx",
       "path": "data/cases/trisomy21-47xx.json",
       "title": "Numerical abnormality — extra chromosome 21",
@@ -225,6 +286,23 @@
       ]
     },
     {
+      "case_id": "iscn-mosaic-plus8",
+      "path": "data/cases/iscn-mosaic-plus8.json",
+      "title": "Mosaic clone notation",
+      "difficulty": "advanced",
+      "case_type": "technical",
+      "modules": [
+        "iscn_interpretation",
+        "iscn_construction",
+        "abnormality"
+      ],
+      "exercise_types": [
+        "iscn_interpretation",
+        "iscn_construction",
+        "abnormality_identification"
+      ]
+    },
+    {
       "case_id": "assembly-chr7-anatomy",
       "path": "data/cases/assembly-chr7-anatomy.json",
       "title": "Chromosome 7 — anatomy and region assembly",
@@ -291,6 +369,19 @@
       ]
     },
     {
+      "case_id": "assembly-del6q",
+      "path": "data/cases/assembly-del6q.json",
+      "title": "Chromosome 6 — one band deleted",
+      "difficulty": "intermediate",
+      "case_type": "technical",
+      "modules": [
+        "assembly"
+      ],
+      "exercise_types": [
+        "structural_abnormalities"
+      ]
+    },
+    {
       "case_id": "assembly-der22",
       "path": "data/cases/assembly-der22.json",
       "title": "Derivative chromosome 22 — t(9;22)",
@@ -353,9 +444,51 @@
       ]
     },
     {
+      "case_id": "fish-enum-cep8",
+      "path": "data/cases/fish-enum-cep8.json",
+      "title": "Enumeration FISH — CEP 8",
+      "difficulty": "introductory",
+      "case_type": "technical",
+      "modules": [
+        "fish"
+      ],
+      "fish_exercises": [
+        "enumeration",
+        "interphase",
+        "quality"
+      ],
+      "exercise_types": [
+        "enumeration",
+        "interphase",
+        "quality"
+      ]
+    },
+    {
       "case_id": "fish-breakapart-16q22",
       "path": "data/cases/fish-breakapart-16q22.json",
       "title": "Break-apart FISH — 16q22 locus",
+      "difficulty": "intermediate",
+      "case_type": "technical",
+      "modules": [
+        "fish"
+      ],
+      "fish_exercises": [
+        "break-apart",
+        "interphase",
+        "probe-type",
+        "quality"
+      ],
+      "exercise_types": [
+        "break-apart",
+        "interphase",
+        "probe-type",
+        "quality"
+      ]
+    },
+    {
+      "case_id": "fish-breakapart-7q22",
+      "path": "data/cases/fish-breakapart-7q22.json",
+      "title": "Break-apart FISH — educational 7q22.1 pair",
       "difficulty": "intermediate",
       "case_type": "technical",
       "modules": [
@@ -408,6 +541,24 @@
       "case_id": "fish-locus-9q34",
       "path": "data/cases/fish-locus-9q34.json",
       "title": "Probe localization — 9q34",
+      "difficulty": "introductory",
+      "case_type": "technical",
+      "modules": [
+        "fish"
+      ],
+      "fish_exercises": [
+        "probe-localization",
+        "probe-type"
+      ],
+      "exercise_types": [
+        "probe-localization",
+        "probe-type"
+      ]
+    },
+    {
+      "case_id": "fish-locus-7q22",
+      "path": "data/cases/fish-locus-7q22.json",
+      "title": "Probe localization — 7q22.1",
       "difficulty": "introductory",
       "case_type": "technical",
       "modules": [
@@ -615,7 +766,7 @@
       "path": "data/cases/fish-apl-pml-rara.json",
       "title": "Acute promyelocytic leukemia — PML::RARA dual-fusion",
       "difficulty": "intermediate",
-      "case_type": "constitutional",
+      "case_type": "acquired",
       "modules": [
         "fish"
       ],
@@ -632,7 +783,7 @@
       "path": "data/cases/fish-burkitt-igh-myc.json",
       "title": "Burkitt lymphoma — IGH::MYC dual-fusion",
       "difficulty": "intermediate",
-      "case_type": "constitutional",
+      "case_type": "acquired",
       "modules": [
         "fish"
       ],
@@ -879,9 +1030,9 @@
     {
       "case_id": "fish-cll-13q",
       "path": "data/cases/fish-cll-13q.json",
-      "title": "fish-cll-13q",
+      "title": "Chronic lymphocytic leukemia — 13q14 deletion",
       "difficulty": "intermediate",
-      "case_type": "constitutional",
+      "case_type": "acquired",
       "modules": [
         "fish"
       ],
@@ -894,7 +1045,7 @@
       "path": "data/cases/fish-aml-runx1.json",
       "title": "AML — RUNX1::RUNX1T1 dual-fusion",
       "difficulty": "intermediate",
-      "case_type": "constitutional",
+      "case_type": "acquired",
       "modules": [
         "fish"
       ],
@@ -905,9 +1056,9 @@
     {
       "case_id": "fish-aml-inv16",
       "path": "data/cases/fish-aml-inv16.json",
-      "title": "fish-aml-inv16",
+      "title": "AML — CBFB::MYH11 rearrangement",
       "difficulty": "intermediate",
-      "case_type": "constitutional",
+      "case_type": "acquired",
       "modules": [
         "fish"
       ],
@@ -918,9 +1069,9 @@
     {
       "case_id": "fish-kmt2a-ba",
       "path": "data/cases/fish-kmt2a-ba.json",
-      "title": "fish-kmt2a-ba",
+      "title": "Acute leukemia — KMT2A rearrangement",
       "difficulty": "intermediate",
-      "case_type": "constitutional",
+      "case_type": "acquired",
       "modules": [
         "fish"
       ],
@@ -931,9 +1082,9 @@
     {
       "case_id": "fish-alk-ba",
       "path": "data/cases/fish-alk-ba.json",
-      "title": "fish-alk-ba",
+      "title": "ALK rearrangement — break-apart FISH",
       "difficulty": "intermediate",
-      "case_type": "constitutional",
+      "case_type": "acquired",
       "modules": [
         "fish"
       ],
@@ -944,9 +1095,9 @@
     {
       "case_id": "fish-ewing-ba",
       "path": "data/cases/fish-ewing-ba.json",
-      "title": "fish-ewing-ba",
+      "title": "Ewing sarcoma — EWSR1 rearrangement",
       "difficulty": "intermediate",
-      "case_type": "constitutional",
+      "case_type": "acquired",
       "modules": [
         "fish"
       ],

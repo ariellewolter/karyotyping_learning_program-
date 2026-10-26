@@ -152,7 +152,7 @@ export function gradeFind(atlas) {
     return {
       ok: true,
       title: targets.length > 1 ? "Those pairs are the ones to inspect." : `Pair ${names} is the one to inspect.`,
-      body: "Open that chromosome next. The formal notation is still withheld.",
+      body: "That selection is recorded. Continue to compare it with the usual chromosome. The formal notation is still withheld.",
     };
   }
   const extra = found.filter((id) => !targets.includes(id));

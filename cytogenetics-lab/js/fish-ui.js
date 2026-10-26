@@ -1,4 +1,4 @@
-import { BAND_DESIGNATIONS, RATIO_COUNT_OPTIONS, SIGNAL_COUNT_OPTIONS, SLOT_IDS, escapeHtml, selectField } from "./util.js?v=20261006j";
+import { BAND_DESIGNATIONS, RATIO_COUNT_OPTIONS, SLOT_IDS, escapeHtml, selectField } from "./util.js?v=20261006j";
 import { state, patchSession } from "./store.js?v=20261006j";
 import {
   PROBE_DETECTS,
@@ -15,17 +15,19 @@ import {
   gradeProbeType,
   gradeSignalIdentification,
   gradeStrategy,
+  expectedSignalRelationship,
   localizationPieces,
-  predictedProbeArrangement,
+  nucleusRecordStatus,
   removeMark,
   resetNucleus,
   summarizeEnumeration,
   updateMark,
-} from "./fish.js?v=20261006j";
-import { nucleusSVG } from "./fish-microscopy.js?v=20261006e";
-import { ideogramSVG } from "./ideogram.js?v=20261015a";
-import { parseBandLabel, resolutionForLocus } from "./banding.js?v=20261006l";
-import { applyMode, applyStep, isTeachStep, strategyFeedback } from "./pedagogy.js?v=20261006j";
+} from "./fish.js?v=20261025ex1";
+import { nucleusSVG } from "./fish-microscopy.js?v=20261024e";
+import { buildScene, compareToKey, initWorkstation, registerWorkstationHost, workstationHTML } from "./fish-workstation.js?v=20261025fish1";
+import { ideogramSVG } from "./ideogram.js?v=20261024j";
+import { parseBandLabel, resolutionForLocus } from "./banding.js?v=20261024c";
+import { applyStep, isTeachStep, strategyFeedback } from "./pedagogy.js?v=20261025dropmodes";
 
 const SIGNAL_LABELS = {
   red: "Red only",
@@ -33,6 +35,15 @@ const SIGNAL_LABELS = {
   fusion: "Fusion",
   split: "Split",
   uncertain: "Uncertain",
+};
+
+const STRATEGY_GUIDANCE = {
+  "chromosome enumeration": "Count copies of a chromosome using a chromosome-specific target; this does not test for a rearrangement.",
+  "loss of a specific locus": "Compare a target region with a reference signal to assess copy loss at that location.",
+  "rearrangement of a particular locus": "Use probes flanking one locus to detect separation; this does not identify the partner.",
+  "fusion between two defined loci": "Mark two known loci, usually on different chromosomes, and test whether their signals come together.",
+  "chromosome origin": "Determine which chromosome a large added or exchanged segment came from; small changes may be below the method’s resolution.",
+  "chromosome-wide visualization": "Paint chromosome material to reveal large exchanged segments or chromosome origin, not a small gene-level change.",
 };
 
 function signalLabel(type) {
@@ -52,7 +63,7 @@ function countOnlyAssay(f) {
 }
 
 export function isFishStep(step) {
-  return ["fish_demo", "probe_locus", "probe_type", "probe_strategy", "fish_scope", "fish_interpret"].includes(applyStep(step));
+  return ["fish_demo", "probe_locus", "probe_type", "probe_strategy", "fish_scope", "fish_field", "fish_interpret"].includes(applyStep(step));
 }
 
 export function fishView(step) {
@@ -62,13 +73,14 @@ export function fishView(step) {
   const teaching = isTeachStep(step) && state.session?.module !== "disease";
   return `
     <div class="fish-wrap">
-      ${f.spec.synthetic_images ? `<p class="asset-banner">Synthetic demonstration fluorescence — not authentic clinical microscopy.</p>` : ""}
+      ${f.spec.synthetic_images ? `<p class="asset-banner">${applied === "probe_locus" ? "Demonstration chromosome ideogram — not a specimen image." : "Synthetic demonstration fluorescence — not authentic clinical microscopy."}</p>` : ""}
       ${teaching ? fishTeachGraphic(applied, f) : ""}
       ${!teaching && applied === "fish_demo" ? demoView(f) : ""}
       ${!teaching && applied === "probe_locus" ? locusView(f) : ""}
       ${!teaching && applied === "probe_type" ? typeView(f) : ""}
       ${!teaching && applied === "probe_strategy" ? strategyView(f) : ""}
       ${!teaching && applied === "fish_scope" ? scopeView(f) : ""}
+      ${!teaching && applied === "fish_field" ? fieldView(f) : ""}
       ${!teaching && applied === "fish_interpret" ? interpretView(f) : ""}
     </div>`;
 }
@@ -87,59 +99,117 @@ function fishTeachGraphic(step, f) {
       { id: "g3", type: "green", x: 152, y: 132 },
     ] };
     return `<div class="pair-art">
-      <div><p class="group-label">Two copies</p>${nucleusSVG(normal, { width: 240, height: 280, showLabels: true, demo: true })}<p>Two signals is the usual count.</p></div>
-      <div><p class="group-label">Three copies</p>${nucleusSVG(gain, { width: 240, height: 280, showLabels: true, demo: true })}<p>Three signals means three copies.</p></div>
+      <div><p class="group-label">Two copies</p>${nucleusSVG(normal, { width: 240, height: 280, showLabels: false, demo: false })}<p>Two separate green signals: one for each copy of the target chromosome.</p></div>
+      <div><p class="group-label">Three copies</p>${nucleusSVG(gain, { width: 240, height: 280, showLabels: false, demo: false })}<p>Three separate green signals indicate three copies.</p></div>
     </div>
     <p class="ideo-caption">The nuclei you score next are not labeled. Overlapping outlines are unscorable.</p>`;
   }
   if (exercise === "break-apart") {
     const intact = { cx: 120, cy: 150, rx: 70, ry: 74, expected_signals: [{ id: "f", type: "fusion", x: 120, y: 150 }] };
-    const split = { cx: 300, cy: 150, rx: 70, ry: 74, expected_signals: [
-      { id: "r", type: "red", x: 270, y: 130 },
-      { id: "g", type: "green", x: 330, y: 175 },
+    const split = { cx: 120, cy: 150, rx: 70, ry: 74, expected_signals: [
+      { id: "r", type: "red", x: 95, y: 132 },
+      { id: "g", type: "green", x: 148, y: 172 },
     ] };
     return `<div class="pair-art">
-      <div><p class="group-label">Intact</p>${nucleusSVG(intact, { width: 240, height: 280, showLabels: true, demo: true })}</div>
-      <div><p class="group-label">Rearranged</p>${nucleusSVG(split, { width: 240, height: 280, showLabels: true, demo: true })}</div>
+      <div><p class="group-label">Intact locus</p>${nucleusSVG(intact, { width: 240, height: 280, showLabels: false, demo: false })}<p>Red and green probes overlap at the intact locus.</p></div>
+      <div><p class="group-label">Rearranged locus</p>${nucleusSVG(split, { width: 240, height: 280, showLabels: false, demo: false })}<p>Separated flanking signals indicate locus disruption; this probe does not name the partner.</p></div>
     </div>`;
   }
-  if (exercise === "quality") {
-    const clear = { cx: 120, cy: 150, rx: 70, ry: 74, expected_signals: [
-      { id: "a", type: "green", x: 100, y: 140 },
-      { id: "b", type: "green", x: 145, y: 170 },
-    ] };
-    const overlap = {
-      cx: 280, cy: 140, rx: 64, ry: 68,
-      overlap: { cx: 330, cy: 175, rx: 60, ry: 64 },
-      expected_signals: [{ id: "o", type: "green", x: 305, y: 158 }],
-    };
+  if (exercise === "dual-fusion") {
+    const cutoff = f.spec.case_specific_cutoff || {};
+    if (!cutoff.normal_counts || !cutoff.abnormal_counts) return "";
     return `<div class="pair-art">
-      <div><p class="group-label">Scorable</p>${nucleusSVG(clear, { width: 240, height: 280, showLabels: false, demo: true })}</div>
-      <div><p class="group-label">Overlap — unscorable</p>${nucleusSVG(overlap, { width: 240, height: 280, showLabels: false, demo: true })}</div>
-    </div>`;
+      <div><p class="group-label">Normal for this probe pair</p>${drawCounts(cutoff.normal_counts, 120)}<p>Red and green stay apart: the two target loci sit on different chromosomes.</p></div>
+      <div><p class="group-label">Rearranged for this probe pair</p>${drawCounts(cutoff.abnormal_counts, 120)}<p>${escapeHtml(describeCounts(cutoff.abnormal_counts))}. A fusion is a red and a green signal overlapping. These counts belong to this assay design, not to every dual-fusion test.</p></div>
+    </div>
+    <p class="ideo-caption">At the microscope, check the red and green channels separately to confirm that a yellow signal contains both colors.</p>`;
   }
+  if (exercise === "quality") return artifactGallery();
   return "";
+}
+
+function artifactGallery() {
+  const tile = (label, caption, spec) => `<figure class="fish-tile">
+    <p class="group-label">${label}</p>
+    ${nucleusSVG(spec, { width: 220, height: 168, showLabels: false, demo: false })}
+    <figcaption>${caption}</figcaption>
+  </figure>`;
+  const clear = { cx: 110, cy: 86, rx: 52, ry: 46, expected_signals: [
+    { id: "a", type: "green", x: 90, y: 74 },
+    { id: "b", type: "green", x: 132, y: 102 },
+  ] };
+  return `<div class="fish-gallery">
+    ${tile("Scorable", "One intact outline. The signals are separate and belong to this cell.", clear)}
+    ${tile("Overlapping nuclei", "Two outlines meet. A signal in the shared area cannot be assigned to one cell.", {
+      cx: 78, cy: 78, rx: 46, ry: 42,
+      overlap: { cx: 132, cy: 104, rx: 44, ry: 40 },
+      expected_signals: [{ id: "o", type: "green", x: 108, y: 92 }],
+    })}
+    ${tile("Truncated nucleus", "The outline is cut off by the edge of the field.", {
+      cx: 206, cy: 86, rx: 70, ry: 52,
+      expected_signals: [{ id: "t", type: "green", x: 168, y: 80 }],
+    })}
+    ${tile("Weak signals", "Only faint, diffuse halos, even with brightness raised. Exclude. Dim signals that are still distinct spots can be scored.", {
+      ...clear,
+      presentation: "weak",
+    })}
+    ${tile("Closely spaced signals", "Two spots closer than one signal diameter count once in an enumeration assay. Apply the assay's own rule: in a break-apart assay, red and green that close are a fusion.", {
+      cx: 110, cy: 86, rx: 52, ry: 46,
+      expected_signals: [
+        { id: "c1", type: "green", x: 94, y: 76 },
+        { id: "c2", type: "green", x: 101, y: 79 },
+        { id: "c3", type: "green", x: 134, y: 104 },
+      ],
+    })}
+    ${tile("Excessive background", "Extra paint is scattered through the field, so the probe spots cannot be picked out.", {
+      ...clear,
+      background: [
+        { x: 28, y: 36, r: 3 },
+        { x: 48, y: 128, r: 4.5 },
+        { x: 96, y: 40, r: 3.2 },
+        { x: 150, y: 132, r: 4 },
+        { x: 186, y: 48, r: 3.4, color: "#e24b4b" },
+        { x: 70, y: 96, r: 3 },
+        { x: 124, y: 58, r: 2.8 },
+        { x: 196, y: 112, r: 3.6 },
+      ],
+    })}
+    ${tile("Ambiguous signals", "The paint is smeared, so the spots cannot be separated into a count.", {
+      cx: 110, cy: 86, rx: 52, ry: 46,
+      presentation: "ambiguous",
+      expected_signals: [{ id: "s", type: "green", x: 102, y: 82 }],
+    })}
+    ${tile("Poor nuclear morphology", "The outline is ragged and broken, not one intact nucleus.", {
+      cx: 104, cy: 82, rx: 48, ry: 40,
+      presentation: "irregular",
+      fragment: { cx: 168, cy: 124, rx: 16, ry: 12 },
+      expected_signals: [{ id: "p", type: "green", x: 96, y: 78 }],
+    })}
+  </div>`;
 }
 
 function locusView(f, teaching = false) {
   const loc = f.spec.localization || {};
   const chrom = loc.chromosome || f.probes[0]?.chromosome;
+  const probe = f.probes.find((p) => p.probe_id === loc.probe_id) || f.probes[0];
   const needsSub = parseBandLabel(loc.expected)?.subband != null;
   const pieces = localizationPieces(f.maps, chrom, resolutionForLocus(loc.expected));
-  const reveal = teaching || (state.session?.instructionMode === "practice" && state.session?.pedagogy?.revealLabels);
+  const reveal = teaching;
   const highlight = teaching ? loc.expected : null;
   const place = needsSub
     ? "Click the sub-band slice, or name chromosome, arm, region, band, and sub-band."
     : "Place the probe from the chromosome, arm, and band.";
+  const probeWhy = probeLocationRationale(f, probe);
   return `
-    <div class="assembly-stage">
+    <div class="assembly-stage fish-locus-stage">
       <div class="ideo-column">
-        ${ideogramSVG(pieces, { width: 180, height: 560, showLabels: reveal, highlightId: highlight })}
+        ${ideogramSVG(pieces, { width: 260, height: 400, barWidth: 82, showLabels: reveal, highlightId: highlight })}
         <p class="ideo-caption">Click a band, or name the locus. Map from chromosome-maps.json.</p>
       </div>
       <div class="assembly-copy">
         <h3>Where does this probe hybridize?</h3>
-        <p>${escapeHtml(f.probes.find((p) => p.probe_id === loc.probe_id)?.description || "Identify the cytogenetic location of the probe.")}</p>
+        <p>${escapeHtml(probe?.description || "Identify the cytogenetic location of the probe.")}</p>
+        <aside class="probe-purpose-note"><strong>Why this probe is here</strong><p>${escapeHtml(probeWhy)}</p></aside>
         <p class="muted">${teaching ? "The address is highlighted while the names are visible." : `${place} The answer is not highlighted.`}</p>
         ${teaching ? "" : `<label class="stack">Complete locus
           <input id="fish-loc" class="iscn-input" value="${escapeHtml(f.localization.locus)}" placeholder="${needsSub ? "e.g. 2q31.1" : "e.g. 4p16"}" />
@@ -147,20 +217,52 @@ function locusView(f, teaching = false) {
         <div class="locus-grid">
           ${selectField("fish-loc-chr", "Chromosome", f.localization.chromosome, SLOT_IDS)}
           ${selectField("fish-loc-arm", "Arm (p or q)", f.localization.arm, ["p", "q"])}
-          ${selectField("fish-loc-band", "Band", f.localization.band, BAND_DESIGNATIONS)}
+          ${selectField("fish-loc-band", "Band", f.localization.bandLabel || "", BAND_DESIGNATIONS)}
         </div>
         ${f.localization.placedId ? `<p>Selected segment: <code>${escapeHtml(f.localization.placedId)}</code></p>` : ""}`}
       </div>
     </div>`;
 }
 
+function probeLocationRationale(fish, probe) {
+  if (!probe) return "A probe’s address identifies the DNA sequence its signal represents, so the result can be interpreted in the context of the case question.";
+
+  const name = probe.probe_name || "This probe";
+  const locus = probe.target_locus || fish.spec.localization?.expected || "the selected locus";
+  const partners = fish.probes.filter((item) => item.probe_id !== probe.probe_id);
+  const assay = fish.spec.assay_type;
+
+  if (assay === "dual-fusion" && partners.length) {
+    const partnerText = partners.map((item) => `${item.probe_name} at ${item.target_locus}`).join(" and ");
+    return `${name} marks ${locus} (${probe.description?.match(/\(([^)]+)\)/)?.[1] || "the target locus"}). In this assay it is paired with ${partnerText}. The loci are normally on different chromosomes; placing each probe at its known address lets the assay test whether they have been brought together by a rearrangement. The address tells you what a signal represents; the fusion pattern is interpreted in a later step.`;
+  }
+
+  if (assay === "break-apart") {
+    return `${name} marks the ${probe.fluorophore} flank of the locus at ${locus}. Its matching flank probe marks the other side of that same locus. Keeping both addresses tied to this locus lets you see whether the flanks remain together or have separated; this design does not identify a rearrangement partner.`;
+  }
+
+  if (assay === "enumeration" && probe.probe_type === "centromeric") {
+    const chromosome = probe.chromosome || fish.spec.localization?.chromosome;
+    return `${name} binds repeated centromeric DNA at ${locus} on chromosome ${chromosome}. The centromere is used here as a marker for each copy of that chromosome, so its signals support a copy count. It is not a probe for a structural breakpoint or a gene-specific rearrangement.`;
+  }
+
+  if (assay === "deletion" && partners.length) {
+    const partner = partners[0];
+    return `${name} marks the ${locus} region being checked for loss. The assay also includes ${partner.probe_name} at ${partner.target_locus} as a comparison signal. Reading the target alongside that reference helps distinguish loss of the region of interest from a generally weak or missing signal.`;
+  }
+
+  return `${name} is designed to bind the DNA sequence at ${locus}. Locating it on the chromosome map shows exactly which region its signal represents in this case.`;
+}
+
 function typeView(f) {
   const a = f.probeType;
-  const help = state.session?.instructionMode === "practice" && state.session?.pedagogy?.revealLabels;
+  const guided = state.session?.instructionMode === "learn";
   return `
     <div class="assembly-copy">
-      <h3>Probe strategy</h3>
-      <p>Identify what this assay can tell you from chromosome structure — not a memorized color combination.</p>
+      ${fishCaseBrief()}
+      <h3>Choose a probe type</h3>
+      <p>Use the case question to decide what the probe must detect. You are choosing the probe design, not predicting a signal pattern.</p>
+      ${probeTypeGuide(guided)}
       <label class="stack">Probe type
         <select id="fish-ptype">
           <option value="">Select…</option>
@@ -170,23 +272,50 @@ function typeView(f) {
       ${selectField("fish-ptarget", "What does the probe target?", a.target, PROBE_TARGETS)}
       ${selectField("fish-pdetect", "What abnormality class is it designed to detect?", a.detects, PROBE_DETECTS)}
       ${selectField("fish-pnorm", "Normal signal pattern", a.normal_pattern, PROBE_NORMAL_PATTERNS)}
-      ${help ? `<p class="muted">${escapeHtml(f.probes.map((p) => `${p.probe_name} (${p.fluorophore}) at ${p.target_locus}`).join(" · "))}</p>` : ""}
     </div>`;
 }
 
 function strategyView(f) {
-  const help = state.session?.instructionMode === "practice" && state.session?.pedagogy?.revealLabels;
+  const guided = state.session?.instructionMode === "learn";
+  const targetList = f.probes?.length ? probeLegend(f) : "";
   return `
     <div class="assembly-copy">
+      ${fishCaseBrief()}
       <h3>Choose a FISH strategy</h3>
-      <p>Given the cytogenetic question in this case, which probe class is appropriate?</p>
-      ${state.session?.instructionMode === "learn" ? `<p class="muted">Use the distinction from the previous screen. The correct choice is not marked.</p>` : ""}
+      <p>Translate the case into a question: count copies, detect loss, check whether one locus is rearranged, or test whether two known loci have joined.</p>
+      ${targetList ? `<section class="fish-strategy-targets"><p class="group-label">Probe targets available in this case</p>${targetList}<p>These targets show what the assay can see. Choose the biological question they can answer; do not infer the result from probe color alone.</p></section>` : ""}
+      ${guided ? `<p class="muted">Use the case clues and target locations. The correct choice is not marked.</p>` : ""}
       <fieldset>
-        <legend>Most appropriate strategy</legend>
-        ${PROBE_STRATEGIES.map((s) => `<label class="check"><input type="radio" name="fish-strategy" value="${escapeHtml(s)}" ${f.strategy.choice === s ? "checked" : ""}/> ${escapeHtml(s)}</label>`).join("")}
+        <legend>Which question should this assay answer?</legend>
+        <div class="fish-strategy-options">${PROBE_STRATEGIES.map((strategy) => `<label class="fish-strategy-option"><input type="radio" name="fish-strategy" value="${escapeHtml(strategy)}" ${f.strategy.choice === strategy ? "checked" : ""}/><span><strong>${escapeHtml(strategy)}</strong><small>${escapeHtml(STRATEGY_GUIDANCE[strategy])}</small></span></label>`).join("")}</div>
       </fieldset>
-      ${help ? `<p class="muted">Choose the assay that answers the question. Expected signal patterns are scored when you interpret the nuclei.</p>` : ""}
+      <p class="muted">The signal pattern is assessed later. A strategy describes what the probe design can detect—not what this sample has.</p>
     </div>`;
+}
+
+function fishCaseBrief() {
+  const session = state.session || {};
+  const caseData = session.caseData || {};
+  const item = session.atlas?.cytogeneticCase;
+  const assignedCase = caseData.case_id?.startsWith("atlas-") && /^Assigned case\./.test(caseData.clinical_history || "");
+  const region = item ? item.specific_region || item.primary_locus || "" : "";
+  const genes = item?.genes && !region.includes(String(item.genes).split(/[\s.;,]/)[0]) ? item.genes : "";
+  const focus = item ? [item.abnormality_type, region, genes].filter(Boolean).join(" · ") : "";
+  const presentation = session.atlas?.disease?.clinical_background?.presentation || "";
+  const context = assignedCase && focus
+    ? `This ${item.kind || caseData.case_type || "teaching"} case focuses on ${focus}. Use the chromosome finding to decide what the FISH assay needs to detect.`
+    : caseData.clinical_history
+      ? "Use the clinical history in the case panel as your brief. Identify what needs to be detected before choosing a probe."
+      : caseData.unknown_prompt || "Use the case details and assay question to decide what evidence is needed.";
+  const caseType = caseData.case_type ? `${String(caseData.case_type).replaceAll("_", " ")} teaching case` : "Teaching case";
+  const reminder = assignedCase && focus
+    ? "This gives the biological focus without naming the diagnosis or expected FISH pattern."
+    : "Choose the probe design that can answer the case question, not the one that matches a remembered color pattern.";
+  return `<section class="fish-case-brief"><p class="eyebrow">${escapeHtml(caseType)} · case context</p>${presentation ? `<p><strong>Referral presentation.</strong> ${escapeHtml(presentation)}</p>` : ""}<p>${escapeHtml(context)}</p><p class="muted">${escapeHtml(reminder)}</p></section>`;
+}
+
+function probeTypeGuide(guided) {
+  return `<details class="probe-type-guide" ${guided ? "open" : ""}><summary>Quick guide: what each probe type can show</summary><ul class="comp-list"><li><strong>Centromeric:</strong> count copies of a chromosome using its centromere.</li><li><strong>Locus-specific:</strong> locate or count one defined region or gene.</li><li><strong>Break-apart:</strong> see whether probes flanking one locus separate; it does not identify the partner.</li><li><strong>Dual-fusion:</strong> test whether two known loci on different chromosomes join.</li><li><strong>Whole-chromosome painting:</strong> visualize chromosome origin or large exchanged segments.</li><li><strong>Subtelomeric:</strong> examine chromosome-end regions for terminal changes.</li></ul></details>`;
 }
 
 function demoView(f) {
@@ -202,6 +331,23 @@ function assaySetup(f) {
       ${sexContext(f)}
       <p class="muted">Count the signals in the nuclei. The expected abnormal pattern is not shown.</p>
     </div>`;
+}
+
+function probeRationale(f) {
+  const targets = (f.probes || []).map((probe) => `${probe.fluorophore || ""} ${probe.probe_name || "probe"} at ${probe.target_locus || "its target"}`.trim());
+  let explanation = "";
+  if (f.spec.assay_type === "dual-fusion" && targets.length >= 2) {
+    explanation = `This pair marks ${targets.join(" and ")}. It tests whether two defined loci on different chromosomes are brought close together by a rearrangement. Overlapping probe signals indicate colocalization of the target regions; interpret the full pattern with the case context.`;
+  } else if (f.spec.assay_type === "break-apart" && targets.length >= 2) {
+    explanation = `These probes flank the same locus (${targets.join(" and ")}). Separation can support disruption of that locus, but a break-apart result does not identify the rearrangement partner.`;
+  } else if (f.spec.assay_type === "deletion" && targets.length >= 2) {
+    explanation = `The assay compares a target region with a reference signal (${targets.join(" and ")}). The reference helps distinguish loss of the target from signal failure or an unscorable nucleus.`;
+  } else if (["enumeration", "sex"].includes(f.spec.assay_type)) {
+    explanation = `This assay uses chromosome-specific targets${targets.length ? ` (${targets.join(" and ")})` : ""} to answer a copy-number question. It does not by itself test whether a chromosome is structurally rearranged.`;
+  }
+  if (!explanation) return "";
+  const open = state.session?.instructionMode === "learn" ? " open" : "";
+  return `<details class="fish-probe-rationale"${open}><summary>Why these probes for this case?</summary><p>${escapeHtml(explanation)}</p></details>`;
 }
 
 function probeLegend(f) {
@@ -287,7 +433,7 @@ function describeCounts(counts, keepZero = false) {
 }
 
 function drawCounts(counts, cx) {
-  return nucleusSVG(demoNucleus(counts, cx), { width: 240, height: 280, showLabels: true, demo: true });
+  return nucleusSVG(demoNucleus(counts, cx), { width: 240, height: 280, showLabels: true, demo: false });
 }
 
 function demoNucleus(counts, cx) {
@@ -305,16 +451,57 @@ function demoNucleus(counts, cx) {
   return { cx, cy: 150, rx: 72, ry: 78, expected_signals: signals };
 }
 
+function nucleusEntryIssues(f, student) {
+  const decision = String(student.scorable);
+  if (decision !== "true" && decision !== "false") return ["Choose whether this nucleus is scorable."];
+  if (decision === "false") return student.artifact ? [] : ["Select why this nucleus is unscorable."];
+  const fields = countFieldsFor(f.spec.assay_type, f.spec.count_fields);
+  const spec = (f.spec.nuclei || []).find((nucleus) => nucleus.nucleus_id === student.id) || currentNucleus(f).spec;
+  const missing = fields.filter((field) => {
+    const value = student.counts?.[field];
+    return value == null || String(value).trim() === "" || !Number.isInteger(Number(value)) || Number(value) < 0 || Number(value) > 99;
+  });
+  const issues = missing.length ? [`Enter a whole-number count from 0 to 99 for ${missing.map(signalLabel).join(", ")}. Enter 0 when no signal is present.`] : [];
+  if (expectedSignalRelationship(spec, fields) && !student.relationship) issues.push("Say whether the signals are fused, split, separate, or only close.");
+  if (f.spec.require_signal_annotations && !countOnlyAssay(f) && !student.marks?.length) issues.push("Add the required signal annotations.");
+  return issues;
+}
+
+function nucleusEntryStatus(f, student) {
+  return nucleusRecordStatus(f, student);
+}
+
+function summaryPercent(f) {
+  const summary = summarizeEnumeration(f);
+  if (summary.percent == null) return "";
+  return ` · ${summary.percent}% of scorable nuclei match this assay's recorded abnormal pattern`;
+}
+
+function relationshipField(f, spec, student) {
+  const fields = countFieldsFor(f.spec.assay_type, f.spec.count_fields);
+  if (!(fields.includes("fusion") || fields.includes("split")) || !spec?.scorable) return "";
+  if (student.scorable === "false" || student.scorable === false) return "";
+  const choices = [
+    ["fused", "Fused into one signal"],
+    ["close", "Close, but still separate"],
+    ["split", "Split apart"],
+    ["separate", "Separate signals, no fusion"],
+  ];
+  return `<fieldset class="fish-relationship"><legend>How do the signals relate?</legend>${choices.map(([id, label]) => `<label class="check"><input type="radio" name="fish-relationship" value="${id}" ${student.relationship === id ? "checked" : ""}/> ${escapeHtml(label)}</label>`).join("")}</fieldset>`;
+}
+
 function scopeView(f) {
   const { spec, student, index } = currentNucleus(f);
   if (!spec) return `<p class="muted">No nuclei in this case.</p>`;
   const fields = countFieldsFor(f.spec.assay_type, f.spec.count_fields);
-  const help = state.session?.instructionMode === "practice" && state.session?.pedagogy?.revealLabels;
-  const demonstrate = false;
+  const annotationRequired = f.spec.require_signal_annotations === true;
   const channels = f.spec.channels || ["dapi", "red", "green", "merge"];
+  const recorded = f.nuclei.filter((n) => nucleusEntryStatus(f, n) === "Recorded").length;
   return `
-    <div class="fish-scope-layout">
-      <div>
+    <div class="fish-score-workspace">
+      <section class="fish-score-image">
+        <div class="fish-score-heading"><div><p class="eyebrow">Illustrative field</p><h3>Nucleus ${index + 1} of ${f.spec.nuclei.length}</h3></div><span>${recorded} of ${f.spec.nuclei.length} recorded${summaryPercent(f)}</span></div>
+        <p class="muted">This is one demonstration field, not a clinical image. Decide which nuclei are scorable, then count. A fusion and two signals that are only close are different calls.</p>
         <div class="channel-bar" role="group" aria-label="Fluorescence channels">
           ${channels.map((ch) => `<button type="button" class="btn ${f.activeChannel === ch ? "primary" : ""}" data-action="fish-channel" data-ch="${ch}">${escapeHtml(channelLabel(ch))}</button>`).join("")}
         </div>
@@ -322,88 +509,153 @@ function scopeView(f) {
           activeChannel: f.activeChannel,
           marks: student.marks,
           selectedId: f.selectedMark,
-          showLabels: demonstrate || help === true,
-          demo: true,
+          showLabels: false,
+          demo: false,
         })}</div>
         <div class="nucleus-strip">
           ${f.spec.nuclei.map((n, i) => `<button type="button" class="nuc-thumb ${i === index ? "on" : ""}" data-action="fish-goto-n" data-index="${i}">
-            ${nucleusSVG(n, { activeChannel: "merge", marks: f.nuclei[i]?.marks || [], showLabels: false, demo: true })}
+            ${nucleusSVG(n, { activeChannel: "merge", marks: f.nuclei[i]?.marks || [], showLabels: false, demo: false })}
             <span>Nucleus ${i + 1} of ${f.spec.nuclei.length}</span>
           </button>`).join("")}
         </div>
-        ${countOnlyAssay(f) ? "" : `<div class="piece-nav sig-palette" role="group" aria-label="Identify and count signals">
-          ${["red", "green", "fusion", "split", "uncertain"].filter((t) => fields.includes(t) || t === "uncertain").map((t) => `
-            <button type="button" class="sig-btn ${t} ${f.classifyMode === t ? "on" : ""}" data-action="fish-classify" data-type="${t}">${signalLabel(t)}</button>`).join("")}
-        </div>
-        <div class="piece-nav">
-          <button type="button" class="btn" data-action="fish-reclass">Reclassify selected</button>
-          <button type="button" class="btn" data-action="fish-remove">Remove selected</button>
-          <button type="button" class="btn" data-action="fish-reset-n">Reset nucleus</button>
-        </div>`}
-      </div>
-        <div class="assembly-copy">
+      </section>
+      <section class="fish-score-record">
+        <h3>Record this nucleus</h3>
         ${assaySetup(f)}
-        <p class="group-label">Nucleus ${index + 1} of ${f.spec.nuclei.length}${demonstrate ? " · demonstration" : ""}</p>
-        ${demonstrate ? `<p>This nucleus is labeled so you can see a signal, a fusion, and what a scorable nucleus looks like. Score the later nuclei without those labels. A clipped edge, overlap, or faint paint is an artifact.</p>` : ""}
-        <div class="piece-nav">
-          <button type="button" class="btn" data-action="fish-prev-n" ${index === 0 ? "disabled" : ""}>Previous nucleus</button>
-          <button type="button" class="btn" data-action="fish-next-n" ${index >= f.spec.nuclei.length - 1 ? "disabled" : ""}>Next nucleus</button>
-        </div>
-        <fieldset>
-          <legend>Scorable or unscorable?</legend>
-          <label class="check"><input type="radio" name="fish-scorable" value="true" ${student.scorable === "true" || student.scorable === true ? "checked" : ""}/> Scorable</label>
-          <label class="check"><input type="radio" name="fish-scorable" value="false" ${student.scorable === "false" || student.scorable === false ? "checked" : ""}/> Unscorable</label>
+        ${probeRationale(f)}
+        <fieldset class="fish-scorable-fieldset">
+          <legend>Scorable?</legend>
+          <label class="check"><input type="radio" name="fish-scorable" value="true" ${student.scorable === "true" || student.scorable === true ? "checked" : ""}/> Yes</label>
+          <label class="check"><input type="radio" name="fish-scorable" value="false" ${student.scorable === "false" || student.scorable === false ? "checked" : ""}/> No</label>
         </fieldset>
-        ${student.scorable === "false" || student.scorable === false ? `
-          <label class="stack">Why unscorable?
-            <select id="fish-artifact">
-              <option value="">Select…</option>
-              ${["overlapping_nuclei", "truncated_nucleus", "weak_signals", "excessive_background", "ambiguous_signals", "poor_nuclear_morphology"].map((a) => `<option value="${a}" ${student.artifact === a ? "selected" : ""}>${a.replace(/_/g, " ")}</option>`).join("")}
-            </select>
-          </label>` : ""}
-        <div class="locus-grid">
-          ${fields.map((fld) => selectField(`fish-count-${fld}`, signalLabel(fld), student.counts[fld], SIGNAL_COUNT_OPTIONS)).join("")}
+        ${relationshipField(f, spec, student)}
+        ${student.scorable === "false" || student.scorable === false ? `<label class="stack">Why unscorable?
+          <select id="fish-artifact"><option value="">Select…</option>
+            ${["overlapping_nuclei", "truncated_nucleus", "weak_signals", "excessive_background", "ambiguous_signals", "poor_nuclear_morphology"].map((a) => `<option value="${a}" ${student.artifact === a ? "selected" : ""}>${a.replace(/_/g, " ")}</option>`).join("")}
+          </select></label>` : ""}
+        ${countOnlyAssay(f) ? "" : `<details class="fish-signal-annotation" ${annotationRequired ? "open" : ""}><summary>Annotate signal locations ${annotationRequired ? "(required)" : "(optional · not graded)"}</summary><p class="muted fish-mark-instruction">Select a signal type, then click each spot in the image. Individual marks are a visual aid here; the count fields above record the case result. A case that requires signal annotations will say so.</p>
+          <div class="piece-nav sig-palette" role="group" aria-label="Identify and count signals">
+            ${["red", "green", "fusion", "split", "uncertain"].filter((t) => fields.includes(t) || t === "uncertain").map((t) => `<button type="button" class="sig-btn ${t} ${f.classifyMode === t ? "on" : ""}" data-action="fish-classify" data-type="${t}">${signalLabel(t)}</button>`).join("")}
+          </div>
+          <ul class="fish-mark-list">${student.marks.map((m) => `<li><button type="button" class="btn ${f.selectedMark === m.id ? "primary" : ""}" data-action="fish-select-mark" data-id="${escapeHtml(m.id)}">${escapeHtml(signalLabel(m.type))}</button></li>`).join("") || "<li class='muted'>No signals marked yet</li>"}</ul>
+          <div class="piece-nav"><button type="button" class="btn" data-action="fish-reclass">Reclassify selected</button><button type="button" class="btn" data-action="fish-remove">Remove selected</button><button type="button" class="btn" data-action="fish-reset-n">Reset nucleus</button></div></details>`}
+        <fieldset class="fish-count-fields"><legend>Signal counts</legend>${fields.map((fld) => `<label class="fish-count-row">${escapeHtml(signalLabel(fld))}<span class="fish-count-control"><button type="button" class="fish-count-step" data-action="fish-count-step" data-field="${escapeHtml(fld)}" data-delta="-1" aria-label="Decrease ${escapeHtml(signalLabel(fld))} count" ${student.scorable === "false" || student.scorable === false ? "disabled" : ""}>−</button><input id="fish-count-${escapeHtml(fld)}" type="number" min="0" max="99" inputmode="numeric" value="${escapeHtml(student.counts[fld] ?? "")}" aria-label="${escapeHtml(signalLabel(fld))} signal count" ${student.scorable === "false" || student.scorable === false ? "disabled" : ""}><button type="button" class="fish-count-step" data-action="fish-count-step" data-field="${escapeHtml(fld)}" data-delta="1" aria-label="Increase ${escapeHtml(signalLabel(fld))} count" ${student.scorable === "false" || student.scorable === false ? "disabled" : ""}>+</button></span></label>`).join("")}</fieldset>
+        <p class="muted">${countOnlyAssay(f) ? "Count the target signals. If the nucleus is unscorable, record why instead of forcing a count." : "A fusion counts once. Separate red- and green-only signals from split signals; exclude unscorable nuclei from interpretation."}</p>
+        ${f.recordMessage ? `<p class="feedback" role="status">${escapeHtml(f.recordMessage)}</p>` : ""}
+        <div class="fish-nucleus-navigation"><button type="button" class="btn" data-action="fish-prev-n" ${index === 0 ? "disabled" : ""}>Previous</button><button type="button" class="btn primary" data-action="fish-next-n">${index >= f.spec.nuclei.length - 1 ? "Record nucleus" : "Record &amp; next"}</button></div>
+        <div class="fish-recorded-panel"><div class="fish-recorded-heading"><h4>Recorded nuclei</h4><span>${recorded} of ${f.spec.nuclei.length}</span></div>${countTable(f)}
+          <details><summary>What makes a nucleus scorable?</summary><p>Score intact, distinguishable nuclei where signals can be assigned confidently. Record overlaps, truncation, weak or ambiguous signals, and poor morphology as unscorable rather than guessing.</p></details>
         </div>
-        <p class="muted">${countOnlyAssay(f)
-          ? "Count the signals of this probe, and decide whether the nucleus is scorable. Overlapping outlines are unscorable. Do not force a count on an unscorable nucleus."
-          : "Click each fluorescent spot and classify it, then enter the counts. A fusion counts once. Red only and green only are single-color spots. Do not force a count on an unscorable nucleus."}</p>
-        ${countOnlyAssay(f) ? "" : student.marks.length ? `<p class="group-label">Identified signals</p>
-          <ul class="fish-mark-list">${student.marks.map((m) => `<li>
-            <button type="button" class="btn ${f.selectedMark === m.id ? "primary" : ""}" data-action="fish-select-mark" data-id="${escapeHtml(m.id)}">${escapeHtml(signalLabel(m.type))}</button>
-          </li>`).join("")}</ul>` : "<p class='muted'>No signals marked yet. Click a fluorescent spot or enter counts below.</p>"}
-        ${countTable(f)}
-      </div>
+      </section>
     </div>`;
+}
+
+let sceneCache = { key: "", scene: null };
+
+function sessionScene(f) {
+  const seed = (Number.isFinite(state.session.presentation) ? state.session.presentation : 1) + (f.fieldRound || 0);
+  const advanced = state.session.caseData?.difficulty === "advanced";
+  const key = `${state.session.caseData?.case_id}|${seed}|${advanced}`;
+  if (sceneCache.key !== key) sceneCache = { key, scene: buildScene(f.spec, seed, { advanced }) };
+  return { scene: sceneCache.scene, seed };
+}
+
+function sessionWorkstation() {
+  const f = state.session?.fish;
+  if (!f) return null;
+  const { scene, seed } = sessionScene(f);
+  if (!f.workstation || f.workstation.seed !== seed) f.workstation = initWorkstation(seed);
+  const submitted = Boolean(state.session.scores?.fish_field);
+  return {
+    host: "session",
+    spec: f.spec,
+    probes: f.probes,
+    scene,
+    ws: f.workstation,
+    indication: state.session.caseData?.clinical_history || "",
+    locked: submitted,
+    reveal: submitted,
+  };
+}
+
+registerWorkstationHost("session", {
+  context: sessionWorkstation,
+  save(ws) {
+    if (state.session?.fish) state.session.fish = { ...state.session.fish, workstation: ws };
+  },
+});
+
+function fieldView() {
+  return workstationHTML(sessionWorkstation());
+}
+
+function checkField(isSubmit) {
+  const s = state.session;
+  const ctx = sessionWorkstation();
+  if (!ctx?.scene) return;
+  s.attempts.fish_field = (s.attempts.fish_field || 0) + 1;
+  const result = compareToKey(ctx.spec, ctx.scene, ctx.ws);
+  const recheck = result.rows.filter((row) => row.verdict !== "agrees" && row.verdict !== "not_recorded").map((row) => row.nucleus.number);
+  if (isSubmit) {
+    const { technical, interpretation, reasoning } = result.sections;
+    s.scores.fish_field = {
+      ok: result.agrees,
+      n: result.total,
+      technical: [technical.earned, technical.possible],
+      signalRecognition: result.signalRecognition,
+      inappropriateExclusion: result.inappropriateExclusion,
+      missedExclusion: result.missedExclusion,
+      reasonMismatch: result.reasonMismatch,
+    };
+    s.scores.fish_interpretation = {
+      ok: interpretation.earned === interpretation.possible,
+      detail: `assay interpretation ${interpretation.earned}/${interpretation.possible}; scientific reasoning ${reasoning.earned}/${reasoning.possible}`,
+    };
+  }
+  const { technical, interpretation, reasoning } = result.sections;
+  writeFb("fish_field", {
+    tone: result.agrees === result.total ? "ok" : "review",
+    scored: true,
+    title: result.notRecorded
+      ? `${result.notRecorded} nuclei are still open.`
+      : (result.agrees === result.total ? "Every nucleus is scored or excluded in agreement with the case key." : "Some nuclei need another look."),
+    body: isSubmit
+      ? `Agreement ${result.agrees}/${result.total}. The worksheet now shows the key for each nucleus.`
+      : `Agreement ${result.agrees}/${result.total}.${recheck.length ? ` Recheck nucleus ${recheck.slice(0, 6).join(", ")}${recheck.length > 6 ? ", and others" : ""}.` : ""}`,
+    extra: `<ul class="comp-list">
+      <li>Technical scoring: ${technical.earned}/${technical.possible} (counts differ on ${result.signalRecognition} correctly scored nuclei; ${result.inappropriateExclusion} scorable nuclei excluded; ${result.missedExclusion} unscorable nuclei scored; ${result.reasonMismatch} correct exclusions with a different reason)</li>
+      <li>Assay interpretation: ${interpretation.earned}/${interpretation.possible}</li>
+      <li>Scientific reasoning: ${reasoning.earned}/${reasoning.possible}</li>
+    </ul>`,
+  }, isSubmit);
 }
 
 function countTable(f) {
   const fields = countFieldsFor(f.spec.assay_type, f.spec.count_fields);
-  const head = ["Nucleus", ...fields.map((x) => signalLabel(x)), "Scorable"];
+  const head = ["Nucleus", "Status", "Scorable", ...fields.map((x) => signalLabel(x))];
   return `<table class="case-table fish-table"><thead><tr>${head.map((h) => `<th>${h}</th>`).join("")}</tr></thead>
     <tbody>${f.nuclei.map((n, i) => `<tr class="${i === f.nucleusIndex ? "on" : ""}">
       <td><button type="button" class="btn" data-action="fish-goto-n" data-index="${i}">${i + 1}</button></td>
-      ${fields.map((fld) => `<td>${escapeHtml(n.counts[fld] ?? "")}</td>`).join("")}
+      <td>${nucleusEntryStatus(f, n)}</td>
       <td>${n.scorable === "" ? "—" : (n.scorable === "true" || n.scorable === true ? "yes" : "no")}</td>
+      ${fields.map((fld) => `<td>${String(n.scorable) === "false" ? "—" : escapeHtml(n.counts[fld] ?? "")}</td>`).join("")}
     </tr>`).join("")}</tbody></table>`;
 }
 
 function interpretView(f) {
   const summary = summarizeEnumeration(f);
   const opts = f.spec.interpretation_options || [];
-  const help = state.session?.instructionMode === "practice" && state.session?.pedagogy?.revealLabels;
-  const assembly = state.session.caseData.assembly;
-  const arrangement = f.spec.include_schematic && f.maps && assembly?.chromosome
-    ? predictedProbeArrangement(f.maps, f.probes, assembly.transform, assembly.chromosome)
-    : null;
   return `
     <div class="assembly-copy">
       <h3>Pattern and interpretation</h3>
       <p>Summary is calculated from <em>your</em> nucleus records. This case does not apply a universal FISH positivity cutoff.</p>
       <ul class="comp-list">
-        <li>Nuclei reviewed: ${summary.total}</li>
+        <li>Completed nucleus records: ${summary.reviewed} of ${summary.total}</li>
+        <li>Pending: ${summary.pending}; incomplete: ${summary.incomplete}; excluded with a reason: ${summary.excluded}</li>
         <li>Marked scorable: ${summary.scorable}</li>
-        ${summary.percent != null && state.session?.instructionMode !== "assessment" ? `<li>Your percent of scorable nuclei matching this assay's recorded pattern: <strong>${summary.percent}%</strong></li>` : ""}
+        ${summary.percent != null ? `<li>Your percent of scorable nuclei matching this assay's recorded pattern: <strong>${summary.percent}%</strong></li>` : ""}
       </ul>
+      ${summary.reviewed < summary.total ? `<p role="status">Complete the pending or incomplete records before interpreting the full set. Pattern percentages are withheld until every nucleus has a complete record.</p>` : ""}
       ${f.spec.assay_type === "amplification" ? `
         <div class="locus-grid">
           ${selectField("fish-ratio-t", "Target count", f.ratio.target, RATIO_COUNT_OPTIONS)}
@@ -414,7 +666,6 @@ function interpretView(f) {
         <legend>Cytogenetic interpretation</legend>
         ${opts.map((o) => `<label class="check"><input type="radio" name="fish-interp" value="${escapeHtml(o)}" ${f.interpretation === o ? "checked" : ""}/> ${escapeHtml(labelInterp(o))}</label>`).join("")}
       </fieldset>
-      ${help && arrangement ? `<p class="muted">Probe hits after the case transform: ${escapeHtml(arrangement.map((a) => `${a.probe.probe_name}: ${a.hits.map((h) => h.label).join(",") || "none"}`).join(" · "))}</p>` : ""}
     </div>`;
 }
 
@@ -433,11 +684,12 @@ export function fishControls(step) {
   const buttons = [];
   if (step === "fish_demo") return `<button type="button" class="btn primary" data-action="continue-step">Continue</button>`;
   if (step === "fish_scope") buttons.push(`<button type="button" class="btn" data-action="fish-check">Check nucleus</button>`);
+  if (step === "fish_field") buttons.push(`<button type="button" class="btn" data-action="fish-field-check">Check field</button>`);
   if (step === "probe_locus") buttons.push(`<button type="button" class="btn" data-action="fish-loc-check">Check locus</button>`);
   if (step === "probe_type") buttons.push(`<button type="button" class="btn" data-action="fish-type-check">Check probe type</button>`);
   if (step === "probe_strategy") buttons.push(`<button type="button" class="btn" data-action="fish-strat-check">Check strategy</button>`);
   if (step === "fish_interpret") buttons.push(`<button type="button" class="btn" data-action="fish-int-check">Check interpretation</button>`);
-  if (state.session?.instructionMode !== "assessment") buttons.push(`<button type="button" class="btn" data-action="hint">Hint</button>`);
+  buttons.push(`<button type="button" class="btn" data-action="hint">Hint</button>`);
   buttons.push(`<button type="button" class="btn primary" data-action="submit-step">Submit</button>`);
   return buttons.join("");
 }
@@ -455,15 +707,33 @@ export function handleFishAction(action, el) {
     return true;
   }
   if (action === "fish-prev-n") {
-    patchSession({ fish: { ...f, nucleusIndex: Math.max(0, f.nucleusIndex - 1), selectedMark: null } });
+    patchSession({ fish: { ...f, nucleusIndex: Math.max(0, f.nucleusIndex - 1), selectedMark: null, recordMessage: "" } });
     return true;
   }
   if (action === "fish-next-n") {
-    patchSession({ fish: { ...f, nucleusIndex: Math.min(f.spec.nuclei.length - 1, f.nucleusIndex + 1), selectedMark: null } });
+    const issues = nucleusEntryIssues(f, currentNucleus(f).student);
+    if (issues.length) {
+      patchSession({ fish: { ...f, recordMessage: issues.join(" ") } });
+      return true;
+    }
+    const last = f.nucleusIndex === f.spec.nuclei.length - 1;
+    patchSession({ fish: { ...f, nucleusIndex: Math.min(f.spec.nuclei.length - 1, f.nucleusIndex + 1), selectedMark: null,
+      recordMessage: last ? "Nucleus recorded. Review the table for incomplete or pending entries before submitting your counts." : "" } });
     return true;
   }
   if (action === "fish-goto-n") {
-    patchSession({ fish: { ...f, nucleusIndex: Number(el.getAttribute("data-index")) || 0, selectedMark: null } });
+    patchSession({ fish: { ...f, nucleusIndex: Number(el.getAttribute("data-index")) || 0, selectedMark: null, recordMessage: "" } });
+    return true;
+  }
+  if (action === "fish-count-step") {
+    const field = el.getAttribute("data-field");
+    const delta = Number(el.getAttribute("data-delta")) || 0;
+    const { index } = currentNucleus(f);
+    if (!countFieldsFor(f.spec.assay_type, f.spec.count_fields).includes(field) || !delta || f.nuclei[index]?.scorable === "false" || f.nuclei[index]?.scorable === false) return true;
+    const current = Number(f.nuclei[index].counts[field]);
+    const next = Math.max(0, Math.min(99, (Number.isFinite(current) ? current : 0) + delta));
+    const nuclei = f.nuclei.map((n, i) => i === index ? { ...n, counts: { ...n.counts, [field]: String(next) } } : n);
+    patchSession({ fish: { ...f, nuclei, recordMessage: "" } });
     return true;
   }
   if (action === "fish-reset-n") {
@@ -481,6 +751,10 @@ export function handleFishAction(action, el) {
   if (action === "fish-select-mark") {
     patchSession({ fish: { ...f, selectedMark: el.getAttribute("data-id") } });
     return true;
+  }
+  if (action === "fish-field-check" || (action === "submit-step" && s.steps[s.stepIndex] === "fish_field")) {
+    checkField(action === "submit-step");
+    return action !== "submit-step";
   }
   if (action === "fish-check" || (action === "submit-step" && s.steps[s.stepIndex] === "fish_scope")) {
     checkScope(action === "submit-step");
@@ -528,9 +802,8 @@ export function clickFishBand(id) {
   return true;
 }
 
-function writeFb(step, fb, lock = false) {
-  const shown = applyMode(state.session, step, fb, { lock });
-  state.session.feedback = { ...state.session.feedback, [step]: shown };
+function writeFb(step, fb) {
+  state.session.feedback = { ...state.session.feedback, [step]: fb };
 }
 
 function checkScope(isSubmit) {
@@ -559,7 +832,7 @@ function checkScope(isSubmit) {
   const nucleusReady = (spec, student) => {
     const g = gradeNucleus(student, spec, fields);
     const sig = gradeSignalIdentification(student.marks, spec.expected_signals, f.spec.signal_tolerance || 20);
-    const signalsRequired = !countOnly && Boolean(spec.scorable) && (spec.expected_signals || []).length > 0;
+    const signalsRequired = f.spec.require_signal_annotations === true && !countOnly && Boolean(spec.scorable) && (spec.expected_signals || []).length > 0;
     const signalsOk = !signalsRequired || (sig.identified === sig.expected && sig.classified === sig.expected && sig.extra === 0);
     return g.complete && signalsOk;
   };
@@ -569,7 +842,7 @@ function checkScope(isSubmit) {
   });
   if (isSubmit) {
     s.scores.fish_quality = quality;
-    s.scores.fish_signals = idStats;
+    s.scores.fish_signals = f.spec.require_signal_annotations === true ? idStats : null;
     s.scores.fish_counts = countsOk;
     writeFb("fish_scope", {
       tone: allComplete ? "ok" : "review",
@@ -587,8 +860,9 @@ function checkScope(isSubmit) {
   const extra = `<ul class="comp-list">
     <li>Scorable: <strong>${g.scorable}</strong></li>
     ${g.artifact !== "na" ? `<li>Artifact: <strong>${g.artifact}</strong></li>` : ""}
+    ${g.relationship && g.relationship !== "na" ? `<li>Signal relationship: <strong>${g.relationship}</strong></li>` : ""}
     ${Object.entries(g.counts).filter(([, v]) => v !== "na").map(([k, v]) => `<li>${signalLabel(k)}: <strong>${v}</strong></li>`).join("")}
-    ${countOnly ? "" : `<li>Signals identified: ${sig.identified}/${sig.expected}</li><li>Signals classified: ${sig.classified}/${sig.expected}</li>`}
+    ${!f.spec.require_signal_annotations || countOnly ? "" : `<li>Signals identified: ${sig.identified}/${sig.expected}</li><li>Signals classified: ${sig.classified}/${sig.expected}</li>`}
   </ul>`;
   const nucleusOk = nucleusReady(spec, student);
   writeFb("fish_scope", {
@@ -596,7 +870,7 @@ function checkScope(isSubmit) {
     scored: true,
     title: nucleusOk ? "This nucleus is complete." : "Review scorability, artifact, or signal counts.",
     body: spec.scorable
-      ? (countOnly ? "Compare your count with the signals you can assign to this nucleus." : "Compare your counts with the visible signals. Put a fused spot under Fusion. Red only and green only are the single-color spots.")
+      ? (countOnly ? "Compare your count with the signals you can assign to this nucleus." : (f.spec.require_signal_annotations ? "Compare your counts and required annotations with the visible signals. Put a fused spot under Fusion. Red only and green only are the single-color spots." : "Your aggregate counts are recorded. Signal marks are optional and do not affect this case score."))
       : "If the nucleus is unscorable, do not force a count.",
     extra,
   }, false);
@@ -646,7 +920,7 @@ function checkLocus(isSubmit = false) {
     body: guided
       ? (grade.match ? "The chromosome, arm, and band match the probe." : "Check the chromosome, then the arm, then the band. The answer is not marked on the map.")
       : "The probe is attached to a chromosome-map segment, not an arbitrary pixel.",
-    extra: guided === "assessment" ? "" : `<ul class="comp-list">${Object.entries(grade.components).filter(([, v]) => v !== "na").map(([k, v]) => `<li>${k}: <strong>${v}</strong></li>`).join("")}</ul>`,
+    extra: `<ul class="comp-list">${Object.entries(grade.components).filter(([, v]) => v !== "na").map(([k, v]) => `<li>${k}: <strong>${v}</strong></li>`).join("")}</ul>`,
   }, isSubmit);
 }
 
@@ -676,11 +950,10 @@ function checkStrategy(isSubmit = false) {
   const s = state.session;
   s.attempts.fish_strategy = (s.attempts.fish_strategy || 0) + 1;
   const ok = gradeStrategy(s.fish.strategy.choice, s.fish.spec.strategy_expected);
-  if (!(s.instructionMode === "assessment" && s.pedagogy?.first?.probe_strategy)) s.scores.fish_strategy = ok;
-  const copy = strategyFeedback(s.caseData.disease_id, s.fish.strategy.choice, ok.ok);
-  const mode = s.instructionMode || "practice";
-  const body = mode === "practice" ? copy.practice : copy.learn;
-  const title = ok.ok ? "Recorded." : (mode === "learn" ? "Use the distinction you just saw" : "Try again");
+  s.scores.fish_strategy = ok;
+  const body = strategyFeedback(s.fish.strategy.choice, ok.ok, s.fish.spec.strategy_expected, s.fish.probes);
+  const guided = s.instructionMode === "learn";
+  const title = ok.ok ? "Recorded." : (guided ? "Use the distinction you just saw" : "Try again");
   writeFb("probe_strategy", {
     tone: ok.detail === "ungraded" || !ok.ok ? "review" : "ok",
     scored: true,
@@ -701,11 +974,9 @@ function checkInterp(isSubmit) {
     scored: true,
     title: g.detail === "ungraded" ? "No interpretation key is stored for this assay." : (g.ok ? "Interpretation matches the curated case." : "Interpretation needs review."),
     body: guided === "learn"
-      ? (g.ok ? "The pattern follows from the signal relationship you scored." : "Tie the pattern back to whether the two loci are together or apart. The diagnosis is not the first step.")
-      : (guided === "practice"
-        ? (g.ok ? "That matches the signals you recorded." : "Compare the pattern you counted with fusion versus signals that stayed apart.")
-        : (isSubmit ? (s.caseData.plain_language_interpretation || "See the case explanation on the summary page.") : "The expected interpretation is withheld until you submit this step.")),
-    extra: guided === "assessment" ? "" : (summary.percent != null ? `<p>Your pattern percentage: ${summary.percent}%</p>` : ""),
+      ? (g.ok ? "Your choice matches the curated teaching answer. This checks the answer key, not whether your recorded counts support that conclusion. Compare your records with the nucleus feedback before finalizing." : "Your choice does not match the curated teaching answer. Review the probe design, recorded counts and nucleus feedback before interpreting.")
+      : (isSubmit ? (s.caseData.plain_language_interpretation || "See the case explanation on the summary page.") : "The expected interpretation is withheld until you submit this step."),
+    extra: summary.percent != null ? `<p>Your pattern percentage: ${summary.percent}%</p>` : "",
   }, isSubmit);
 }
 
@@ -714,11 +985,18 @@ export function readFishFields(ev) {
   if (!f) return;
   const t = ev.target;
   const id = t.id;
+  if (t.name === "fish-scorable" || t.name === "fish-relationship" || id === "fish-artifact" || id?.startsWith("fish-count-")) f.recordMessage = "";
   if (id === "fish-class") f.classifyMode = t.value;
   if (id === "fish-loc") f.localization.locus = t.value;
   if (id === "fish-loc-chr") f.localization.chromosome = t.value;
   if (id === "fish-loc-arm") f.localization.arm = t.value;
-  if (id === "fish-loc-band") f.localization.band = t.value;
+  if (id === "fish-loc-band") {
+    f.localization.bandLabel = t.value;
+    const parsedBand = parseBandLabel(`${f.localization.chromosome || ""}${f.localization.arm || ""}${t.value}`);
+    f.localization.region = parsedBand?.region == null ? "" : String(parsedBand.region);
+    f.localization.band = parsedBand?.band == null ? "" : String(parsedBand.band);
+    f.localization.subband = parsedBand?.subband == null ? "" : String(parsedBand.subband);
+  }
   if (id === "fish-ptype") f.probeType.type = t.value;
   if (id === "fish-ptarget") f.probeType.target = t.value;
   if (id === "fish-pdetect") f.probeType.detects = t.value;
@@ -727,6 +1005,10 @@ export function readFishFields(ev) {
   if (t.name === "fish-scorable") {
     const { index } = currentNucleus(f);
     f.nuclei[index].scorable = t.value;
+  }
+  if (t.name === "fish-relationship") {
+    const { index } = currentNucleus(f);
+    f.nuclei[index].relationship = t.value;
   }
   if (id === "fish-artifact") {
     const { index } = currentNucleus(f);

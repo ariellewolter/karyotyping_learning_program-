@@ -1,0 +1,102 @@
+:root {
+  --navy: #1c2b43;
+  --teal: #2b5f6e;
+  --paper: #f6f1e6;
+  --gold: #a67c2d;
+  --ink: #1c2b43;
+  --line: #d9d0c0;
+  --card: #fffdf8;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+}
+
+header {
+  background: var(--navy);
+  color: white;
+  padding: 22px 28px 18px;
+}
+
+header p { margin: 6px 0 0; max-width: 760px; color: #efe6d6; }
+
+h1, h2, h3 { font-family: Palatino, "Palatino Linotype", serif; font-weight: 600; }
+
+h1 { margin: 0; font-size: 1.7rem; }
+
+main { padding: 22px 28px 48px; max-width: 1100px; }
+
+form {
+  display: grid;
+  grid-template-columns: 160px 1fr auto;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+input, select, button {
+  font: inherit;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px 12px;
+  background: white;
+}
+
+button { background: var(--teal); color: white; border-color: var(--teal); cursor: pointer; }
+
+.disclaimer, .note {
+  background: #fff8ea;
+  border-left: 4px solid var(--gold);
+  padding: 10px 12px;
+  margin: 0 0 14px;
+}
+
+.layout { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 14px;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 0.94rem; }
+
+th, td { text-align: left; vertical-align: top; padding: 7px 6px; border-bottom: 1px solid var(--line); }
+
+button[data-index] {
+  background: none;
+  color: var(--navy);
+  border: 0;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.badge {
+  display: inline-block;
+  border-radius: 99px;
+  padding: 1px 8px;
+  font-size: 0.75rem;
+  background: #e7eef1;
+  color: var(--teal);
+  margin-right: 4px;
+}
+
+.badge.educational { background: #f6ecd8; color: #7a5a16; }
+.badge.verified { background: #e5f0ea; color: #1f5a3a; }
+.badge.partial, .badge.inferred { background: #f8e8e4; color: #8a3d2f; }
+.badge.none { background: #eee; color: #555; }
+
+footer { margin-top: 22px; color: #4d5b6a; font-size: 0.9rem; }
+
+@media (max-width: 800px) {
+  form, .layout { grid-template-columns: 1fr; }
+  main, header { padding-left: 16px; padding-right: 16px; }
+}

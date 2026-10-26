@@ -26,6 +26,13 @@ export function summarizeSession(session) {
       detail: s.abnormality_recognition.detail || "",
     });
   }
+  if (s.change_identification) {
+    rows.push({
+      skill: "Identify the change",
+      result: s.change_identification.ok ? "correct" : "needs review",
+      detail: "",
+    });
+  }
   if (s.iscn_interpretation) {
     const c = s.iscn_interpretation.components || {};
     for (const [key, label] of Object.entries(iscnComponentLabels())) {
@@ -64,7 +71,7 @@ export function summarizeSession(session) {
   }
   if (s.disease_association) {
     rows.push({
-      skill: "Disease association",
+      skill: s.disease_association.detail === "finding" ? "Match the finding" : "Disease association",
       result: s.disease_association.ok ? "correct" : "needs review",
       detail: "",
     });
@@ -112,6 +119,13 @@ export function summarizeSession(session) {
       skill: "FISH scorable nuclei",
       result: `${s.fish_quality.ok}/${s.fish_quality.n}`,
       detail: "",
+    });
+  }
+  if (s.fish_field) {
+    rows.push({
+      skill: "FISH field scoring",
+      result: `${s.fish_field.ok}/${s.fish_field.n} nuclei`,
+      detail: `${s.fish_field.technical ? `technical scoring ${s.fish_field.technical[0]}/${s.fish_field.technical[1]}; ` : ""}signal counts differ on ${s.fish_field.signalRecognition ?? 0} scored nuclei, scorable nuclei excluded ${s.fish_field.inappropriateExclusion ?? 0}, unscorable nuclei scored ${s.fish_field.missedExclusion ?? 0}, correct exclusions with a different reason ${s.fish_field.reasonMismatch ?? 0}`,
     });
   }
   if (s.fish_counts) {

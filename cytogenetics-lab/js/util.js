@@ -162,17 +162,58 @@ export function titleCase(str) {
 export function parseHash() {
   const raw = (location.hash || "#/").replace(/^#/, "");
   const parts = raw.split("/").filter(Boolean);
+  if (parts[0] === "learning") return { name: "learning", lab: parts[1] === "fish" ? "fish" : "karyotype" };
+  if (parts[0] === "patients") {
+    const requested = parts[2] === "new" ? "add" : (parts[3] || (parts[2] ? "workspace" : "list"));
+    const tabs = parts[1] === "fish"
+      ? ["intake", "fish", "interpretation", "report"]
+      : ["intake", "karyotype", "affected", "ideogram", "interpretation", "report"];
+    const tab = tabs.includes(requested) ? requested : "";
+    return {
+      name: "patient",
+      lab: parts[1] === "fish" ? "fish" : "karyotype",
+      caseId: parts[2] && parts[2] !== "new" ? parts[2] : null,
+      action: tab ? "workspace" : requested,
+      tab,
+    };
+  }
   if (parts[0] === "atlas") {
-    if (parts[1] === "chromosome") return { name: "atlas", view: "chromosome", chromosome: parts[2] || "1" };
-    if (parts[1] === "disease") return { name: "atlas", view: "disease", diseaseId: parts[2] || null };
+    if (parts[1] === "chromosome") {
+      return {
+        name: "atlas",
+        view: "chromosome",
+        chromosome: parts[2] || "1",
+        method: parts[3] === "fish" || parts[3] === "karyotype" ? parts[3] : null,
+      };
+    }
+    if (parts[1] === "disease") {
+      return {
+        name: "atlas",
+        view: "disease",
+        diseaseId: parts[2] || null,
+        method: parts[3] === "fish" || parts[3] === "karyotype" ? parts[3] : null,
+      };
+    }
     if (parts[1] === "lab" || parts[1] === "assigned") {
       return { name: "atlas-lab", mode: parts[1] === "assigned" ? "assigned" : "lab", diseaseId: parts[2] || null };
     }
-    return { name: "atlas", view: "home" };
+    if (parts[1] === "seen" && (parts[2] === "karyotype" || parts[2] === "fish")) {
+      return { name: "atlas", view: "home", method: parts[2] };
+    }
+    return { name: "atlas", view: "home", method: null };
   }
   if (parts[0] === "instructor") return { name: "instructor" };
   if (parts[0] === "reference") return { name: "reference" };
+  if (parts[0] === "library") {
+    return {
+      name: "library",
+      view: parts[1] === "analysis" || parts[1] === "cohort" ? parts[1] : "search",
+      diseaseId: parts[1] === "disease" && parts[2] ? decodeURIComponent(parts.slice(2).join("/")) : null,
+    };
+  }
+  if (parts[0] === "credits") return { name: "credits" };
   if (parts[0] === "help") return { name: "help" };
+  if (parts[0] === "reports" || parts[0] === "my-reports") return { name: "reports" };
   if (parts[0] === "cases") return { name: "cases" };
   if (parts[0] === "class") {
     const step = Number(parts[2]);
@@ -184,9 +225,9 @@ export function parseHash() {
     const named = rest.includes("explore");
     const focusAt = rest.indexOf("focus");
     const focus = focusAt >= 0 ? (rest[focusAt + 1] || null) : null;
-    const instruction = rest.find((part) => part === "learn" || part === "practice" || part === "assessment") || null;
+    const instruction = rest.find((part) => part === "learn" || part === "casework" || part === "assessment") || null;
     const activity = rest.find((part, index) => {
-      if (part === "assigned" || part === "explore" || part === "focus" || part === "learn" || part === "practice" || part === "assessment") return false;
+      if (part === "assigned" || part === "explore" || part === "focus" || part === "learn" || part === "casework" || part === "assessment") return false;
       if (focusAt >= 0 && index === focusAt + 1) return false;
       return true;
     }) || null;
@@ -201,7 +242,7 @@ export function parseHash() {
   }
   if (parts[0] === "lab") {
     const tail = parts.slice(1);
-    const instruction = ["learn", "practice", "assessment"].includes(tail[tail.length - 1]) ? tail.pop() : null;
+    const instruction = tail[tail.length - 1] === "learn" || tail[tail.length - 1] === "assessment" ? tail.pop() : null;
     return {
       name: "lab",
       lab: tail[0] || "chromosome",

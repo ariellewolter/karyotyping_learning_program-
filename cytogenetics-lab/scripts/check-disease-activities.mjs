@@ -3,8 +3,8 @@ import { labDiseases, canonicalCase, teachingKaryotype } from "../js/atlas.js";
 import { activityCatalog, planActivity, buildDiseaseCase, HIDDEN_CASE_IDS, isStudentCatalogCase, diseasesForMethod, caseSubtitle, caseTeaching, methodAudit } from "../js/activities.js";
 import { parseHash } from "../js/util.js";
 import { expandChromosomeSet } from "../js/chromosomes.js";
-import { fishFlow, gradeInterpretation, gradeStrategy, gradeNucleus, gradeProbeType, summarizeEnumeration } from "../js/fish.js";
-import { gradeLocus, piecesForExercise } from "../js/banding.js";
+import { fishFlow, gradeInterpretation, gradeStrategy, gradeNucleus, gradeProbeType, summarizeEnumeration, nucleusRecordStatus } from "../js/fish.js";
+import { gradeLocus, piecesForExercise, segmentMatches } from "../js/banding.js";
 import { bandingFlow, newSession } from "../js/store.js";
 import { caseMatchesExercise, LABS } from "../js/labs.js";
 
@@ -108,7 +108,7 @@ for (const disease of labs) {
 const studentIds = catalog.cases.filter(isStudentCatalogCase).map((c) => c.case_id);
 const hiddenVisible = studentIds.filter((id) => HIDDEN_CASE_IDS.has(id));
 if (hiddenVisible.length) failures.push(`hidden cases still student-facing: ${hiddenVisible.join(",")}`);
-const skills = ["normal-46xy", "normal-46xx", "assembly-chr7-anatomy", "assembly-chr7-bands", "assembly-inv7", "fish-enum-cep21", "fish-breakapart-16q22", "fish-locus-9q34", "iscn-mosaic-45x"];
+const skills = ["normal-46xy", "normal-46xx", "assembly-chr7-anatomy", "assembly-chr7-bands", "assembly-inv7", "assembly-del6q", "fish-enum-cep8", "fish-breakapart-7q22", "fish-locus-7q22", "iscn-mosaic-plus8"];
 for (const id of skills) {
   if (!studentIds.includes(id)) failures.push(`skill missing from student list: ${id}`);
 }
@@ -122,13 +122,14 @@ const flows = {
   "chromosome anatomy": bandingFlow(loadCase("assembly-chr7-anatomy"), "anatomy").join(",") === "anatomy",
   "band assembly": bandingFlow(loadCase("assembly-chr7-bands"), "chromosome_assembly").join(",") === "assemble",
   "locus identification": bandingFlow(loadCase("assembly-chr7-bands"), "band_identification").join(",") === "nomenclature",
-  "band identification does not fall through": bandingFlow(loadCase("fish-locus-9q34"), "band_identification").join(",") === "unavailable",
-  "enumeration FISH": fishFlow(loadCase("fish-enum-cep21"), "enumeration").join(",") === "fish_scope,fish_interpret",
-  "enumeration quality is microscopy only": fishFlow(loadCase("fish-enum-cep21"), "quality").join(",") === "fish_scope",
-  "break-apart FISH": fishFlow(loadCase("fish-breakapart-16q22"), "break-apart").join(",") === "fish_scope,fish_interpret",
-  "probe localization": fishFlow(loadCase("fish-locus-9q34"), "probe-localization").join(",") === "probe_locus",
-  "metaphase without nuclei": fishFlow(loadCase("fish-locus-9q34"), "metaphase").join(",") === "unavailable",
-  "fish session does not append disease": newSession({ caseData: loadCase("fish-enum-cep21"), chromosomes: [], module: "fish", maps, probes: { probes: [] }, exercise: "enumeration" }).steps.join(",") === "fish_scope,fish_interpret,summary",
+  "band identification does not fall through": bandingFlow(loadCase("fish-locus-7q22"), "band_identification").join(",") === "unavailable",
+  "enumeration FISH": fishFlow(loadCase("fish-enum-cep8"), "enumeration").join(",") === "fish_scope,fish_interpret",
+  "enumeration quality is microscopy only": fishFlow(loadCase("fish-enum-cep8"), "quality").join(",") === "fish_scope",
+  "break-apart FISH": fishFlow(loadCase("fish-breakapart-7q22"), "break-apart").join(",") === "fish_scope,fish_interpret",
+  "probe localization": fishFlow(loadCase("fish-locus-7q22"), "probe-localization").join(",") === "probe_locus",
+  "metaphase without nuclei": fishFlow(loadCase("fish-locus-7q22"), "metaphase").join(",") === "unavailable",
+  "fish session does not append disease": newSession({ caseData: loadCase("fish-enum-cep8"), chromosomes: [], module: "fish", maps, probes: { probes: [] }, exercise: "enumeration" }).steps.join(",") === "fish_scope,fish_interpret,summary",
+  "schematic deletion is a structural comparison": bandingFlow(loadCase("assembly-del6q"), "structural_abnormalities").join(",") === "assemble,comparison",
 };
 for (const [name, ok] of Object.entries(flows)) {
   console.log(`${ok ? "PASS" : "FAIL"}  ${name}`);
@@ -138,9 +139,11 @@ for (const [name, ok] of Object.entries(flows)) {
 const library = catalog.cases.map((entry) => ({ ...entry, ...read(`../${entry.path}`) }));
 const visibleMatch = (lab, exercise, id) => library.some((entry) => entry.case_id === id && caseMatchesExercise(entry, lab, exercise) && isStudentCatalogCase(entry));
 const discovery = {
-  "fish-locus stays out of chromosome assembly": !visibleMatch("chromosome", "chromosome_assembly", "fish-locus-9q34"),
-  "fish-locus stays out of metaphase FISH": !visibleMatch("fish", "metaphase", "fish-locus-9q34"),
-  "fish-locus remains probe localization": visibleMatch("fish", "probe-localization", "fish-locus-9q34"),
+  "fish-locus stays out of chromosome assembly": !visibleMatch("chromosome", "chromosome_assembly", "fish-locus-7q22"),
+  "fish-locus stays out of metaphase FISH": !visibleMatch("fish", "metaphase", "fish-locus-7q22"),
+  "fish-locus remains probe localization": visibleMatch("fish", "probe-localization", "fish-locus-7q22"),
+  "old disease-overlap skills stay out of Learn": ["iscn-mosaic-45x", "fish-enum-cep21", "fish-locus-9q34", "fish-breakapart-16q22"].every((id) => !studentIds.includes(id)),
+  "schematic deletion stays a structural skill": visibleMatch("chromosome", "structural_abnormalities", "assembly-del6q"),
   "inv7 stays out of whole-cell karyotype": !visibleMatch("karyotype", "karyotype_construction", "assembly-inv7") && !visibleMatch("karyotype", "iscn_construction", "assembly-inv7"),
   "inv7 remains a structural chromosome skill": visibleMatch("chromosome", "structural_abnormalities", "assembly-inv7"),
 };
@@ -196,6 +199,7 @@ for (const [name, ok] of missing) {
 }
 
 const probeById = Object.fromEntries((probes.probes || []).map((probe) => [probe.probe_id, probe]));
+const bandExists = (segments, band) => segments.some((segment) => segmentMatches(segment, band));
 for (const [diseaseId, link] of Object.entries(links)) {
   for (const id of link.assemblies || []) {
     const spec = packs[id]?.assembly;
@@ -211,21 +215,22 @@ for (const [diseaseId, link] of Object.entries(links)) {
     if (spec.transform?.type === "deletion") {
       const gone = spec.transform.labels || [];
       const source = maps.chromosomes?.[String(spec.chromosome)]?.segments || [];
-      if (gone.some((label) => !source.some((seg) => seg.id === label || seg.label === label))) {
+      if (gone.some((label) => !bandExists(source, label))) {
         failures.push(`${id} deletion label is not on the map`);
       }
-      if (gone.some((label) => pieces.some((piece) => piece.id === label || piece.label === label))) {
+      if (gone.some((label) => pieces.some((piece) => segmentMatches(piece, label)))) {
         failures.push(`${id} deleted band still present`);
       }
     }
     if (spec.transform?.type === "inversion") {
       const source = maps.chromosomes?.[String(spec.chromosome)]?.segments || [];
       const ids = source.map((seg) => seg.id);
-      const a = ids.indexOf(spec.transform.from);
-      const b = ids.indexOf(spec.transform.to);
       const cenAt = source.findIndex((seg) => seg.role === "centromere");
-      if (a < 0 || b < 0) failures.push(`${id} inversion breakpoint missing`);
-      else if (source[a].arm !== source[b].arm && (cenAt < Math.min(a, b) || cenAt > Math.max(a, b))) {
+      const breakpointIndex = (name) => ids.findIndex((segmentId, index) => bandExists([source[index]], name) || segmentId === name);
+      const fromIndex = breakpointIndex(spec.transform.from);
+      const toIndex = breakpointIndex(spec.transform.to);
+      if (fromIndex < 0 || toIndex < 0) failures.push(`${id} inversion breakpoint missing`);
+      else if (source[fromIndex].arm !== source[toIndex].arm && (cenAt < Math.min(fromIndex, toIndex) || cenAt > Math.max(fromIndex, toIndex))) {
         failures.push(`${id} pericentric inversion does not include the centromere`);
       }
     }
@@ -238,14 +243,15 @@ for (const [diseaseId, link] of Object.entries(links)) {
     }
     const breakpoint = spec.transform?.keep_through || spec.transform?.keep_from || spec.nomenclature?.expected;
     const segs = maps.chromosomes?.[String(spec.chromosome)]?.segments || [];
-    if (breakpoint && !segs.some((seg) => seg.id === breakpoint || seg.label === breakpoint) && spec.transform?.type !== "deletion") {
+    if (breakpoint && !bandExists(segs, breakpoint) && spec.transform?.type !== "deletion") {
       failures.push(`${id} breakpoint ${breakpoint} missing from map`);
     }
   }
   if (!link.fish) continue;
   const fish = packs[link.fish]?.fish;
   const ids = fish?.probe_ids || [];
-  if (!fish?.assay_type || !fish.expected_interpretation || !fish.case_specific_cutoff?.abnormal_counts || !fish.case_specific_cutoff?.normal_counts) {
+  const hasCaseSpecificCounts = Boolean(fish?.case_specific_cutoff?.abnormal_counts && fish?.case_specific_cutoff?.normal_counts);
+  if (!fish?.assay_type || !fish.expected_interpretation || !hasCaseSpecificCounts) {
     failures.push(`${link.fish} missing assay expectations`);
   }
   for (const probeId of ids) {
@@ -256,17 +262,19 @@ for (const [diseaseId, link] of Object.entries(links)) {
     }
     if (fish.include_localization && fish.localization?.probe_id === probeId) {
       const segs = maps.chromosomes?.[String(probe.chromosome)]?.segments || [];
-      if (!segs.some((seg) => seg.id === probe.reference_segment || seg.label === probe.target_locus)) {
+      if (!segs.some((seg) => seg.id === probe.reference_segment || bandExists([seg], probe.target_locus))) {
         failures.push(`${probeId} locus is not on the chromosome map`);
       }
     }
   }
-  const summary = summarizeEnumeration({
-    spec: fish,
-    nuclei: (fish.nuclei || []).map((nucleus) => ({ scorable: nucleus.scorable ? "true" : "false", counts: nucleus.expected_counts })),
-  });
-  const abnormalNuclei = (fish.nuclei || []).filter((nucleus) => nucleus.scorable && Object.entries(fish.case_specific_cutoff.abnormal_counts).every(([key, value]) => Number(nucleus.expected_counts?.[key]) === Number(value)));
-  if (!abnormalNuclei.length || summary.percent == null) failures.push(`${link.fish} signal rule is not case-specific`);
+  if (hasCaseSpecificCounts) {
+    const summary = summarizeEnumeration({
+      spec: fish,
+      nuclei: (fish.nuclei || []).map((nucleus) => ({ scorable: nucleus.scorable ? "true" : "false", counts: nucleus.expected_counts, artifact: nucleus.artifact_type, marks: nucleus.expected_signals || [] })),
+    });
+    const abnormalNuclei = (fish.nuclei || []).filter((nucleus) => nucleus.scorable && Object.entries(fish.case_specific_cutoff.abnormal_counts).every(([key, value]) => Number(nucleus.expected_counts?.[key]) === Number(value)));
+    if (!abnormalNuclei.length || summary.percent == null) failures.push(`${link.fish} signal rule is not case-specific`);
+  }
 }
 
 const expectations = {
@@ -416,6 +424,22 @@ const universal = summarizeEnumeration({
 });
 if (universal.percent != null) failures.push("enumeration still uses a universal 3-green rule");
 else console.log("\nPASS  no universal 3-green cutoff");
+
+for (const assay of ["enumeration", "dual-fusion", "break-apart", "deletion", "amplification"]) {
+  const fish = { spec: { assay_type: assay, count_fields: ["green"], nuclei: [{ nucleus_id: "first" }, { nucleus_id: "second" }], case_specific_cutoff: { abnormal_counts: { green: 3 } } }, nuclei: [{}, {}] };
+  if (summarizeEnumeration(fish).reviewed !== 0 || summarizeEnumeration(fish).rows[0].scorable !== null) failures.push(`${assay} pending nuclei counted as reviewed`);
+  for (const value of ["", " ", -1, 1.5, 100]) {
+    if (nucleusRecordStatus(fish, { scorable: true, counts: { green: value } }) !== "Incomplete") failures.push(`${assay} accepted invalid count ${JSON.stringify(value)}`);
+  }
+  if (nucleusRecordStatus(fish, { scorable: true, counts: { green: 0 } }) !== "Recorded") failures.push(`${assay} rejected explicit zero`);
+  fish.nuclei[0] = { scorable: true, counts: { green: 3 } };
+  if (summarizeEnumeration(fish).percent !== null) failures.push(`${assay} reported a percentage for a partial set`);
+  fish.nuclei[1] = { scorable: false, artifact: "overlapping_nuclei", counts: { green: 9 } };
+  const complete = summarizeEnumeration(fish);
+  if (complete.reviewed !== 2 || complete.excluded !== 1 || complete.percent !== 100) failures.push(`${assay} exclusion summary is incorrect`);
+  fish.nuclei[1].artifact = "";
+  if (summarizeEnumeration(fish).percent !== null) failures.push(`${assay} accepted an exclusion without a reason`);
+}
 
 if (failures.length) {
   console.log("\nFAILURES");

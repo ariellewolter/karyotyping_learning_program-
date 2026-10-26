@@ -213,7 +213,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 0.6,
+      "basis": "Acquired abnormality in a neoplastic specimen: tumor nuclei mixed with non-neoplastic inflammatory and stromal nuclei, so normal nuclei remain alongside the abnormal clone. Authored teaching proportion, not a population estimate."
+    }
   },
   "hints": [
     "A split means ALK is rearranged. The canonical teaching partner is NPM1, but this break-apart result does not identify that partner."

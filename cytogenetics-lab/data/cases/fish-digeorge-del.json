@@ -217,7 +217,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 1.0,
+      "basis": "Constitutional, non-mosaic deletion: every scorable nucleus shows one target with both controls."
+    }
   },
   "hints": [
     "Red is the 22q11.2 target. Green is the 22q13 control.",

@@ -213,7 +213,11 @@
         },
         "expected_classification": "unscorable"
       }
-    ]
+    ],
+    "field_composition": {
+      "abnormal_fraction": 0.6,
+      "basis": "Acquired abnormality in a neoplastic specimen: diagnostic marrow with residual normal hematopoiesis, so normal nuclei remain alongside the abnormal clone. Authored teaching proportion, not a population estimate."
+    }
   },
   "hints": [
     "The canonical teaching rearrangement is inv(16)(p13.1q22), CBFB::MYH11. This break-apart assay asks whether CBFB at 16q22 is rearranged. It does not use a two-chromosome fusion diagram, because both breakpoints are on chromosome 16."
