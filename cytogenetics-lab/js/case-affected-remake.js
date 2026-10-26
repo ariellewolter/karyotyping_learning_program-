@@ -82,9 +82,14 @@ function galleryHTML(remakes) {
       const preview = pieces.length
         ? ideogramSVG(pieces, { width: 88, height: 280, showLabels: false, showRuler: false })
         : `<p class="muted">Empty</p>`;
+      const badge = item.token || item.effect || (item.lostCount ? `${item.lostCount} left unused` : "");
+      const why = item.reason
+        ? `<p class="affected-remake-why muted">${escapeHtml(item.reason)}</p>`
+        : "";
       return `<figure class="affected-gallery-card" data-affected-open="${escapeHtml(item.chromosome)}">
         ${preview}
-        <figcaption><strong>${escapeHtml(item.chromosome)}</strong>${item.lostCount ? `<span class="muted"> · ${item.lostCount} left unused</span>` : ""}</figcaption>
+        <figcaption><strong>Chromosome ${escapeHtml(item.chromosome)}</strong>${badge ? `<span class="muted"> · ${escapeHtml(badge)}</span>` : ""}</figcaption>
+        ${why}
         <button type="button" class="btn" data-affected-redo="${escapeHtml(item.chromosome)}">Remake again</button>
       </figure>`;
     }).join("")}</div>

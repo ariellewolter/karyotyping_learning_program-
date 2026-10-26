@@ -9,6 +9,8 @@ import { sortedCrops } from "./case-report.js?v=20261026cs1";
 import { exploreISCN } from "./iscn.js";
 import { resolveClones } from "./karyotype-analysis.js";
 import { describeKaryogram, inferPloidy, renderChromosome } from "./chromosomes.js?v=20261026p5";
+import { enrichRemakeReasons } from "./guided-case-artifacts.js?v=20261026rep2";
+import { piecesForExercise } from "./banding.js?v=20261024c";
 
 export const SUBMISSION_FORMAT = "cytogenetics-lab-submission-v1";
 
@@ -33,12 +35,20 @@ export function laboratoryLabel(lab) {
 /** What this case asks the student to show. A named disease is not an identification item. */
 export function assignmentExpectation(mode) {
   if (mode === "explore" || mode === "guided") {
-    return "The condition was provided with this case. Show the chromosome or FISH evidence and report it. Identifying the disease name is not part of this assignment.";
+    return "Grade the chromosome or FISH evidence, ISCN, and interpretation. Do not grade disease naming — the disease name is withheld from this report on purpose.";
   }
   if (mode === "unknown") {
-    return "The condition was not provided. Show the evidence, report the finding, and say what condition the findings may support.";
+    return "Grade the evidence and the written finding. The student's possible condition is their own suggestion from the specimen, not an answer key.";
   }
   return "This case was entered by the student. The report is their own record.";
+}
+
+/** Report title without a disease name so grading stays on the cytogenetic work. */
+function reportCaseTitle(snapshot) {
+  if (snapshot.mode === "guided") return "Guided walkthrough · case report";
+  if (snapshot.mode === "explore") return "Independent case · case report";
+  if (snapshot.mode === "unknown") return "Blinded case · case report";
+  return snapshot.caseLabel || "Case report";
 }
 
 /** Missing report fields only. Nothing here says an answer is wrong. */
@@ -117,42 +127,74 @@ function patternTally(nuclei) {
   return [...tally.entries()].map(([pattern, count]) => ({ pattern, count }));
 }
 
+/** Remove a known disease name from report-facing text so grading stays on the specimen. */
+function withoutDiseaseName(text, diseaseName) {
+  const raw = String(text || "");
+  const name = String(diseaseName || "").trim();
+  if (!raw || !name) return raw;
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return raw.replace(new RegExp(escaped, "gi"), "this condition");
+}
+
 /** Snapshot of the learner's work. Holds no curated answer fields. */
-export function buildSubmission(current, { studentName = "", studentId = "", limitations = "", reportedFinding = "", fishWorkstation = null } = {}) {
+export function buildSubmission(current, {
+  studentName = "",
+  studentId = "",
+  limitations = "",
+  metaphasesExamined = "",
+  metaphasesKaryotyped = "",
+  reportedFinding = "",
+  fishWorkstation = null,
+} = {}) {
   const mode = caseMode(current);
   const nuclei = Array.isArray(current.fishNuclei) ? current.fishNuclei : [];
+  const diseaseName = mode === "explore" || mode === "guided" ? current.source?.diseaseName || "" : "";
+  const historyLead = mode === "own" ? current.history || "" : String(current.history || "").split("\n\n")[0];
+  const meta = current.reportMeta || {};
+  const fishWs = current.lab === "fish"
+    ? fishWorkstation
+    : (fishWorkstation || current.fishWorkstation || null);
   return {
     format: SUBMISSION_FORMAT,
     caseId: current.id,
-    caseLabel: current.label || "",
+    caseLabel: mode === "explore" || mode === "guided" || mode === "unknown"
+      ? reportCaseTitle({ mode, caseLabel: current.label || "" })
+      : (current.label || ""),
     lab: current.lab,
     mode,
     laboratory: laboratoryLabel(current.lab),
-    exploredDisease: mode === "explore" || mode === "guided" ? current.source?.diseaseName || "" : "",
+    // Disease name is never stored on the submission snapshot used for the printable report.
+    exploredDisease: "",
     student: { name: String(studentName).slice(0, 120), id: String(studentId).slice(0, 60) },
     submittedAt: new Date().toISOString(),
-    fishWorkstation: current.lab === "fish" ? fishWorkstation : null,
+    fishWorkstation: fishWs,
     intake: {
       specimen: current.specimen || "",
       assay: current.assay || "",
       target: current.target || "",
-      question: mode === "own" ? current.history || "" : String(current.history || "").split("\n\n")[0],
+      question: withoutDiseaseName(historyLead, diseaseName),
       reportedFinding: mode === "own" ? reportedFinding : "",
     },
     observations: {
       count: current.observedCount || "",
       sex: current.observedSex || "",
       visible: current.observation || "",
+      metaphasesExamined: String(metaphasesExamined || meta.metaphasesExamined || "").slice(0, 8),
+      metaphasesKaryotyped: String(metaphasesKaryotyped || meta.metaphasesKaryotyped || "").slice(0, 8),
+      metaphaseImageCount: Array.isArray(current.images) ? current.images.length : 0,
       chromosomeLog: (current.chromosomeReads || []).map((row) => ({ ...row })),
       crops: (current.sortedChromosomes || []).filter((piece) => piece.chromosome).map((piece) => ({ ...piece })),
-      affectedRemakes: (current.affectedRemakes || []).map((item) => ({
+      affectedRemakes: enrichRemakeReasons(current.affectedRemakes || [], current.iscnDraft).map((item) => ({
         chromosome: item.chromosome,
         lostCount: item.lostCount || 0,
+        effect: item.effect || "",
+        token: item.token || "",
+        reason: item.reason || "",
         pieces: (item.pieces || []).map((piece) => ({ ...piece })),
       })),
       ideogramMarks: (current.studentMarks || []).map((mark) => ({ ...mark })),
       imageMarkers: (current.imageAnnotations || []).map((marker) => ({ ...marker })),
-      fish: current.lab === "fish" ? {
+      fish: (current.lab === "fish" || fishWs || (current.fishNuclei || []).length) ? {
         nuclei: nuclei.map((item) => ({ ...item })),
         scorable: nuclei.filter((item) => item.scorable).length,
         excluded: nuclei.filter((item) => !item.scorable).length,
@@ -164,9 +206,9 @@ export function buildSubmission(current, { studentName = "", studentId = "", lim
     conclusions: {
       iscn: current.iscnDraft || "",
       classification: current.classification || "",
-      interpretation: current.interpretation || "",
+      interpretation: withoutDiseaseName(current.interpretation || "", diseaseName),
       possibleAssociation: caseMode(current) === "unknown" ? current.possibleAssociation || "" : "",
-      limitations: String(limitations).slice(0, 2000),
+      limitations: String(limitations || meta.limitations || "").slice(0, 2000),
       confirmations: current.caseReview ? { ...current.caseReview } : null,
     },
   };
@@ -208,6 +250,7 @@ export function caseSubmissionMarkup(current, { fishOpen = null } = {}) {
     ${submitted ? "" : ready}
     <form id="case-report-form" class="patient-form case-report-form">
       <div class="case-field-grid"><label>Student name<input name="studentName" maxlength="120" value="${escapeHtml(meta.studentName || "")}" ${submitted ? "readonly" : ""}></label><label>Student ID<input name="studentId" maxlength="60" value="${escapeHtml(meta.studentId || "")}" ${submitted ? "readonly" : ""}></label></div>
+      ${current.lab !== "fish" ? `<div class="case-field-grid"><label>Metaphases examined<input name="metaphasesExamined" inputmode="numeric" maxlength="8" placeholder="e.g. 20" value="${escapeHtml(meta.metaphasesExamined || "")}" ${submitted ? "readonly" : ""}></label><label>Metaphases karyotyped<input name="metaphasesKaryotyped" inputmode="numeric" maxlength="8" placeholder="e.g. 5" value="${escapeHtml(meta.metaphasesKaryotyped || "")}" ${submitted ? "readonly" : ""}></label></div>` : ""}
       <label>Limitations of this analysis<textarea name="limitations" rows="3" maxlength="2000" placeholder="For example, band resolution, number of cells reviewed, or what a karyotype cannot detect." ${submitted ? "readonly" : ""}>${escapeHtml(meta.limitations || "")}</textarea></label>
       <p class="muted" role="status">${status}</p>
       <div class="patient-actions">${submitted ? "" : `<button class="button" type="submit">Save report details</button>`}<button class="button${submitted ? " primary" : ""}" type="button" id="case-report-pdf">${submitted ? "Download submitted report (PDF)" : "Export draft PDF"}</button>${submitted ? `<button class="button" type="button" id="case-report-json">Download submission (JSON)</button><button class="button" type="button" id="case-report-csv">Download submission (CSV)</button>` : `<button class="button primary" type="button" id="case-report-submit">Submit case report</button>`}</div>
@@ -285,15 +328,128 @@ function karyogramSheetHTML(line) {
   return `<div class="iscn-karyogram"><div class="iscn-k-row">${block("A", GROUPS.A)}${block("B", GROUPS.B)}${block("C", ["X"])}</div><div class="iscn-k-row">${block("C", GROUPS.C.filter((id) => id !== "X"))}</div><div class="iscn-k-row">${block("D", GROUPS.D)}${block("E", GROUPS.E)}</div><div class="iscn-k-row">${block("F", GROUPS.F)}${block("G", GROUPS.G)}</div></div>`;
 }
 
-function affectedRemakesHTML(remakes) {
-  if (!remakes?.length) return `<p class="note">No affected chromosomes were remade.</p>`;
-  return `<div class="row remake-row">${remakes.map((item) => {
+function isWholeChromosomeRemake(item) {
+  return /whole chromosome/i.test(item.effect || "") || /whole chromosome/i.test(item.reason || "");
+}
+
+function isStructuralRemake(item) {
+  if (Number(item.lostCount) > 0) return true;
+  if (isWholeChromosomeRemake(item)) return false;
+  const effect = String(item.effect || "");
+  return Boolean(effect) && !/^Gain of a whole|^Loss of a whole/i.test(effect);
+}
+
+function normalReferencePieces(maps, chromosome) {
+  if (!maps || !chromosome) return [];
+  try {
+    return piecesForExercise(maps, {
+      chromosome: String(chromosome),
+      resolution: "region",
+      transform: { type: "none" },
+      reference_normal: true,
+    });
+  } catch {
+    return [];
+  }
+}
+
+function affectedRemakesHTML(remakes, iscn = "", maps = null) {
+  const rows = enrichRemakeReasons(remakes || [], iscn);
+  if (!rows.length) return `<p class="note">No affected chromosomes were remade.</p>`;
+  return `<div class="row remake-row">${rows.map((item) => {
     const pieces = item.pieces || [];
-    const preview = pieces.length
+    const remade = pieces.length
       ? ideogramSVG(pieces, { width: 88, height: 280, showLabels: false, showRuler: false })
       : `<p class="note">Empty</p>`;
-    return `<figure class="remake"><figcaption><strong>Chromosome ${escapeHtml(item.chromosome)}</strong>${item.lostCount ? ` · ${item.lostCount} unused` : " · intact remake"}</figcaption>${preview}</figure>`;
+    const badge = item.token || item.effect || (item.lostCount ? `${item.lostCount} unused` : "intact remake");
+    const why = item.reason ? `<p class="remake-why">${escapeHtml(item.reason)}</p>` : "";
+    const structural = isStructuralRemake(item);
+    const normalPieces = structural ? normalReferencePieces(maps, item.chromosome) : [];
+    const normal = normalPieces.length
+      ? `<figure class="remake remake-ref"><figcaption><strong>Normal ${escapeHtml(item.chromosome)}</strong><span>reference</span></figcaption>${ideogramSVG(normalPieces, { width: 88, height: 280, showLabels: false, showRuler: false })}</figure>`
+      : "";
+    const remadeFig = `<figure class="remake"><figcaption><strong>Chromosome ${escapeHtml(item.chromosome)}</strong><span>${escapeHtml(badge)}${structural ? " · remade" : ""}</span></figcaption>${remade}${why}</figure>`;
+    return structural && normal
+      ? `<div class="remake-pair">${normal}${remadeFig}</div>`
+      : remadeFig;
   }).join("")}</div>`;
+}
+
+function countCheckHTML(observations) {
+  const written = String(observations.count || "").trim();
+  const placed = (observations.crops || []).filter((piece) => piece.chromosome).length;
+  const sex = String(observations.sex || "").trim() || "—";
+  const writtenLabel = written || "—";
+  const writtenNum = Number(written);
+  const mismatch = Number.isFinite(writtenNum) && writtenNum !== placed;
+  const note = mismatch
+    ? `<span class="count-mismatch"> · Written count and placed chromosomes differ</span>`
+    : "";
+  return `<p class="count-check">Written count ${escapeHtml(writtenLabel)} · Placed chromosomes ${placed} · Sex ${escapeHtml(sex)}${note}</p>`;
+}
+
+function cellsReviewedHTML(observations, karyotype) {
+  if (!karyotype) return "";
+  const examined = String(observations.metaphasesExamined || "").trim();
+  const karyotyped = String(observations.metaphasesKaryotyped || "").trim();
+  const images = Number(observations.metaphaseImageCount) || 0;
+  if (!examined && !karyotyped && !images) return "";
+  return `<table>${row("Metaphases examined", examined || "Not entered")}${row("Metaphases karyotyped", karyotyped || "Not entered")}${row("Metaphase images attached", images ? String(images) : "")}</table>`;
+}
+
+function metaphaseOverviewHTML(thumbs, karyogram) {
+  const thumbBlock = thumbs?.length
+    ? `<div class="metaphase-thumbs">${thumbs.map((thumb, index) => `<figure class="metaphase-thumb"><img src="${thumb.url}" alt="Metaphase spread ${index + 1}"><figcaption>${escapeHtml(thumb.name || `Metaphase ${index + 1}`)}</figcaption></figure>`).join("")}</div>`
+    : `<p class="note">No metaphase image was attached.</p>`;
+  const sheet = karyogram || `<p class="note">No karyogram could be drawn from the written ISCN.</p>`;
+  return `<div class="karyogram-overview"><div class="overview-specimen"><h4>Metaphase overview</h4>${thumbBlock}</div><div class="overview-sheet"><h4>Assembled karyogram</h4>${sheet}</div></div>`;
+}
+
+/** One sentence when both a karyotype ISCN and FISH work are present on the same report. */
+function assayLinkHTML(snapshot) {
+  const iscn = String(snapshot.conclusions?.iscn || "").trim();
+  const hasFish = Boolean(snapshot.fishWorkstation)
+    || Boolean(snapshot.observations?.fish?.nuclei?.length)
+    || Boolean(snapshot.observations?.fish?.summaryPatterns?.length)
+    || Boolean(snapshot.observations?.fish?.summaryScorable);
+  if (!iscn || !hasFish) return "";
+  const tokens = [...iscn.matchAll(/[+-](?:\d+|X|Y)\b/gi)].map((match) => match[0]);
+  const karyBit = tokens.length
+    ? `Karyotype suggests ${tokens.join(", ")}`
+    : `Karyotype is written as ${iscn}`;
+  const fishBit = /\(/.test(iscn)
+    ? "FISH enumeration can support copy number for covered targets; it does not address structural mechanism"
+    : "FISH enumeration supports the copy-number finding when the probe set covers those chromosomes; it does not replace a full karyotype";
+  return `<h3>Karyotype and FISH</h3><p class="assay-link">${escapeHtml(`${karyBit}; ${fishBit}.`)}</p>`;
+}
+
+function metaphaseThumbUrl(data, maxWidth = 280) {
+  if (!data || typeof document === "undefined") return Promise.resolve("");
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload = () => {
+      const scale = Math.min(1, maxWidth / Math.max(1, image.width));
+      const width = Math.max(1, Math.round(image.width * scale));
+      const height = Math.max(1, Math.round(image.height * scale));
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { resolve(""); return; }
+      ctx.fillStyle = "#f4f4f2";
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(image, 0, 0, width, height);
+      resolve(canvas.toDataURL("image/jpeg", 0.82));
+    };
+    image.onerror = () => resolve("");
+    image.src = data;
+  });
+}
+
+export async function metaphaseThumbs(images = []) {
+  const list = (images || []).filter((image) => /^data:image\//i.test(image?.data || "")).slice(0, 3);
+  const urls = await Promise.all(list.map((image) => metaphaseThumbUrl(image.data)));
+  return list.map((image, index) => (urls[index] ? { url: urls[index], name: image.name || `Metaphase ${index + 1}` } : null)).filter(Boolean);
 }
 
 function workstationSection(w) {
@@ -312,28 +468,62 @@ function workstationSection(w) {
 }
 
 /** Pure: the printable report for one snapshot. Exported for the report regression check. */
-export function caseReportHTML(snapshot, { maps, crops = [], draft = false } = {}) {
-  return reportHTML(snapshot, { maps, crops, draft });
+export function caseReportHTML(snapshot, { maps, crops = [], thumbs = [], draft = false } = {}) {
+  return reportHTML(snapshot, { maps, crops, thumbs, draft });
 }
 
-function reportHTML(snapshot, { maps, crops, draft }) {
-  const o = snapshot.observations;
-  const c = snapshot.conclusions;
+function reportHTML(snapshot, { maps, crops, thumbs = [], draft }) {
+  const o = {
+    count: "",
+    sex: "",
+    visible: "",
+    metaphasesExamined: "",
+    metaphasesKaryotyped: "",
+    metaphaseImageCount: 0,
+    chromosomeLog: [],
+    crops: [],
+    affectedRemakes: [],
+    ideogramMarks: [],
+    imageMarkers: [],
+    fish: null,
+    ...(snapshot.observations || {}),
+  };
+  o.chromosomeLog = Array.isArray(o.chromosomeLog) ? o.chromosomeLog : [];
+  o.crops = Array.isArray(o.crops) ? o.crops : [];
+  o.affectedRemakes = Array.isArray(o.affectedRemakes) ? o.affectedRemakes : [];
+  o.ideogramMarks = Array.isArray(o.ideogramMarks) ? o.ideogramMarks : [];
+  o.imageMarkers = Array.isArray(o.imageMarkers) ? o.imageMarkers : [];
+  const c = {
+    iscn: "",
+    classification: "",
+    interpretation: "",
+    possibleAssociation: "",
+    limitations: "",
+    confirmations: null,
+    ...(snapshot.conclusions || {}),
+  };
   const karyotype = snapshot.lab !== "fish";
-  const ideogram = karyotype ? ideogramFigures(maps, snapshot) : { figures: "", rows: [] };
+  const ideogram = karyotype ? ideogramFigures(maps, { ...snapshot, observations: o, conclusions: c }) : { figures: "", rows: [] };
   const karyogram = karyotype ? assembledKaryogramHTML(c.iscn) : "";
-  const remakes = karyotype ? affectedRemakesHTML(o.affectedRemakes) : "";
+  const remakes = karyotype ? affectedRemakesHTML(o.affectedRemakes, c.iscn, maps) : "";
   const byChromosome = new Map();
-  crops.forEach((crop) => byChromosome.set(crop.chromosome, [...(byChromosome.get(crop.chromosome) || []), crop]));
+  (crops || []).forEach((crop) => byChromosome.set(crop.chromosome, [...(byChromosome.get(crop.chromosome) || []), crop]));
   const comparisons = [...byChromosome.entries()].map(([chromosome, items]) => `<figure class="pair"><figcaption>${escapeHtml(chromosome)}</figcaption>${items.map((crop) => `<img class="crop" src="${crop.url}" alt="Chromosome ${escapeHtml(chromosome)} ${escapeHtml(crop.homolog)}"><span>${escapeHtml(crop.homolog)}</span>`).join("")}</figure>`).join("");
-  const fish = o.fish;
-  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(snapshot.caseLabel || "Case report")}</title><style>
+  const fish = o.fish || { nuclei: [], scorable: 0, excluded: 0, tally: [], summaryScorable: "", summaryPatterns: [] };
+  const showFishScoring = !karyotype && !snapshot.fishWorkstation;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${escapeHtml(reportCaseTitle(snapshot))}</title><style>
     body { font-family: Helvetica, Arial, sans-serif; color: #1c2430; margin: 24px; }
-    h1 { font-size: 22px; margin: 4px 0; } h2 { font-size: 16px; margin-top: 22px; border-bottom: 2px solid #1c2430; padding-bottom: 2px; } h3 { font-size: 13px; margin: 14px 0 4px; }
+    h1 { font-size: 22px; margin: 4px 0; } h2 { font-size: 16px; margin-top: 22px; border-bottom: 2px solid #1c2430; padding-bottom: 2px; } h3 { font-size: 13px; margin: 14px 0 4px; } h4 { font-size: 11px; margin: 0 0 4px; color: #526576; text-transform: uppercase; letter-spacing: .04em; }
     p, li { font-size: 12px; line-height: 1.4; } .note { color: #526576; font-size: 11px; } .draft { color: #9a3412; font-weight: bold; }
     table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 6px; } th, td { border-bottom: 1px solid #d7d2c8; text-align: left; padding: 4px; vertical-align: top; } th { width: 28%; }
     .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; } figure { margin: 0; text-align: center; } figcaption { font-size: 11px; }
-    .pair span, .ideo-id figcaption span { display: block; font-size: 10px; color: #526576; } img.crop { width: 48px; height: auto; background: #f4f4f2; }
+    .pair span, .ideo-id figcaption span, .remake figcaption span { display: block; font-size: 10px; color: #526576; } img.crop { width: 48px; height: auto; background: #f4f4f2; }
+    .remake { max-width: 200px; } .remake-why { font-size: 10px; line-height: 1.35; color: #1c2430; text-align: left; margin: 6px 0 0; }
+    .remake-pair { display: flex; gap: 10px; align-items: end; border: 1px solid #d7d2c8; border-radius: 6px; padding: 6px; background: #fffefa; }
+    .count-check { font-size: 12px; font-weight: 600; margin: 6px 0 10px; } .count-mismatch { color: #9a3412; font-weight: 700; }
+    .karyogram-overview { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 14px; align-items: start; margin: 8px 0 12px; }
+    .metaphase-thumbs { display: flex; flex-direction: column; gap: 8px; } .metaphase-thumb img { width: 100%; height: auto; background: #f4f4f2; border: 1px solid #d7d2c8; }
+    .assay-link { font-size: 12px; line-height: 1.4; }
     .block { white-space: pre-wrap; font-size: 12px; } code { font-size: 12px; }
     img, svg { max-width: 100%; } .genome svg { width: 100%; height: auto; }
     .iscn-karyogram { display: grid; gap: 6px; margin: 6px 0 10px; } .iscn-k-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; }
@@ -343,31 +533,35 @@ function reportHTML(snapshot, { maps, crops, draft }) {
     .chr-svg, .chr-img { display: block; } .remake figcaption { margin-bottom: 4px; }
     * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     @page { margin: 14mm; }
-    @media print { body { margin: 0; } h2, h3 { break-after: avoid; } tr, figure, .row, .block, .iscn-karyogram { break-inside: avoid; } }
+    @media print { body { margin: 0; } h2, h3 { break-after: avoid; } tr, figure, .row, .block, .iscn-karyogram, .karyogram-overview, .remake-pair { break-inside: avoid; } }
+    @media (max-width: 700px) { .karyogram-overview { grid-template-columns: 1fr; } }
   </style></head><body>
     <p class="note">Educational casework report. Not a clinical report and not a diagnosis.</p>
     ${draft ? `<p class="draft">Draft: this case has not been submitted.</p>` : ""}
-    <h1>${escapeHtml(snapshot.caseLabel || "Case report")}</h1>
-    <table>${row("Laboratory", snapshot.laboratory || laboratoryLabel(snapshot.lab))}${row("Case identifier", snapshot.caseId)}${row("Student", snapshot.student.name || "Not entered")}${row("Student ID", snapshot.student.id || "Not entered")}${row(draft ? "Generated" : "Submitted", new Date(snapshot.submittedAt).toLocaleString())}${row("Case type", MODE_LABELS[snapshot.mode] || "")}${row("Investigation topic", snapshot.exploredDisease)}${row("How to grade", assignmentExpectation(snapshot.mode))}${row("Possible condition", snapshot.mode === "unknown" ? (c.possibleAssociation || "Not entered") : "")}</table>
+    <h1>${escapeHtml(reportCaseTitle(snapshot))}</h1>
+    <table>${row("Laboratory", snapshot.laboratory || laboratoryLabel(snapshot.lab))}${row("Case identifier", snapshot.caseId)}${row("Student", snapshot.student.name || "Not entered")}${row("Student ID", snapshot.student.id || "Not entered")}${row(draft ? "Generated" : "Submitted", new Date(snapshot.submittedAt).toLocaleString())}${row("Case type", MODE_LABELS[snapshot.mode] || "")}${row("How to grade", assignmentExpectation(snapshot.mode))}${row("Possible condition", snapshot.mode === "unknown" ? (c.possibleAssociation || "Not entered") : "")}</table>
     <h2>1. Case information</h2>
     <table>${row("Specimen", snapshot.intake.specimen)}${row("Assay", snapshot.intake.assay)}${row("Probe / target", snapshot.intake.target)}${row("Clinical question", snapshot.intake.question || "Not provided")}${row("Source-reported finding", snapshot.intake.reportedFinding)}</table>
     <h2>2. Observations</h2>
     ${karyotype ? `
       <h3>Karyotype</h3>
       <table>${row("Chromosome count", o.count || "Not recorded")}${row("Sex chromosome complement", o.sex || "Not recorded")}${row("Visible finding", o.visible || "Not recorded")}</table>
-      <h3>Assembled karyogram</h3>${karyogram || `<p class="note">No karyogram could be drawn from the written ISCN.</p>`}
+      ${countCheckHTML(o)}
+      <h3>Cells reviewed</h3>${cellsReviewedHTML(o, true) || `<p class="note">Metaphases examined / karyotyped were not entered.</p>`}
+      <h3>Specimen and assembled karyogram</h3>${metaphaseOverviewHTML(thumbs, karyogram)}
       <h3>Chromosome log</h3>${table(["Chromosome", "What was seen", "Note"], o.chromosomeLog.map((item) => [item.chromosome, item.seen, item.note]), "No chromosome decisions recorded.")}
       <h3>Homolog comparisons</h3>${comparisons ? `<div class="row">${comparisons}</div>` : `<p class="note">No labeled chromosome crops were saved.</p>`}
       <h3>Affected chromosomes remade</h3>${remakes}
       <h3>Ideogram and abnormality table</h3>${ideogram.genome ? `<div class="genome">${ideogram.genome}</div><p class="note">Red bars: the student's marks. Amber bars: read from the student's ISCN. Chromosomes named in either are in red type.</p>` : ""}${ideogram.figures ? `<div class="row">${ideogram.figures}</div>` : ""}${table(["Location", "Chromosome", "Effect", "What was identified", "Source"], ideogram.rows, "No band or segment was marked, and none was read from the ISCN.")}
-    ` : snapshot.fishWorkstation ? "" : `
+    ` : showFishScoring ? `
       <h3>FISH scoring</h3>
       <table>${row("Nucleus records", String(fish?.nuclei.length || 0))}${row("Scorable", String(fish?.scorable || 0))}${row("Excluded", String(fish?.excluded || 0))}${row("Summary scorable nuclei entered", fish?.summaryScorable)}</table>
       ${table(["Signal pattern", "Scorable nuclei", "Percent of scorable"], (fish?.tally || []).map((item) => [item.pattern, String(item.count), fish.scorable ? `${Math.round((item.count / fish.scorable) * 1000) / 10}%` : "—"]), "No scorable nucleus with a recorded pattern.")}
       ${fish?.summaryPatterns.length ? `<h3>Summary counts entered</h3>${table(["Signal pattern", "Nuclei"], fish.summaryPatterns.map((item) => [item.pattern, item.count]), "")}` : ""}
       <h3>Nucleus records</h3>${table(["Nucleus", "Field", "Scorable", "Pattern", "Note"], (fish?.nuclei || []).map((item) => [String(item.number), item.fieldName || (Number.isInteger(item.fieldIndex) ? `Field ${item.fieldIndex + 1}` : "—"), item.scorable ? "Yes" : "No", item.pattern || "—", item.note || ""]), "No nucleus was recorded.")}
-    `}
+    ` : ""}
     ${snapshot.fishWorkstation ? workstationSection(snapshot.fishWorkstation) : ""}
+    ${assayLinkHTML(snapshot)}
     ${o.imageMarkers.length ? `<h3>Image markers</h3>${table(["Image", "Label"], o.imageMarkers.map((item) => [`Image ${Number(item.imageIndex) + 1}`, item.label]), "")}` : ""}
     <h2>3. Conclusions</h2>
     <table>${karyotype ? row("ISCN", c.iscn || "Not written") : ""}${row("Working classification", c.classification)}</table>
@@ -381,8 +575,10 @@ function reportHTML(snapshot, { maps, crops, draft }) {
 export async function exportCaseReport(current, { maps, meta, reportedFinding } = {}) {
   const snapshot = current.submission || buildSubmission(current, { ...meta, reportedFinding });
   const cropSource = { images: current.images, sortedChromosomes: snapshot.observations.crops };
-  const crops = snapshot.lab === "fish" ? [] : await sortedCrops(cropSource);
-  const html = reportHTML(snapshot, { maps, crops, draft: !current.submission });
+  const [crops, thumbs] = snapshot.lab === "fish"
+    ? [[], []]
+    : await Promise.all([sortedCrops(cropSource), metaphaseThumbs(current.images)]);
+  const html = reportHTML(snapshot, { maps, crops, thumbs, draft: !current.submission });
   const frame = document.createElement("iframe");
   frame.setAttribute("title", "Case report");
   frame.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
@@ -419,9 +615,9 @@ export function submissionCsv(snapshot) {
   const rows = [
     ["laboratory", snapshot.laboratory || ""],
     ["case_id", snapshot.caseId || ""],
-    ["case_label", snapshot.caseLabel || ""],
+    ["case_label", reportCaseTitle(snapshot)],
     ["case_type", snapshot.mode || ""],
-    ["topic", snapshot.exploredDisease || ""],
+    ["topic", ""],
     ["student_name", snapshot.student?.name || ""],
     ["student_id", snapshot.student?.id || ""],
     ["submitted_at", snapshot.submittedAt || ""],
@@ -432,6 +628,9 @@ export function submissionCsv(snapshot) {
     ["chromosome_count", o.count || ""],
     ["sex_complement", o.sex || ""],
     ["visible_finding", o.visible || ""],
+    ["placed_chromosomes", String((o.crops || []).filter((piece) => piece.chromosome).length)],
+    ["metaphases_examined", o.metaphasesExamined || ""],
+    ["metaphases_karyotyped", o.metaphasesKaryotyped || ""],
     ["iscn", c.iscn || ""],
     ["classification", c.classification || ""],
     ["interpretation", c.interpretation || ""],

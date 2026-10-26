@@ -8,7 +8,10 @@
   "scripts": {
     "start": "python3 serve.py",
     "desktop": "electron .",
-    "package": "electron-builder --win",
+    "package": "electron-builder --mac --win",
+    "package:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac",
+    "package:mac:signed": "electron-builder --mac",
+    "package:win": "electron-builder --win",
     "postinstall": "node electron/ensure-binary.js",
     "templates": "python3 scripts/generate_templates.py",
     "check:bands": "node scripts/check-band-span.mjs",
@@ -44,6 +47,19 @@
       "reference-database/data/normalized/**/*",
       "package.json"
     ],
+    "asarUnpack": [
+      "reference-database/**/*",
+      "data/diseases.json",
+      "data/disease-activities.json"
+    ],
+    "mac": {
+      "category": "public.app-category.education",
+      "identity": null,
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
     "win": {
       "target": [
         "nsis",

@@ -27,8 +27,8 @@ import { analyzeFormula as analyzeKaryotype, resolveClones } from "./karyotype-a
 import { analysisHTML, bindAnalysis } from "./karyotype-analysis-view.js";
 import { bindInspect, inspectDialogHTML, openInspection } from "./inspect-ui.js?v=20261025ex1";
 import { DRAW_GUIDED_DISEASE, DRAW_GUIDED_FORMULA, applyWorkspaceFormula, bindChromosomeWorkspace, chromosomeWorkspaceHTML } from "./chromosome-workspace.js?v=20261026seen4";
-import { bindMyCaseReports, myCaseReportsHTML, saveCaseworkReport } from "./my-case-reports.js?v=20261026p7";
-import { affectedChromosomesTabMarkup, bindAffectedRemakes } from "./case-affected-remake.js?v=20261026p10";
+import { bindMyCaseReports, myCaseReportsHTML, saveCaseworkReport } from "./my-case-reports.js?v=20261026rep2";
+import { affectedChromosomesTabMarkup, bindAffectedRemakes } from "./case-affected-remake.js?v=20261026guide1";
 import { proposedAudit } from "./audit.js?v=20261025ex1";
 import { casesForExercise, exerciseById, labById, labPath, LABS, mapLegacyModule, sessionModuleFor } from "./labs.js?v=20261025ux1";
 import { hydrateCase, loadCase } from "./cases.js?v=20261025ex1";
@@ -47,14 +47,14 @@ import { CASE_ALIASES, LAB_PERIODS, METHOD_FAMILIES, SKILL_PRACTICE, buildDiseas
 import { applyStep, centromereKeyHtml, hintFor, instructionSteps, isTeachStep, lessonForContext } from "./pedagogy.js?v=20261025open1";
 import { bindClassLab, classLabView } from "./class-lab.js?v=20261025fish1";
 import { bindPatientKaryogram, patientKaryogramMarkup } from "./patient-karyogram.js?v=20261026cs15";
-import { guidedKaryotypePacket, guidedVisualsIncomplete } from "./guided-case-artifacts.js?v=20261026guide1";
+import { guidedKaryotypePacket, guidedVisualsIncomplete } from "./guided-case-artifacts.js?v=20261026rep2";
 import { generatedFishImages, generatedMetaphaseFromFormula, generatedMetaphaseImage, metaphaseSvg, spreadChromosomeSvg, spreadRotations } from "./specimen-image.js?v=20261026cs4";
 import { benchMarkup, benchPlace, benchRecord, benchRedo, benchSlotAllowed, benchTurn, benchUndo, identityColour, sidewaysPlaced } from "./karyogram-bench.js?v=20261026cs1";
 import { analyzeCaseSet, analyzeFormula } from "./case-analysis.js?v=20261025case1";
 import { buildProposal } from "./lookup-engine.js?v=20261025lookup1";
 import { readOmimApiKey, referenceLinks, saveOmimApiKey, searchAtlas, searchOmim } from "./lookup-sources.js?v=20261026seen3";
 import { bindCaseReport, caseReportMarkup } from "./case-report.js?v=20261026cs1";
-import { assignmentExpectation, buildSubmission, caseMode, caseStagesMarkup, caseSubmissionMarkup, downloadSubmission, downloadSubmissionCsv, exportCaseReport, sanitizeSubmission, submissionReadiness } from "./case-submission.js?v=20261026cs1";
+import { assignmentExpectation, buildSubmission, caseMode, caseStagesMarkup, caseSubmissionMarkup, downloadSubmission, downloadSubmissionCsv, exportCaseReport, sanitizeSubmission, submissionReadiness } from "./case-submission.js?v=20261026rep2";
 
 export function render() {
   try {
@@ -975,12 +975,13 @@ function guidedTeachingRecord(imported, disease, labId) {
   const base = {
     ...imported,
     images: specimenEvidence(imported.images),
-    label: `Guided walkthrough · ${disease.disease_name}`.slice(0, 100),
+    label: "Guided walkthrough".slice(0, 100),
     finding: imported.finding || iscn,
     history: steps.join("\n"),
     reportMeta: {
       studentName: "Guided example",
       studentId: "demo",
+      ...(labId === "fish" ? {} : { metaphasesExamined: "1", metaphasesKaryotyped: "1" }),
       limitations: labId === "fish"
         ? "Demonstration fluorescence from teaching nuclei. Not a patient specimen. Enumeration does not replace a karyotype when mechanism or other chromosomes matter."
         : "Demonstration metaphase drawn from the teaching ISCN. Not a patient specimen. FISH was not part of this karyotype example.",
@@ -1023,7 +1024,8 @@ function guidedTeachingRecord(imported, disease, labId) {
     observation: item?.student_should_notice || item?.visual_change || "Teaching metaphase for this guided example.",
     classification: "Numerical finding",
     iscnDraft: iscn,
-    interpretation: item?.final_interpretation || imported.finding || iscn,
+    // Keep disease names out of the report packet; grade the cytogenetic finding.
+    interpretation: imported.finding || iscn || item?.student_should_notice || item?.visual_change || "",
     caseReview: { image: true, formula: true, events: true },
     chromosomeReads: (item?.correct_chromosome || item?.primary_chromosome || []).slice(0, 4).map((chromosome) => ({
       chromosome: String(chromosome),
@@ -1045,11 +1047,12 @@ function exploreTeachingRecord(imported, disease, labId) {
   return {
     ...imported,
     images: specimenEvidence(imported.images),
-    label: `Independent · ${name}`.slice(0, 100),
+    label: "Independent case".slice(0, 100),
     finding: "",
+    // History prints on the case report — keep disease names out of it.
     history: [
-      copy?.referralContext || `Explore the chromosome${labId === "fish" ? " and FISH" : ""} findings of ${name}.`,
-      `The condition is ${name}. Show the evidence and write the finding yourself. Naming the disease is not part of this assignment. You may consult references; they do not fill the report.`,
+      copy?.referralContext || `Explore the chromosome${labId === "fish" ? " and FISH" : ""} findings on this teaching specimen.`,
+      "The condition was provided with this case. Show the evidence and write the finding yourself. Naming the disease is not part of this assignment and must not appear on the case report. You may consult references; they do not fill the report.",
     ].join("\n\n"),
     source: {
       ...imported.source,
@@ -1413,6 +1416,8 @@ function bindPatientEvents(app, route) {
     return {
       studentName: formNode.elements.studentName.value.trim().slice(0, 120) || prior.studentName || "",
       studentId: formNode.elements.studentId.value.trim().slice(0, 60) || prior.studentId || "",
+      metaphasesExamined: formNode.elements.metaphasesExamined?.value.trim().slice(0, 8) || prior.metaphasesExamined || "",
+      metaphasesKaryotyped: formNode.elements.metaphasesKaryotyped?.value.trim().slice(0, 8) || prior.metaphasesKaryotyped || "",
       limitations: formNode.elements.limitations.value.trim().slice(0, 2000) || prior.limitations || "",
     };
   }
@@ -1434,6 +1439,8 @@ function bindPatientEvents(app, route) {
         const meta = { ...(current.reportMeta || {}), ...reportMeta() };
         if (!meta.studentName && current.reportMeta?.studentName) meta.studentName = current.reportMeta.studentName;
         if (!meta.studentId && current.reportMeta?.studentId) meta.studentId = current.reportMeta.studentId;
+        if (!meta.metaphasesExamined && current.reportMeta?.metaphasesExamined) meta.metaphasesExamined = current.reportMeta.metaphasesExamined;
+        if (!meta.metaphasesKaryotyped && current.reportMeta?.metaphasesKaryotyped) meta.metaphasesKaryotyped = current.reportMeta.metaphasesKaryotyped;
         if (!meta.limitations && current.reportMeta?.limitations) meta.limitations = current.reportMeta.limitations;
         saveCase({ ...pendingObservations(), reportMeta: meta });
       }
@@ -1802,7 +1809,7 @@ function bindPatientEvents(app, route) {
         observedSex: String(item.observedSex || "").slice(0, 30),
         chromosomeReads: Array.isArray(item.chromosomeReads) ? item.chromosomeReads.filter((row) => row && /^(?:[1-9]|1\d|2[0-2]|X|Y)$/.test(String(row.chromosome || ""))).slice(0, 80).map((row) => ({ chromosome: String(row.chromosome), seen: String(row.seen || "").slice(0, 160), note: String(row.note || "").slice(0, 160) })) : [],
         imageAnnotations: Array.isArray(item.imageAnnotations) ? item.imageAnnotations.filter((marker) => Number.isInteger(marker.imageIndex) && Number.isFinite(marker.x) && Number.isFinite(marker.y)).slice(0, 100).map((marker) => ({ imageIndex: Math.max(0, Math.min(4, marker.imageIndex)), x: Math.max(0, Math.min(100, marker.x)), y: Math.max(0, Math.min(100, marker.y)), label: String(marker.label || "Observation").slice(0, 40) })) : [],
-        sortedChromosomes: Array.isArray(item.sortedChromosomes) ? item.sortedChromosomes.filter((piece) => piece && Number.isInteger(piece.imageIndex) && Number.isFinite(piece.x) && Number.isFinite(piece.y) && Number.isFinite(piece.width) && Number.isFinite(piece.height)).slice(0, 50).map((piece) => ({ imageIndex: Math.max(0, Math.min(4, piece.imageIndex)), x: Math.max(0, Math.min(100, piece.x)), y: Math.max(0, Math.min(100, piece.y)), width: Math.max(0, Math.min(100, piece.width)), height: Math.max(0, Math.min(100, piece.height)), chromosome: String(piece.chromosome || "").slice(0, 2), homolog: ["A", "B", "C", "D"].includes(piece.homolog) ? piece.homolog : "", ...(/^(?:[1-9]|1\d|2[0-2]|X|Y)$/.test(String(piece.truth || "")) ? { truth: String(piece.truth) } : {}), ...([90, 180, 270].includes(piece.rot) ? { rot: piece.rot } : {}), ...(piece.flip ? { flip: true } : {}) })) : [],
+        sortedChromosomes: Array.isArray(item.sortedChromosomes) ? item.sortedChromosomes.filter((piece) => piece && Number.isInteger(piece.imageIndex) && Number.isFinite(piece.x) && Number.isFinite(piece.y) && Number.isFinite(piece.width) && Number.isFinite(piece.height)).slice(0, 96).map((piece) => ({ imageIndex: Math.max(0, Math.min(4, piece.imageIndex)), x: Math.max(0, Math.min(100, piece.x)), y: Math.max(0, Math.min(100, piece.y)), width: Math.max(0, Math.min(100, piece.width)), height: Math.max(0, Math.min(100, piece.height)), chromosome: String(piece.chromosome || "").slice(0, 2), homolog: ["A", "B", "C", "D"].includes(piece.homolog) ? piece.homolog : "", ...(/^(?:[1-9]|1\d|2[0-2]|X|Y)$/.test(String(piece.truth || "")) ? { truth: String(piece.truth) } : {}), ...([90, 180, 270].includes(piece.rot) ? { rot: piece.rot } : {}), ...(piece.flip ? { flip: true } : {}) })) : [],
         images: Array.isArray(item.images) ? item.images.filter((image) => image && /^data:image\/(png|jpeg|webp);base64,/i.test(image.data || "") && image.data.length < 1400000).slice(0, 5).reduce((kept, image) => kept.reduce((size, saved) => size + saved.data.length, 0) + image.data.length <= 2800000 ? [...kept, { name: String(image.name || "image").slice(0, 200), data: image.data, generated: Boolean(image.generated), ...(image.specimen ? { specimen: true } : {}), ...(image.draft ? { draft: true } : {}), ...(Array.isArray(image.cuts) ? { cuts: image.cuts.filter((box) => box && [box.x, box.y, box.width, box.height].every(Number.isFinite) && box.width > 0 && box.height > 0).slice(0, 80).map((box) => ({ x: Math.max(0, Math.min(100, box.x)), y: Math.max(0, Math.min(100, box.y)), width: Math.min(100, box.width), height: Math.min(100, box.height), ...(/^(?:[1-9]|1\d|2[0-2]|X|Y)$/.test(String(box.truth || "")) ? { truth: String(box.truth) } : {}) })) } : {}) }] : kept, []) : [],
         caseReview: item.caseReview && typeof item.caseReview === "object" ? { image: item.caseReview.image === true, formula: item.caseReview.formula === true, events: item.caseReview.events === true } : null,
         studentMarks: Array.isArray(item.studentMarks) ? item.studentMarks.filter((mark) => mark && typeof mark === "object").slice(0, 40).map((mark) => ({ id: String(mark.id || "").slice(0, 40), chromosome: String(mark.chromosome || "").slice(0, 2), location: String(mark.location || "").slice(0, 40), effect: String(mark.effect || "").slice(0, 60), note: String(mark.note || "").slice(0, 160), ...(mark.whole ? { whole: true } : {}), ...(mark.from ? { from: String(mark.from).slice(0, 12) } : {}), ...(mark.to ? { to: String(mark.to).slice(0, 12) } : {}) })) : [],
@@ -1811,6 +1818,9 @@ function bindPatientEvents(app, route) {
           stack: Array.isArray(entry.stack) ? entry.stack.map(String).slice(0, 80) : [],
           lost: Array.isArray(entry.lost) ? entry.lost.map(String).slice(0, 80) : [],
           lostCount: Math.max(0, Math.min(80, Number(entry.lostCount) || 0)),
+          effect: String(entry.effect || "").slice(0, 60),
+          token: String(entry.token || "").slice(0, 40),
+          reason: String(entry.reason || "").slice(0, 400),
           pieces: Array.isArray(entry.pieces) ? entry.pieces.filter((piece) => piece && piece.id).slice(0, 80).map((piece) => ({
             id: String(piece.id).slice(0, 40),
             label: String(piece.label || "").slice(0, 40),
@@ -1823,7 +1833,13 @@ function bindPatientEvents(app, route) {
           })) : [],
           savedAt: String(entry.savedAt || "").slice(0, 40),
         })) : [],
-        reportMeta: item.reportMeta && typeof item.reportMeta === "object" ? { studentName: String(item.reportMeta.studentName || "").slice(0, 120), studentId: String(item.reportMeta.studentId || "").slice(0, 60), limitations: String(item.reportMeta.limitations || "").slice(0, 2000) } : undefined,
+        reportMeta: item.reportMeta && typeof item.reportMeta === "object" ? {
+          studentName: String(item.reportMeta.studentName || "").slice(0, 120),
+          studentId: String(item.reportMeta.studentId || "").slice(0, 60),
+          metaphasesExamined: String(item.reportMeta.metaphasesExamined || "").slice(0, 8),
+          metaphasesKaryotyped: String(item.reportMeta.metaphasesKaryotyped || "").slice(0, 8),
+          limitations: String(item.reportMeta.limitations || "").slice(0, 2000),
+        } : undefined,
         submission: sanitizeSubmission(item.submission) || undefined,
         savedAt: new Date().toISOString(),
       }));
@@ -2080,12 +2096,21 @@ function guidedCaseIncomplete(current) {
     || !String(current.reportMeta?.limitations || "").trim();
 }
 
+/** True when a guided/explore packet still names the disease on fields that print in the report. */
+function reportNamesDisease(current) {
+  const name = String(current?.source?.diseaseName || "").trim();
+  if (!name) return false;
+  const hay = `${current.label || ""}\n${current.interpretation || ""}`;
+  return hay.toLowerCase().includes(name.toLowerCase());
+}
+
 /** Older guided cases opened before pre-fill still get a completed packet when the workspace loads. */
 function ensureGuidedComplete(current) {
   if (!current || caseMode(current) !== "guided" || current.submission) return current;
   const needsText = guidedCaseIncomplete(current);
   const needsVisuals = guidedVisualsIncomplete(current);
-  if (!needsText && !needsVisuals) return current;
+  const needsAnonymous = reportNamesDisease(current);
+  if (!needsText && !needsVisuals && !needsAnonymous) return current;
   const disease = diseaseById(state.diseases, current.source?.diseaseId);
   if (!disease) return current;
   const labId = current.lab === "fish" ? "fish" : "karyotype";
@@ -2115,6 +2140,12 @@ function ensureGuidedComplete(current) {
     ...current,
     ...(needsText ? filled : {}),
     ...visuals,
+    ...(needsAnonymous || needsText ? {
+      label: filled.label,
+      interpretation: needsAnonymous && !needsText
+        ? (filled.interpretation || current.interpretation)
+        : (needsText ? filled.interpretation : current.interpretation),
+    } : {}),
     id: current.id,
     lab: current.lab,
     savedAt: current.savedAt,

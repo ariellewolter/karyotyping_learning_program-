@@ -2,7 +2,7 @@ import { enrichCatalog, loadActivityLinks, loadActivityPacks, loadCatalog, loadD
 import { bindChromosomeMaps } from "./chromosomes.js?v=20261026p5";
 import { parseHash } from "./util.js?v=20261026seen5";
 import { patch, subscribe } from "./store.js?v=20261006j";
-import { render } from "./ui.js?v=20261026seen5";
+import { render } from "./ui.js?v=20261026rep2";
 
 subscribe(render);
 

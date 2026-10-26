@@ -3,7 +3,7 @@
  * with single or multi-select PDF export (one print dialog / one file).
  */
 import { escapeHtml } from "./util.js?v=20261025lib1";
-import { caseReportHTML, laboratoryLabel } from "./case-submission.js?v=20261026cs1";
+import { caseReportHTML, laboratoryLabel, metaphaseThumbs } from "./case-submission.js?v=20261026rep2";
 import { sortedCrops } from "./case-report.js?v=20261026cs1";
 import { state } from "./store.js?v=20261006j";
 
@@ -165,6 +165,20 @@ function printShell(title, sections) {
     .karyogram, .ka-plot, .genome { margin: 10px 0 14px; overflow: hidden; }
     .karyogram svg, .ka-plot svg, .genome svg, img, svg { max-width: 100%; height: auto; }
     .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+    .pair span, .ideo-id figcaption span, .remake figcaption span { display: block; font-size: 10px; color: #526576; }
+    img.crop { width: 48px; height: auto; background: #f4f4f2; }
+    .remake { max-width: 200px; } .remake-why { font-size: 10px; line-height: 1.35; text-align: left; margin: 6px 0 0; }
+    .remake-pair { display: flex; gap: 10px; align-items: end; border: 1px solid #d7d2c8; border-radius: 6px; padding: 6px; background: #fffefa; }
+    .count-check { font-size: 12px; font-weight: 600; margin: 6px 0 10px; } .count-mismatch { color: #9a3412; font-weight: 700; }
+    .karyogram-overview { display: grid; grid-template-columns: minmax(140px, 220px) 1fr; gap: 14px; align-items: start; margin: 8px 0 12px; }
+    .metaphase-thumbs { display: flex; flex-direction: column; gap: 8px; } .metaphase-thumb img { width: 100%; height: auto; background: #f4f4f2; border: 1px solid #d7d2c8; }
+    .assay-link { font-size: 12px; line-height: 1.4; }
+    .iscn-karyogram { display: grid; gap: 6px; margin: 6px 0 10px; } .iscn-k-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-end; }
+    .iscn-k-group { padding: 4px 6px; border: 1px solid #d7d2c8; border-radius: 6px; background: #fffefa; }
+    .iscn-k-group .group-label { margin: 0 0 2px; font-size: 9px; letter-spacing: .06em; text-transform: uppercase; color: #526576; }
+    .iscn-k-slots { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-end; } .iscn-k-slot p { margin: 2px 0 0; text-align: center; font-size: 10px; }
+    .iscn-k-body { display: flex; align-items: flex-end; justify-content: center; gap: 2px; } .iscn-k-changed { outline: 2px solid #6d5b94; outline-offset: 2px; border-radius: 4px; }
+    .chr-svg, .chr-img { display: block; }
     .report-section { page-break-before: always; }
     .report-section:first-of-type { page-break-before: auto; }
     .report-banner { margin: 0 0 10px; padding-bottom: 6px; border-bottom: 1px solid #c5ced6; }
@@ -173,7 +187,7 @@ function printShell(title, sections) {
     @media print {
       body { margin: 0; }
       h2, h3, h4, h5 { break-after: avoid; }
-      tr, figure, .row, .block, .ka-metrics, .karyogram, .ka-plot { break-inside: avoid; }
+      tr, figure, .row, .block, .ka-metrics, .karyogram, .ka-plot, .iscn-karyogram, .karyogram-overview, .remake-pair { break-inside: avoid; }
       .report-section { break-before: page; }
       .report-section:first-of-type { break-before: auto; }
     }
@@ -225,8 +239,10 @@ async function sectionForEntry(entry) {
     };
   }
   const cropSource = { images: current.images, sortedChromosomes: snapshot.observations?.crops };
-  const crops = snapshot.lab === "fish" ? [] : await sortedCrops(cropSource);
-  const html = caseReportHTML(snapshot, { maps: state.maps, crops, draft: false });
+  const [crops, thumbs] = snapshot.lab === "fish"
+    ? [[], []]
+    : await Promise.all([sortedCrops(cropSource), metaphaseThumbs(current.images)]);
+  const html = caseReportHTML(snapshot, { maps: state.maps, crops, thumbs, draft: false });
   return {
     title: entry.title || snapshot.caseLabel || "Case report",
     kindLabel: KIND_LABEL[entry.kind] || laboratoryLabel(snapshot.lab),

@@ -52,10 +52,52 @@ function canonicalChromosomes(disease) {
   return item?.chromosomes || disease?.chromosomes || [];
 }
 
+/**
+ * Why this chromosome was remade, from the written ISCN (trisomy, monosomy, structural).
+ * Returns { effect, token, reason } for captions and the case report.
+ */
+export function remakeReasonFor(chromosome, iscn) {
+  const id = String(chromosome || "");
+  const issues = (genomeIssues(iscn, null).issues || []).filter((issue) => String(issue.chromosome) === id);
+  const token = [...new Set(issues.flatMap((issue) => [
+    ...(issue.details || []),
+    issue.detail || "",
+  ]).map((part) => String(part || "").trim()).filter(Boolean))].join("; ");
+  // Prefer a concrete change (deletion, gain, …) over a bare breakpoint for the caption.
+  const effect = (issues.find((issue) => issue.effect && issue.effect !== "Breakpoint") || issues[0])?.effect || "";
+  if (/Gain of a whole chromosome/i.test(effect)) {
+    return {
+      effect,
+      token: token || `+${id}`,
+      reason: `Chromosome ${id} was remade because the karyotype gains a whole extra copy (${token || `+${id}`}). The remake is an intact ${id}: free trisomy / whole-chromosome gain is a complete chromosome, not a rearranged segment.`,
+    };
+  }
+  if (/Loss of a whole chromosome/i.test(effect)) {
+    return {
+      effect,
+      token: token || `-${id}`,
+      reason: `Chromosome ${id} was remade because the karyotype is missing a whole copy (${token || `-${id}`}). The remake shows the intact chromosome that is absent from the count.`,
+    };
+  }
+  if (effect) {
+    return {
+      effect,
+      token,
+      reason: `Chromosome ${id} was remade because of ${effect.toLowerCase()}${token ? ` (${token})` : ""} named in the ISCN.`,
+    };
+  }
+  return {
+    effect: "",
+    token: "",
+    reason: `Chromosome ${id} was remade as an affected chromosome from this case.`,
+  };
+}
+
 /** Intact remake of each affected chromosome (extra free 21 is a complete 21). */
-export function guidedAffectedRemakes(maps, chromosomes) {
+export function guidedAffectedRemakes(maps, chromosomes, iscn = "") {
   if (!maps) return [];
   return chromosomes.map((chromosome) => {
+    const why = remakeReasonFor(chromosome, iscn);
     const pieces = piecesForExercise(maps, {
       chromosome: String(chromosome),
       resolution: "region",
@@ -77,16 +119,37 @@ export function guidedAffectedRemakes(maps, chromosomes) {
       lost: [],
       lostCount: 0,
       pieces,
+      effect: why.effect,
+      token: why.token,
+      reason: why.reason,
       savedAt: new Date().toISOString(),
       guided: true,
     };
   }).filter((entry) => entry.pieces.length);
 }
 
+/** Attach effect/reason from ISCN onto remakes that were saved without them. */
+export function enrichRemakeReasons(remakes, iscn) {
+  if (!Array.isArray(remakes) || !remakes.length) return remakes || [];
+  return remakes.map((entry) => {
+    if (entry?.reason && entry?.effect) return entry;
+    const why = remakeReasonFor(entry.chromosome, iscn);
+    return {
+      ...entry,
+      effect: entry.effect || why.effect,
+      token: entry.token || why.token,
+      reason: entry.reason || why.reason,
+    };
+  });
+}
+
 /** Ideogram marks that identify what the teaching ISCN names. */
 export function guidedStudentMarks(iscn) {
   const { issues } = genomeIssues(iscn, null);
-  return issues.map((issue, index) => {
+  // Prefer the concrete change; drop bare "Breakpoint" rows when the same site already has a deletion/etc.
+  const concrete = issues.filter((issue) => issue.effect !== "Breakpoint");
+  const rows = concrete.length ? concrete : issues;
+  return rows.map((issue, index) => {
     const whole = /whole chromosome/i.test(issue.location) || /whole chromosome/i.test(issue.effect);
     const mark = {
       id: `guided-mark-${issue.chromosome}-${index}`,
@@ -97,7 +160,7 @@ export function guidedStudentMarks(iscn) {
     };
     if (!whole && issue.location && !/whole/i.test(issue.location)) {
       const band = String(issue.location).replace(new RegExp(`^${issue.chromosome}`, "i"), "");
-      if (/^[pq]\d/i.test(band)) mark.from = band.toLowerCase().replace(/^([pq])/, (_, arm) => arm);
+      if (/^[pq]\d/i.test(band)) mark.from = band.toLowerCase();
     }
     mark.location = markLocation(mark);
     return mark;
@@ -113,8 +176,8 @@ export function guidedKaryotypePacket({ images = [], iscn = "", maps = null, dis
     ? existing.sortedChromosomes
     : assembleSortedFromCuts(images);
   const remakes = Array.isArray(existing.affectedRemakes) && existing.affectedRemakes.length
-    ? existing.affectedRemakes
-    : guidedAffectedRemakes(maps, guidedAffectedChromosomes(iscn, disease));
+    ? enrichRemakeReasons(existing.affectedRemakes, iscn)
+    : guidedAffectedRemakes(maps, guidedAffectedChromosomes(iscn, disease), iscn);
   const marks = Array.isArray(existing.studentMarks) && existing.studentMarks.length
     ? existing.studentMarks
     : guidedStudentMarks(iscn);
@@ -129,7 +192,8 @@ export function guidedKaryotypePacket({ images = [], iscn = "", maps = null, dis
 export function guidedVisualsIncomplete(current) {
   if (!current || current.lab === "fish") return false;
   const placed = (current.sortedChromosomes || []).some((piece) => piece?.chromosome && piece?.homolog);
-  const remade = Boolean(current.affectedRemakes?.length);
+  const remakes = current.affectedRemakes || [];
+  const remade = remakes.length > 0 && remakes.every((entry) => String(entry.reason || "").trim());
   const marked = Boolean(current.studentMarks?.length);
   return !placed || !remade || !marked;
 }

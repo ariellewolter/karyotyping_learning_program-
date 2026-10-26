@@ -903,8 +903,9 @@ button.class-pick.is-chosen svg { outline: 3px solid var(--teal); outline-offset
 .affected-preview { margin: .4rem 0 .8rem; min-height: 8rem; }
 .affected-gallery { margin-top: 1rem; }
 .affected-gallery-grid { display: flex; flex-wrap: wrap; gap: .8rem; }
-.affected-gallery-card { margin: 0; padding: .5rem; border: 1px solid var(--line); border-radius: 8px; background: #fff; text-align: center; min-width: 6.5rem; }
+.affected-gallery-card { margin: 0; padding: .5rem; border: 1px solid var(--line); border-radius: 8px; background: #fff; text-align: center; min-width: 6.5rem; max-width: 14rem; }
 .affected-gallery-card figcaption { margin: .35rem 0; font-size: .85rem; }
+.affected-remake-why { margin: 0 0 .45rem; font-size: .72rem; line-height: 1.35; text-align: left; }
 @media (max-width: 900px) {
   .affected-assembly.assembly-stage.three { grid-template-columns: 1fr; }
 }
