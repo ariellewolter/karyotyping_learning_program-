@@ -74,7 +74,7 @@ jobs:
 
             ### Downloads
             - **Windows (portable):** `Cytogenetics Laboratory *.exe` — double-click to run (no installer).
-            - **Mac (Apple Silicon):** `.dmg` or `-mac.zip` (attached when the Mac job finishes).
+            - **Mac (Apple Silicon):** `.dmg` or `-mac.zip`.
 
             ### Windows trust warning (unsigned build)
             This educational build is **not code-signed**. Chrome or SmartScreen may say the file “isn’t commonly downloaded” or is unrecognized. Choose **Keep**, then **More info → Run anyway** if Windows blocks it. That warning is about reputation, not a broken package.
