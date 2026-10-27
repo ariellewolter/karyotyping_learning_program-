@@ -41,7 +41,7 @@ button {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding: 0.9rem 1.4rem;
+  padding: 1rem clamp(1.5rem, 3.5vw, 3rem);
   background: var(--navy);
   color: #f7fbff;
 }
@@ -56,14 +56,17 @@ button {
 .topnav a { color: #f0e8da; text-decoration: none; font-size: 0.92rem; }
 .topnav a:hover { text-decoration: underline; }
 .disclaimer {
-  margin: 0; padding: 0.35rem 1.4rem;
+  margin: 0; padding: 0.45rem clamp(1.5rem, 3.5vw, 3rem);
   background: #efe4c8; color: #5a4a28; font-size: 0.82rem;
   border-bottom: 1px solid #e0d0a6;
 }
-.site-foot { padding: 1rem 1.4rem 2rem; color: var(--muted); font-size: 0.82rem; }
+.site-foot { padding: 1.5rem clamp(1.5rem, 3.5vw, 3rem) 2.5rem; color: var(--muted); font-size: 0.82rem; }
 
-.home, .picker, .instructor, .reference, .panel, .lab-menu { padding: 1.2rem 1.4rem 2rem; max-width: 1180px; }
-.home-labs { max-width: 1200px; }
+.home, .picker, .instructor, .reference, .panel, .lab-menu, .atlas {
+  padding: 1.6rem clamp(1.5rem, 3.5vw, 3rem) 3.5rem;
+  max-width: 1240px;
+}
+.home-labs { max-width: 1240px; }
 .lab-hero {
   background:
     radial-gradient(900px 280px at 88% 12%, rgba(74, 140, 190, 0.55), transparent 55%),
@@ -589,6 +592,17 @@ textarea { min-height: 7rem; width: 100%; }
 .btn.primary { background: var(--teal); border-color: var(--teal-2); color: #fff; }
 .btn.primary:hover { color: #fff; }
 .btn:hover { filter: brightness(1.05); }
+.btn.is-off, button.btn[disabled] {
+  opacity: 0.65;
+  cursor: not-allowed;
+  border-color: var(--line);
+  color: var(--muted);
+  background: var(--paper);
+  pointer-events: none;
+}
+.btn.is-off:hover, button.btn[disabled]:hover {
+  filter: none;
+}
 
 .feedback { padding: 0.7rem 0.8rem; border-left: 3px solid var(--gold); background: var(--review-bg); }
 .feedback.ok { border-color: var(--ok); background: var(--ok-bg); }
@@ -631,7 +645,7 @@ fieldset { border: 1px solid var(--line); margin: 0 0 0.7rem; }
 .case-table { width: 100%; border-collapse: collapse; background: #fff; }
 .case-table th, .case-table td { border: 1px solid var(--line); padding: 0.45rem 0.5rem; text-align: left; font-size: 0.9rem; }
 .case-table a { color: var(--teal-2); }
-.crumb { font-size: 0.82rem; color: var(--muted); }
+.crumb { font-size: 0.82rem; color: var(--muted); margin: 0 0 0.85rem; }
 .crumb a { color: var(--teal-2); }
 .empty-pool { margin: 0.6rem; }
 
@@ -1685,11 +1699,11 @@ body { background: #f5f6f6; }
 @media (max-width: 900px) { .kb-main { grid-template-columns: minmax(0, 1fr); } }
 
 /* Disease Atlas: visual guide */
-.question-flow { display: flex; flex-wrap: wrap; gap: 0.3rem; list-style: none; padding: 0; margin: 0.8rem 0 0; counter-reset: q; }
-.question-flow li { counter-increment: q; padding: 0.3rem 0.65rem; border: 1px solid var(--line); border-radius: 999px; background: var(--white); font-size: 0.85rem; }
-.question-flow li::before { content: counter(q) ". "; color: var(--teal); font-weight: 700; }
-.question-flow li + li { position: relative; margin-left: 0.9rem; }
-.question-flow li + li::after { content: "→"; position: absolute; left: -1.05rem; color: var(--muted); }
+.question-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 1.1rem; list-style: none; padding: 0; margin: 1rem 0 0.4rem; counter-reset: q; }
+.question-flow li { counter-increment: q; padding: 0.35rem 0.75rem; border: 1px solid var(--line); border-radius: 999px; background: var(--white); font-size: 0.85rem; display: inline-flex; align-items: center; }
+.question-flow li::before { content: counter(q) ". "; color: var(--teal); font-weight: 700; margin-right: 0.25rem; }
+.question-flow li + li { position: relative; margin-left: 0.85rem; }
+.question-flow li + li::after { content: "→"; position: absolute; left: -1rem; color: var(--muted); }
 .atlas-primer { margin: 1.4rem 0; }
 .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0.8rem; }
 .type-card { border: 1px solid var(--line); background: var(--white); border-radius: 0.6rem; padding: 0.75rem; }
@@ -1708,7 +1722,14 @@ body { background: #f5f6f6; }
 .atlas-seen-link:hover { border-color: var(--teal); color: var(--teal-2); }
 .atlas-seen-link.is-active { border-color: var(--teal); background: var(--teal); color: #fff; }
 .atlas-seen-note { margin: 0 0 1rem; }
-.atlas-disease { max-width: 60rem; }
+.atlas-jump { display: grid; gap: 0.45rem; margin: 0.9rem 0 0.4rem; }
+.atlas-jump-links { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 0.55rem; }
+.atlas-jump-link { display: flex; flex-direction: column; gap: 0.15rem; padding: 0.6rem 0.85rem; border: 1px solid var(--line); border-left: 4px solid var(--teal); border-radius: 0.55rem; background: var(--white); color: var(--ink); text-decoration: none; transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease; }
+.atlas-jump-link strong { font-size: 0.95rem; }
+.atlas-jump-link small { color: var(--muted, #5f6b7a); font-size: 0.8rem; }
+a.atlas-jump-link:hover, a.atlas-jump-link:focus-visible { border-color: var(--teal); color: var(--teal-2); box-shadow: 0 4px 14px rgba(20, 90, 90, 0.12); transform: translateY(-1px); }
+.atlas-jump-link.is-off { border-left-color: var(--line); background: var(--paper); opacity: 0.7; cursor: not-allowed; }
+.atlas-disease { max-width: 68rem; }
 .atlas-disease-iscn { display: grid; gap: 0.25rem; margin: 0.65rem 0 0.4rem; }
 .atlas-disease-iscn .eyebrow { margin: 0; }
 .atlas-disease-iscn .iscn-display { margin: 0; display: inline-block; width: fit-content; max-width: 100%; }
@@ -1730,18 +1751,18 @@ body { background: #f5f6f6; }
 .vis-visible { background: var(--ok-bg) !important; color: var(--ok); }
 .vis-partial { background: var(--review-bg) !important; color: var(--review); }
 .vis-hidden { background: #f6e3e6 !important; color: var(--flag); }
-.guide-step { margin: 1.2rem 0; padding-top: 0.6rem; border-top: 1px solid var(--line); }
-.guide-step h3 { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.5rem; }
-.step-n { display: inline-grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--teal); color: #fff; font-size: 0.85rem; }
-.guide-scope { background: var(--white); border: 1px solid var(--line); border-radius: 0.75rem; padding: 1rem; }
-.scope-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 1rem; background: var(--paper); border-radius: 0.5rem; }
+.guide-step { margin: 1.5rem 0; padding-top: 0.9rem; border-top: 1px solid var(--line); }
+.guide-step h3 { display: flex; align-items: center; gap: 0.55rem; margin: 0 0 0.65rem; }
+.step-n { display: inline-grid; place-items: center; width: 1.7rem; height: 1.7rem; border-radius: 50%; background: var(--teal); color: #fff; font-size: 0.85rem; flex-shrink: 0; }
+.guide-scope { background: var(--white); border: 1px solid var(--line); border-radius: 0.75rem; padding: 1.25rem; margin: 0.8rem 0 1rem; }
+.scope-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; padding: 1.25rem; background: var(--paper); border-radius: 0.55rem; }
 .scope-compare figure { display: grid; justify-items: center; align-content: end; padding: 0.5rem; }
 .scope-compare figure.abnormal { border-left: 1px dashed var(--line); }
 .scope-compare .homolog-row { display: flex; gap: 0.6rem; justify-content: center; align-items: flex-end; }
 .type-art .homolog-row { display: flex; gap: 0.35rem; align-items: flex-end; }
 .scope-note { font-size: 0.82rem; color: var(--muted); font-style: italic; }
 .resolution-warn { margin: 0.6rem 0 0; padding: 0.5rem 0.7rem; border-left: 3px solid var(--flag); background: #f6e3e6; font-size: 0.9rem; }
-.why-box { margin: 0 0 0.6rem; padding: 0.6rem 0.8rem; border-left: 3px solid var(--gold); background: var(--review-bg); }
+.why-box { margin: 0.8rem 0; padding: 0.75rem 1rem; border-left: 4px solid var(--gold); background: var(--review-bg); border-radius: 0 6px 6px 0; }
 .why-box p { margin: 0.15rem 0; }
 .detect-verdict { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 0.35rem; font-weight: 600; font-size: 0.9rem; margin: 0 0 0.4rem; }
 .atlas-advanced { margin: 1.6rem 0; border: 1px solid var(--line); border-radius: 0.6rem; padding: 0.6rem 0.9rem; background: var(--white); }

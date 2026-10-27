@@ -164,6 +164,16 @@ export function parseHash() {
   const parts = raw.split("/").filter(Boolean);
   if (parts[0] === "learning") return { name: "learning", lab: parts[1] === "fish" ? "fish" : "karyotype" };
   if (parts[0] === "patients") {
+    if (parts[2] === "open" && parts[3]) {
+      return {
+        name: "patient",
+        lab: parts[1] === "fish" ? "fish" : "karyotype",
+        caseId: null,
+        action: "list",
+        tab: "",
+        openDisease: decodeURIComponent(parts[3]),
+      };
+    }
     const requested = parts[2] === "new" ? "add" : (parts[3] || (parts[2] ? "workspace" : "list"));
     const tabs = parts[1] === "fish"
       ? ["intake", "fish", "interpretation", "report"]
@@ -178,12 +188,13 @@ export function parseHash() {
     };
   }
   if (parts[0] === "atlas") {
+    const seen = (value) => (value === "fish" || value === "karyotype" || value === "both" ? value : null);
     if (parts[1] === "chromosome") {
       return {
         name: "atlas",
         view: "chromosome",
         chromosome: parts[2] || "1",
-        method: parts[3] === "fish" || parts[3] === "karyotype" ? parts[3] : null,
+        method: seen(parts[3]),
       };
     }
     if (parts[1] === "disease") {
@@ -191,13 +202,13 @@ export function parseHash() {
         name: "atlas",
         view: "disease",
         diseaseId: parts[2] || null,
-        method: parts[3] === "fish" || parts[3] === "karyotype" ? parts[3] : null,
+        method: seen(parts[3]),
       };
     }
     if (parts[1] === "lab" || parts[1] === "assigned") {
       return { name: "atlas-lab", mode: parts[1] === "assigned" ? "assigned" : "lab", diseaseId: parts[2] || null };
     }
-    if (parts[1] === "seen" && (parts[2] === "karyotype" || parts[2] === "fish")) {
+    if (parts[1] === "seen" && seen(parts[2])) {
       return { name: "atlas", view: "home", method: parts[2] };
     }
     return { name: "atlas", view: "home", method: null };
@@ -242,6 +253,9 @@ export function parseHash() {
   }
   if (parts[0] === "lab") {
     const tail = parts.slice(1);
+    if (tail[0] === "chromosome" && tail[1] === "draw" && tail[2] === "formula") {
+      return { name: "lab", lab: "chromosome", exercise: "draw", caseId: null, instruction: null, formula: decodeURIComponent(tail[3] || "") };
+    }
     const instruction = tail[tail.length - 1] === "learn" || tail[tail.length - 1] === "assessment" ? tail.pop() : null;
     return {
       name: "lab",

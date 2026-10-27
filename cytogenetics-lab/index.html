@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <title>Cytogenetics Laboratory — Evonyx</title>
-  <link rel="stylesheet" href="css/app.css?v=20261026guide2" />
+  <link rel="stylesheet" href="css/app.css?v=20261027pad1" />
 </head>
 <body>
   <div id="app">
@@ -25,6 +25,23 @@
     </main>
   </div>
   <script>
+    if (location.protocol === "file:") {
+      var app = document.getElementById("app");
+      if (app) {
+        app.innerHTML = "<header class='topbar'><div class='brand'><span class='brand-mark'>CG</span><div><p class='brand-kicker'>Evonyx</p><h1>Cytogenetics Laboratory</h1></div></div></header>" +
+          "<main class='panel error-panel'>" +
+          "<h2>Local Server Required</h2>" +
+          "<p>Web browsers prevent loading case data and chromosome maps directly from <code>file://</code> addresses for security.</p>" +
+          "<p><strong>How to launch the laboratory:</strong></p>" +
+          "<ol style='margin: 0.75rem 0 1rem 1.5rem; line-height: 1.7;'>" +
+          "<li>Open Terminal (Mac) or Command Prompt (Windows) in the <code>cytogenetics-lab</code> folder.</li>" +
+          "<li>Run: <code>python3 serve.py</code> &nbsp;(or <code>python serve.py</code>)</li>" +
+          "<li>Open: <a href='http://127.0.0.1:8765/' target='_blank'>http://127.0.0.1:8765/</a></li>" +
+          "</ol>" +
+          "<p>Alternatively, students can run the packaged desktop app (no Python installation needed).</p>" +
+          "</main>";
+      }
+    }
     window.addEventListener("error", function (ev) {
       var app = document.getElementById("app");
       if (!app) return;

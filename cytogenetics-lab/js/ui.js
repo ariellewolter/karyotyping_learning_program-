@@ -179,6 +179,12 @@ function paint() {
       applyWorkspaceFormula(app, DRAW_GUIDED_FORMULA);
       app.querySelector("#chromosome-workspace")?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+    if (route.formula) {
+      history.replaceState(null, "", labPath("chromosome", "draw"));
+      state.route = parseHash();
+      applyWorkspaceFormula(app, route.formula);
+      app.querySelector("#chromosome-workspace")?.scrollIntoView({ block: "start" });
+    }
     return;
   } else if (route.name === "lab" && !route.caseId && !route.exercise) app.innerHTML = shell(labLanding(route.lab));
   else if (route.name === "lab" && !route.caseId) app.innerHTML = shell(skillExerciseView(route.lab, route.exercise));
@@ -1585,6 +1591,23 @@ function bindPatientEvents(app, route) {
       openRecordedCase(button, disease, button.dataset.openGuided ? "guided" : "explore");
     });
   });
+  /** Opened from a Disease Atlas page: start (or resume) this disease as a named casework case. */
+  if (route.openDisease) {
+    history.replaceState(null, "", `#/patients/${route.lab}`);
+    state.route = parseHash();
+    const disease = diseaseById(state.diseases, route.openDisease);
+    const status = document.createElement("p");
+    status.className = "import-status atlas-open-status";
+    status.setAttribute("role", "status");
+    status.textContent = disease ? `Opening ${disease.disease_name}…` : "That disease is not in the library.";
+    app.querySelector(".casework-head")?.after(status);
+    if (disease) {
+      const mode = LAB_PERIODS[route.lab]?.guidedDiseaseId === disease.id ? "guided" : "explore";
+      openRecordedCase(status, disease, mode).then(() => {
+        if (status.isConnected && !status.textContent.startsWith("Drawing")) status.remove();
+      });
+    }
+  }
   app.querySelector("#patient-case-search")?.addEventListener("input", filterTeachingCases);
   app.querySelector("#patient-case-kind")?.addEventListener("change", filterTeachingCases);
   const lookupForm = app.querySelector("#patient-case-form");

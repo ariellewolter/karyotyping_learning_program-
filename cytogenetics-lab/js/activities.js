@@ -112,8 +112,12 @@ export function methodFit(disease) {
   };
 }
 
-/** True when the canonical teaching case is appropriate for karyotyping or FISH. */
+/** True when the canonical teaching case is appropriate for karyotyping, FISH, or ("both") each of them. */
 export function isSeenByMethod(disease, method) {
+  if (method === "both") {
+    const fit = methodFit(disease);
+    return fit.karyotype === "appropriate" && fit.fish === "appropriate";
+  }
   if (method !== "karyotype" && method !== "fish") return true;
   return methodFit(disease)[method] === "appropriate";
 }

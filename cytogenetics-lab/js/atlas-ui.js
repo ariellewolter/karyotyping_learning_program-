@@ -18,12 +18,11 @@ import {
   gradeInspect,
   gradeInterpret,
   splitBreakpointArms,
-  labReady,
   notationChoices,
   optionLabel,
   teachingKaryotype,
 } from "./atlas.js?v=20261006j";
-import { isSeenByMethod, methodFit } from "./activities.js?v=20261026seen3";
+import { LAB_PERIODS, isCaseworkSpecimenReady, isSeenByMethod, methodFit } from "./activities.js?v=20261026seen3";
 
 const LAB_STEPS = ["find", "inspect", "identify", "interpret"];
 
@@ -37,9 +36,22 @@ export function atlasBrowse(route) {
   return atlasHome(route.method);
 }
 
+const SEEN_METHODS = ["karyotype", "fish", "both"];
+
+function seenMethod(method) {
+  return SEEN_METHODS.includes(method) ? method : null;
+}
+
+function seenLabel(seen) {
+  if (seen === "fish") return "FISH";
+  if (seen === "karyotype") return "Karyotyping";
+  if (seen === "both") return "Karyotyping and FISH";
+  return "";
+}
+
 function diseaseHref(diseaseId, method) {
   const id = encodeURIComponent(diseaseId || "");
-  if (method === "fish" || method === "karyotype") return `#/atlas/disease/${id}/${method}`;
+  if (seenMethod(method)) return `#/atlas/disease/${id}/${method}`;
   return `#/atlas/disease/${id}`;
 }
 
@@ -67,7 +79,7 @@ const VISIBILITY_VERDICT = {
 
 function atlasHome(method) {
   const library = state.diseases;
-  const seen = method === "fish" || method === "karyotype" ? method : null;
+  const seen = seenMethod(method);
   const diseases = diseaseList(library).filter((d) => isSeenByMethod(d, seen));
   const types = library?.abnormality_types || [];
   const grouped = types.map((type) => ({
@@ -79,10 +91,12 @@ function atlasHome(method) {
     ? "Showing conditions appropriate for a routine karyotype report."
     : seen === "fish"
       ? "Showing conditions appropriate for a FISH report."
-      : "Filter by the laboratory method you are writing for.";
+      : seen === "both"
+        ? `Showing ${diseases.length} condition${diseases.length === 1 ? "" : "s"} appropriate for both a karyotype report and a FISH report.`
+        : "Filter by the laboratory method you are writing for.";
   return `
     <main class="atlas">
-      <p class="crumb"><a href="#/">Home</a> / Atlas${seen ? ` / ${seen === "fish" ? "FISH" : "Karyotyping"}` : ""}</p>
+      <p class="crumb"><a href="#/">Home</a> / Atlas${seen ? ` / ${seenLabel(seen)}` : ""}</p>
       <header class="lab-head">
         <p class="eyebrow">Visual guide to chromosome abnormalities</p>
         <h2>Disease Atlas</h2>
@@ -151,6 +165,7 @@ function seenByFilter(method, chromosome = null) {
     ["", "All diseases"],
     ["karyotype", "Seen by karyotyping"],
     ["fish", "Seen by FISH"],
+    ["both", "Seen by Karyotyping and FISH"],
   ];
   return `<nav class="atlas-seen-filter" aria-label="Filter diseases by laboratory method">${options.map(([id, label]) => {
     const active = (method || "") === id;
@@ -172,7 +187,7 @@ function drawList(items, prefix, scale = 1.35) {
 
 function chromosomePage(chromosome, method) {
   const id = String(chromosome || "1");
-  const seen = method === "fish" || method === "karyotype" ? method : null;
+  const seen = seenMethod(method);
   const template = state.templates?.chromosomes?.[id];
   const map = state.maps?.chromosomes?.[id];
   const diseases = diseasesForChromosome(state.diseases, id).filter((d) => isSeenByMethod(d, seen));
@@ -212,7 +227,7 @@ function chromosomePage(chromosome, method) {
             ${diseases.map((d) => {
               const iscn = diseaseIscn(d);
               return `<li><a class="case-row" href="${diseaseHref(d.id, seen)}"><span class="case-title">${escapeHtml(d.disease_name)}</span>${iscn ? `<code class="atlas-row-iscn">${escapeHtml(iscn)}</code>` : ""}<span class="muted">${escapeHtml([casesTouching(d, id).join("; "), methodShort(d)].filter(Boolean).join(" · "))}</span></a></li>`;
-            }).join("") || `<li class='muted'>No teaching disease${seen ? ` for ${seen === "fish" ? "FISH" : "karyotyping"}` : ""} in the library is centered here.</li>`}
+            }).join("") || `<li class='muted'>No teaching disease${seen ? ` for ${seenLabel(seen).toLowerCase().replace("fish", "FISH")}` : ""} in the library is centered here.</li>`}
           </ul>
           ${atlasReferenceSection(id)}
         </div>
@@ -222,15 +237,22 @@ function chromosomePage(chromosome, method) {
 
 function diseasePage(diseaseId, method) {
   const disease = diseaseById(state.diseases, diseaseId);
-  const seen = method === "fish" || method === "karyotype" ? method : null;
+  const seen = seenMethod(method);
   const atlasHref = seen ? `#/atlas/seen/${seen}` : "#/atlas";
   if (!disease) {
     return `<main class="atlas"><p class="crumb"><a href="${atlasHref}">Atlas</a></p><h2>Unknown disease</h2><p><a href="${atlasHref}">Return to the atlas</a></p></main>`;
   }
-  const ready = labReady(disease);
   const canonical = canonicalCase(disease);
   const guide = disease.atlas_guide || {};
   const fit = methodFit(disease);
+  const iscn = diseaseIscn(disease);
+  const id = encodeURIComponent(disease.id);
+  const readyLab = (lab) => LAB_PERIODS[lab]?.guidedDiseaseId === disease.id
+    || isCaseworkSpecimenReady(disease, lab, state.activityLinks, state.activityPacks, state.probes);
+  const caseworkReason = (lab) => {
+    if (fit[lab] !== "appropriate") return lab === "fish" ? "Not a FISH teaching case" : "Not visible on a routine karyotype";
+    return lab === "fish" ? "No FISH assay is stored yet" : "No drawable teaching metaphase yet";
+  };
   const [tone, verdict] = VISIBILITY_VERDICT[canonical?.karyotype_visibility] || ["partial", "Visibility not recorded"];
   const primary = String((canonical?.primary_chromosome || [])[0] || guide.compare?.chr || "");
   const background = disease.clinical_background || {};
@@ -249,6 +271,7 @@ function diseasePage(diseaseId, method) {
           <span class="tag vis-${tone}">${escapeHtml(verdict)}</span>
         </p>
         ${diseaseIscnBlock(disease)}
+        ${diseaseJumpLinks(disease)}
         ${questionFlow()}
       </header>
 
@@ -277,16 +300,21 @@ function diseasePage(diseaseId, method) {
       </section>
 
       <section class="guide-step">
-        <h3><span class="step-n">5</span> Try identifying it</h3>
-        <p>${escapeHtml(guide.try_it || "")}</p>
-        <div class="controls">
-          ${ready ? `
-            <a class="btn primary" href="#/disease/${disease.id}">Open the blinded case</a>
-            <button type="button" class="btn" data-inspect-disease="${escapeHtml(disease.id)}">Inspect the chromosomes</button>
-          ` : ""}
+        <h3><span class="step-n">5</span> Open in Casework &amp; Draw</h3>
+        <p>Open this condition directly in the casework laboratory to analyze specimen findings and build a report, or draw its karyogram from the written ISCN:</p>
+        <div class="controls disease-actions">
+          ${readyLab("karyotype")
+            ? `<a class="btn primary" id="atlas-btn-karyotype" href="#/patients/karyotype/open/${id}">Open Casework Karyotype</a>`
+            : `<button type="button" class="btn is-off" disabled title="${escapeHtml(caseworkReason("karyotype"))}">Open Casework Karyotype <small class="muted">(${escapeHtml(caseworkReason("karyotype"))})</small></button>`}
+          ${readyLab("fish")
+            ? `<a class="btn primary" id="atlas-btn-fish" href="#/patients/fish/open/${id}">Open Casework FISH</a>`
+            : `<button type="button" class="btn is-off" disabled title="${escapeHtml(caseworkReason("fish"))}">Open Casework FISH <small class="muted">(${escapeHtml(caseworkReason("fish"))})</small></button>`}
+          ${iscn
+            ? `<a class="btn" id="atlas-btn-draw" href="#/lab/chromosome/draw/formula/${encodeURIComponent(iscn)}">Open Draw</a>`
+            : `<button type="button" class="btn is-off" disabled title="No written ISCN to draw">Open Draw</button>`}
+          <button type="button" class="btn" data-inspect-disease="${escapeHtml(disease.id)}">Inspect the chromosomes</button>
           ${primary ? `<a class="btn" href="#/atlas/chromosome/${escapeHtml(primary)}">Study chromosome ${escapeHtml(primary)}</a>` : ""}
         </div>
-        ${ready ? `<p class="muted">The case hides the disease name and the finding until interpretation. It uses ${escapeHtml(canonical?.case_title || "the canonical teaching case")}.</p>` : ""}
       </section>
 
       <details class="atlas-advanced">
@@ -301,6 +329,31 @@ function diseasePage(diseaseId, method) {
         ${referenceList(disease)}
       </details>
     </main>`;
+}
+
+/** Shortcuts from a disease page into Draw and each casework laboratory. */
+function diseaseJumpLinks(disease) {
+  const iscn = diseaseIscn(disease);
+  const id = encodeURIComponent(disease.id);
+  const ready = (lab) => LAB_PERIODS[lab]?.guidedDiseaseId === disease.id
+    || isCaseworkSpecimenReady(disease, lab, state.activityLinks, state.activityPacks, state.probes);
+  const fit = methodFit(disease);
+  const caseworkReason = (lab) => {
+    if (fit[lab] !== "appropriate") return lab === "fish" ? "Not a FISH teaching case" : "Not visible on a routine karyotype";
+    return lab === "fish" ? "No FISH assay is stored yet" : "No drawable teaching metaphase yet";
+  };
+  const link = (key, label, href, note, off) => off
+    ? `<span class="atlas-jump-link is-off" id="atlas-jump-${key}" aria-disabled="true" title="${escapeHtml(off)}"><strong>${escapeHtml(label)}</strong><small>${escapeHtml(off)}</small></span>`
+    : `<a class="atlas-jump-link" id="atlas-jump-${key}" href="${href}"><strong>${escapeHtml(label)}</strong><small>${escapeHtml(note)}</small></a>`;
+  return `
+    <nav class="atlas-jump" aria-label="Open this disease in another workspace">
+      <span class="eyebrow">Open this disease in</span>
+      <div class="atlas-jump-links">
+        ${link("karyotype", "Open Casework Karyotype", `#/patients/karyotype/open/${id}`, "Metaphase to analyze and report", ready("karyotype") ? "" : caseworkReason("karyotype"))}
+        ${link("fish", "Open Casework FISH", `#/patients/fish/open/${id}`, "Fluorescence field to score and report", ready("fish") ? "" : caseworkReason("fish"))}
+        ${link("draw", "Open Draw", `#/lab/chromosome/draw/formula/${encodeURIComponent(iscn)}`, "Karyogram from the teaching ISCN", iscn ? "" : "No written ISCN to draw")}
+      </div>
+    </nav>`;
 }
 
 function compareFigure(disease, compare, tone) {

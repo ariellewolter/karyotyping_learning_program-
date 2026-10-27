@@ -25,7 +25,7 @@ for root, dirs, files in os.walk(SRC):
     rel = Path(root).relative_to(SRC)
     (DEST / rel).mkdir(parents=True, exist_ok=True)
     for name in files:
-        if name == ".DS_Store":
+        if name == ".DS_Store" or "MacBook" in name or "conflict" in name:
             continue
         s = Path(root) / name
         if is_dataless(s):

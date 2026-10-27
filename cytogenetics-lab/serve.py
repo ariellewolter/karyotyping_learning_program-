@@ -50,6 +50,24 @@ class NoCacheHandler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", "8765"))
-    print(f"Cytogenetics lab at http://127.0.0.1:{port}/  (no-cache)")
-    ThreadingHTTPServer(("127.0.0.1", port), NoCacheHandler).serve_forever()
+    default_port = int(os.environ.get("PORT", "8765"))
+    port = default_port
+    server = None
+    for attempt_port in range(port, port + 5):
+        try:
+            server = ThreadingHTTPServer(("127.0.0.1", attempt_port), NoCacheHandler)
+            port = attempt_port
+            break
+        except OSError:
+            if "PORT" in os.environ or attempt_port == port + 4:
+                print(f"\n[Error] Port {default_port} is already in use by another process.")
+                print(f"If the lab is already running, open http://127.0.0.1:{default_port}/ in your browser.")
+                print(f"Or specify another port, e.g.: PORT={default_port + 1} python3 serve.py\n")
+                sys.exit(1)
+
+    print(f"\nCytogenetics Laboratory is running at:\n  http://127.0.0.1:{port}/\n\nPress Ctrl+C to stop the server.\n")
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nLaboratory server stopped.")
+        sys.exit(0)

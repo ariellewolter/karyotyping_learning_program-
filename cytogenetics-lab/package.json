@@ -23,7 +23,10 @@
     "check:analysis": "node scripts/check-analysis.mjs",
     "check:cohort": "node scripts/check-cohort.mjs",
     "check:polish": "node scripts/check-polish.mjs",
-    "check:interpretation": "python3 -m unittest discover -s reference-database/tests -v"
+    "check:interpretation": "python3 -m unittest discover -s reference-database/tests -v",
+    "check:atlas": "node scripts/check-atlas-links.mjs",
+    "check:student": "node scripts/test-student-experience.mjs",
+    "check:all": "npm run check:bands && npm run check:lookup && npm run check:structure && npm run check:fish && npm run check:drawing && npm run check:derivatives && npm run check:analysis && npm run check:cohort && npm run check:polish && npm run check:interpretation && npm run check:atlas && npm run check:student"
   },
   "devDependencies": {
     "electron": "^33.4.11",

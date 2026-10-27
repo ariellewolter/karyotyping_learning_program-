@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: cytogenetics-lab
+    runtime: python
+    plan: free
+    rootDir: cytogenetics-lab
+    buildCommand: pip install -r requirements-web.txt
+    startCommand: gunicorn web:application --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 120
+    healthCheckPath: /healthz
+    autoDeployTrigger: off
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
