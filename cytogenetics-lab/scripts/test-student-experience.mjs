@@ -156,6 +156,68 @@ for (const fc of fishCases) {
 }
 console.log(`✓ All ${fishCases.length} FISH cases have valid probes, localization/nuclei, and expected outcomes.`);
 
+console.log("6. Testing Casework 'Save to My Case Reports' throughout casework...");
+const {
+  saveDrawReport,
+  saveCaseworkReport,
+  listMyCaseReports,
+  myCaseReportsHTML,
+} = await import("../js/my-case-reports.js");
+const { caseSubmissionMarkup } = await import("../js/case-submission.js");
+
+// 6a. Test Draw save
+const drawSaved = saveDrawReport({ formula: "47,XX,+21", lineIndex: 0 });
+assert.ok(drawSaved && drawSaved.id, "Saved Draw report");
+assert.equal(drawSaved.kind, "draw");
+
+// 6b. Test Casework save to My Case Reports (draft)
+const draftCase = {
+  id: "test-karyo-case-1",
+  lab: "karyotype",
+  label: "Test Student Karyotype",
+  specimen: "Bone marrow",
+  observedCount: "46",
+  observedSex: "XY",
+  iscnDraft: "46,XY,t(9;22)(q34;q11.2)",
+  interpretation: "Ph positive clone detected",
+};
+const draftSaved = saveCaseworkReport(draftCase, { draft: true });
+assert.ok(draftSaved && draftSaved.id, "Saved draft Casework report");
+assert.equal(draftSaved.draft, true);
+assert.equal(draftSaved.kind, "karyotype");
+
+// 6c. Test Casework save to My Case Reports (submitted)
+const submittedCase = {
+  ...draftCase,
+  id: "test-karyo-case-2",
+  label: "Submitted Karyotype",
+  submission: {
+    caseId: "test-karyo-case-2",
+    lab: "karyotype",
+    caseLabel: "Submitted Karyotype",
+    submittedAt: new Date().toISOString(),
+    observations: {},
+    conclusions: { iscn: "46,XY,t(9;22)(q34;q11.2)" },
+  },
+};
+const subSaved = saveCaseworkReport(submittedCase);
+assert.ok(subSaved && subSaved.id, "Saved submitted Casework report");
+assert.equal(subSaved.draft, false);
+
+// 6d. Check listMyCaseReports and myCaseReportsHTML
+const allReports = listMyCaseReports();
+assert.ok(allReports.length >= 3, "All reports listed in portfolio");
+const reportsHTML = myCaseReportsHTML();
+assert.ok(reportsHTML.includes("Test Student Karyotype"), "Draft case listed in My Case Reports page HTML");
+assert.ok(reportsHTML.includes("Submitted Karyotype"), "Submitted case listed in My Case Reports page HTML");
+
+// 6e. Test caseSubmissionMarkup includes data-case-save-reports button
+const markup = caseSubmissionMarkup(draftCase);
+assert.ok(markup.includes("data-case-save-reports"), "Case report stage includes 'Save to My Case Reports' button");
+
+console.log("✓ All Casework 'Save to My Case Reports' functions, buttons, and views verified.");
+
 console.log("\n==========================================");
 console.log("ALL STUDENT EXPERIENCE TESTS PASSED (0 ERRORS)");
 console.log("==========================================\n");
+

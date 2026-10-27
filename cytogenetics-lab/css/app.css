@@ -1280,6 +1280,7 @@ body { background: #f5f6f6; }
 .fish-scope-layout { gap: 1.2rem; }
 .patient-workspace-page { max-width: 1680px; }
 .patient-workspace-header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin: 0 0 1rem; padding: .9rem 1.1rem; border: 1px solid #dbe2e7; border-radius: 12px; background: #17324f; color: #fff; }
+.patient-header-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
 .patient-workspace-header .crumb, .patient-workspace-header .eyebrow, .patient-workspace-header h2, .patient-workspace-header p:last-child { color: inherit; }
 .patient-workspace-header .crumb { margin: 0 0 .25rem; font-size: .8rem; opacity: .8; }
 .patient-workspace-header .eyebrow { margin: 0; opacity: .78; }
@@ -1406,7 +1407,7 @@ body { background: #f5f6f6; }
 @media (max-width: 1120px) { .patient-case-workbench { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.6fr); } .patient-notebook-column { grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } .patient-safety-note { grid-column: 1 / -1; } }
 @media (max-width: 1120px) { .teaching-case-list { max-height: 28rem; } .casework-side-column { grid-template-columns: 1fr; align-items: start; } }
 @media (max-width: 820px) { .casework-columns { grid-template-columns: 1fr; } .casework-side-column { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 720px) { .patient-workspace-header { align-items: start; flex-direction: column; } .patient-case-workbench { grid-template-columns: 1fr; } .patient-notebook-column { grid-column: auto; grid-template-columns: 1fr; } .patient-workspace-header > .button { width: 100%; text-align: center; } }
+@media (max-width: 720px) { .patient-workspace-header { align-items: start; flex-direction: column; } .patient-header-actions { width: 100%; display: flex; flex-direction: column; gap: .5rem; } .patient-header-actions > * { width: 100%; text-align: center; } .patient-case-workbench { grid-template-columns: 1fr; } .patient-notebook-column { grid-column: auto; grid-template-columns: 1fr; } .patient-workspace-header > .button { width: 100%; text-align: center; } }
 @media (max-width: 1320px) { .karyogram-workbench { grid-template-columns: 1fr; } .patient-karyogram .karyogram-compare { order: 2; } }
 @media (max-width: 900px) { .patient-karyogram .karyogram-board { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .patient-karyogram .karyogram-board { grid-template-columns: repeat(4, minmax(0, 1fr)); } }

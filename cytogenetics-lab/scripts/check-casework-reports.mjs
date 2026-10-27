@@ -142,7 +142,7 @@ function stage(record, id) {
   check("band entry accepts a prefixed band", !resolveBand(maps, "5", "5p15.2").error);
   check("student's deletion range and note are in the abnormality table", report.includes(markLocation(record.studentMarks[0])) && report.includes("Pale distal band missing on B"), markLocation(record.studentMarks[0]));
   check("student's mistaken breakpoint is kept as written", report.includes("46,XX,del(5)(p14)"));
-  check("ideogram figure for chromosome 5 is drawn", html.includes("Chromosome 5</figcaption>"));
+  check("ideogram figure for chromosome 5 is drawn", html.includes("Chromosome 5</strong>"));
   check("ideogram stage reads as recorded", stage(record, "ideogram") === "done");
   const leaks = answerLeaks(report, record, { allowName: true });
   check("no curated ISCN or teaching notes in the report", !leaks.length, leaks.join("; "));
@@ -164,7 +164,7 @@ function stage(record, id) {
   });
   const { report, html } = submit(record);
   console.log("\n# Reciprocal translocation (blinded)");
-  check("both affected chromosomes are drawn", html.includes("Chromosome 9</figcaption>") && html.includes("Chromosome 22</figcaption>"));
+  check("both affected chromosomes are drawn", html.includes("Chromosome 9</strong>") && html.includes("Chromosome 22</strong>"));
   check("both student marks are listed", report.includes("9q34.1") && report.includes("22q12.1"));
   check("both breakpoints from the student's ISCN are listed", /Breakpoint/.test(report) && report.includes("q34") && report.includes("q12"));
   check("student's mistaken breakpoint is kept as written", report.includes("46,XY,t(9;22)(q34;q12)"));

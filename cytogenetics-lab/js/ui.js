@@ -689,7 +689,7 @@ function karyotypeWorkspaceTabs(current, route, back, labName, specimenImageCoun
   const panel = (id, body) => `<section class="case-tab-panel" data-case-panel="${id}" ${id === active ? "" : "hidden"}>${body}${workspaceTabNav(KARYOTYPE_TABS, id)}</section>`;
   const field = (name, value, extra = "") => `name="${name}" form="patient-observation-form" ${extra} value="${escapeHtml(value || "")}"`;
   return `<main class="picker patient-page patient-workspace-page karyotype-page karyotype-tabbed">
-    <header class="patient-workspace-header"><div><p class="crumb"><a href="${back}">Casework</a> / ${escapeHtml(current.label || "Case")}</p><p class="eyebrow">${labName} · Case workspace</p><h2>${escapeHtml(current.label || "My case")}</h2><p>${escapeHtml(current.specimen || "De-identified case")}</p></div><a class="button" href="#/patients/${route.lab}/${encodeURIComponent(current.id)}/edit">Edit case details</a></header>
+    <header class="patient-workspace-header"><div><p class="crumb"><a href="${back}">Casework</a> / ${escapeHtml(current.label || "Case")}</p><p class="eyebrow">${labName} · Case workspace</p><h2>${escapeHtml(current.label || "My case")}</h2><p>${escapeHtml(current.specimen || "De-identified case")}</p></div><div class="patient-header-actions"><button type="button" class="button" data-case-save-reports>Save to My Case Reports</button><a class="button" href="#/patients/${route.lab}/${encodeURIComponent(current.id)}/edit">Edit case details</a></div></header>
     ${caseStagesMarkup(current, { active })}
     <div class="case-tab-panels">
       ${panel("intake", karyotypeIntakeMarkup(current, specimenImageCount))}
@@ -723,7 +723,7 @@ function karyotypeWorkspaceTabs(current, route, back, labName, specimenImageCoun
       ${panel("report", caseSubmissionMarkup(current))}
     </div>
     ${caseMode(current) === "guided" && current.source?.answerNotes ? `<section class="patient-section teaching-answer"><h3>Teaching notes</h3><p class="case-finding">${escapeHtml(current.source.answerNotes)}</p><small>Background for this guided example. The case stages and report are already filled.</small></section>` : ""}
-    <footer class="patient-workspace-actions">${teachingPracticeLink(current)}<a class="button" href="${back}">Back to Casework</a></footer>
+    <footer class="patient-workspace-actions"><button type="button" class="button" data-case-save-reports>Save to My Case Reports</button>${teachingPracticeLink(current)}<a class="button" href="${back}">Back to Casework</a></footer>
   </main>`;
 }
 
@@ -797,7 +797,7 @@ function fishWorkspaceTabs(current, route, back, labName) {
     <button class="button primary" type="submit">Save observations</button>
   </form>`;
   return `<main class="picker patient-page patient-workspace-page fish-page fish-tabbed">
-    <header class="patient-workspace-header"><div><p class="crumb"><a href="${back}">Casework</a> / ${escapeHtml(current.label || "Case")}</p><p class="eyebrow">${labName} · Case workspace</p><h2>${escapeHtml(current.label || "My case")}</h2><p>${[current.specimen, current.assay].filter(Boolean).map(escapeHtml).join(" · ") || "De-identified case"}</p></div><a class="button" href="#/patients/${route.lab}/${encodeURIComponent(current.id)}/edit">Edit case details</a></header>
+    <header class="patient-workspace-header"><div><p class="crumb"><a href="${back}">Casework</a> / ${escapeHtml(current.label || "Case")}</p><p class="eyebrow">${labName} · Case workspace</p><h2>${escapeHtml(current.label || "My case")}</h2><p>${[current.specimen, current.assay].filter(Boolean).map(escapeHtml).join(" · ") || "De-identified case"}</p></div><div class="patient-header-actions"><button type="button" class="button" data-case-save-reports>Save to My Case Reports</button><a class="button" href="#/patients/${route.lab}/${encodeURIComponent(current.id)}/edit">Edit case details</a></div></header>
     ${caseStagesMarkup(current, { active })}
     <div class="case-tab-panels">
       ${panel("intake", fishIntakeMarkup(current))}
@@ -806,7 +806,7 @@ function fishWorkspaceTabs(current, route, back, labName) {
       ${panel("report", caseSubmissionMarkup(current, { fishOpen: bench ? caseworkFishReport(current)?.summary?.open : null }))}
     </div>
     ${caseMode(current) === "guided" && current.source?.answerNotes ? `<section class="patient-section teaching-answer"><h3>Teaching notes</h3><p class="case-finding">${escapeHtml(current.source.answerNotes)}</p><small>Background for this guided example. The case stages and report are already filled.</small></section>` : ""}
-    <footer class="patient-workspace-actions">${teachingPracticeLink(current)}<a class="button" href="${back}">Back to Casework</a></footer>
+    <footer class="patient-workspace-actions"><button type="button" class="button" data-case-save-reports>Save to My Case Reports</button>${teachingPracticeLink(current)}<a class="button" href="${back}">Back to Casework</a></footer>
   </main>`;
 }
 
@@ -1457,11 +1457,31 @@ function bindPatientEvents(app, route) {
     const target = button.dataset.stageTarget;
     if (target) app.querySelector(`#${target}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }));
+  app.querySelectorAll("[data-case-save-reports]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!current) return;
+      saveCase({ ...pendingObservations(), reportMeta: reportMeta() });
+      const entry = saveCaseworkReport(current, { draft: !current.submission });
+      const originalText = button.textContent;
+      button.textContent = "✓ Saved to My Case Reports";
+      button.disabled = true;
+      const statusElements = app.querySelectorAll("#case-report-form [role='status'], [data-case-save-status]");
+      statusElements.forEach((el) => {
+        el.textContent = entry ? "Saved to My Case Reports on this device." : "Case saved on this device.";
+      });
+      setTimeout(() => {
+        button.textContent = originalText;
+        button.disabled = false;
+      }, 2000);
+    });
+  });
   app.querySelector("#case-report-form")?.addEventListener("submit", (event) => {
     event.preventDefault();
     if (current.submission) return;
-    saveCase({ reportMeta: reportMeta() });
-    event.currentTarget.querySelector("[role='status']").textContent = "Report details saved in this browser. The case is still a draft.";
+    saveCase({ ...pendingObservations(), reportMeta: reportMeta() });
+    saveCaseworkReport(current, { draft: true });
+    const status = event.currentTarget.querySelector("[role='status']");
+    if (status) status.textContent = "Report details saved to this device and My Case Reports. The case is still a draft.";
   });
   /** Lists empty fields only. The student can always continue. */
   function missingFieldsNote(working) {
@@ -1471,6 +1491,7 @@ function bindPatientEvents(app, route) {
   app.querySelector("#case-report-pdf")?.addEventListener("click", () => {
     if (!current.submission) {
       saveCase({ ...pendingObservations(), reportMeta: reportMeta() });
+      saveCaseworkReport(current, { draft: true });
       const note = missingFieldsNote(current);
       if (note && !window.confirm(`Export a draft PDF?${note}`)) return;
     }
@@ -1916,32 +1937,28 @@ function bindPatientEvents(app, route) {
   app.querySelector("#patient-observation-form")?.addEventListener("submit", (event) => {
     event.preventDefault();
     const formNode = event.currentTarget;
-    const cases = patientCases();
-    const updated = cases.map((item) => item.id === current.id ? {
-      ...item,
-      observation: formNode.elements.observation.value.trim(),
-      interpretation: formNode.elements.interpretation.value.trim(),
-      iscnDraft: readCaseIscnDraft(app, formNode, item.iscnDraft),
-      classification: formNode.elements.classification?.value || "",
-      scorableNuclei: formNode.elements.scorableNuclei?.value || "",
-      observedCount: formNode.elements.observedCount?.value.trim() || "",
-      observedSex: formNode.elements.observedSex?.value.trim() || "",
-      caseReview: route.lab === "karyotype" ? { image: Boolean(formNode.elements.confirmImage?.checked), formula: Boolean(formNode.elements.confirmFormula?.checked), events: Boolean(formNode.elements.confirmEvents?.checked) } : item.caseReview || null,
-      fishPatterns: route.lab === "fish" ? [...formNode.querySelectorAll(".fish-pattern-row")].slice(0, 20).map((row) => ({ pattern: row.querySelector("[name='fishPattern']").value.trim().slice(0, 80), count: row.querySelector("[name='fishCount']").value })) : item.fishPatterns || [],
-    } : item);
-    localStorage.setItem("cyto.patientCases", JSON.stringify(updated));
-    if (route.lab === "karyotype") {
-      patch({ route: parseHash() });
-      return;
-    }
-    let status = formNode.querySelector(".saved-note");
+    const fields = observationFields(formNode, current);
+    const changes = {
+      ...fields,
+      scorableNuclei: formNode.elements.scorableNuclei?.value ?? current.scorableNuclei ?? "",
+      caseReview: route.lab === "karyotype"
+        ? { image: Boolean(formNode.elements.confirmImage?.checked), formula: Boolean(formNode.elements.confirmFormula?.checked), events: Boolean(formNode.elements.confirmEvents?.checked) }
+        : current.caseReview || null,
+      fishPatterns: route.lab === "fish"
+        ? [...formNode.querySelectorAll(".fish-pattern-row")].slice(0, 20).map((row) => ({ pattern: row.querySelector("[name='fishPattern']").value.trim().slice(0, 80), count: row.querySelector("[name='fishCount']").value }))
+        : current.fishPatterns || [],
+    };
+    saveCase(changes);
+    saveCaseworkReport(current, { draft: !current.submission });
+    const target = event.submitter || formNode.querySelector("button[type='submit']") || formNode;
+    let status = target.parentElement?.querySelector?.(".saved-note");
     if (!status) {
       status = document.createElement("p");
       status.className = "saved-note";
       status.setAttribute("role", "status");
-      formNode.append(status);
+      target.after(status);
     }
-    status.textContent = "Observations saved in this browser.";
+    status.textContent = "Observations saved in this browser and updated in your case report.";
   });
   app.querySelector("#chromosome-read-form")?.addEventListener("submit", (event) => {
     event.preventDefault();

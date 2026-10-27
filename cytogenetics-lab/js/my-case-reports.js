@@ -3,7 +3,7 @@
  * with single or multi-select PDF export (one print dialog / one file).
  */
 import { escapeHtml } from "./util.js?v=20261025lib1";
-import { caseReportHTML, laboratoryLabel, metaphaseThumbs } from "./case-submission.js?v=20261026rep2";
+import { buildSubmission, caseReportHTML, laboratoryLabel, metaphaseThumbs } from "./case-submission.js?v=20261026rep2";
 import { sortedCrops } from "./case-report.js?v=20261026cs1";
 import { state } from "./store.js?v=20261006j";
 import { exportPrintablePDF } from "./print-export.js";
@@ -89,6 +89,13 @@ export function saveCaseworkReport(current, { draft = false } = {}) {
   const existing = entries.find((item) => item.key === key);
   const lab = current.lab === "fish" ? "fish" : "karyotype";
   const label = current.label || submission?.caseLabel || "Untitled case";
+  const summaryDetail = submission?.conclusions?.iscn
+    || current.iscnDraft
+    || submission?.conclusions?.interpretation
+    || current.interpretation
+    || current.finding
+    || current.observation
+    || (lab === "fish" ? "FISH scoring" : "Chromosome analysis");
   const entry = {
     id: existing?.id || newId(lab),
     key,
@@ -98,7 +105,7 @@ export function saveCaseworkReport(current, { draft = false } = {}) {
     title: label,
     summary: [
       laboratoryLabel(lab),
-      submission?.conclusions?.iscn || current.iscnDraft || "",
+      summaryDetail,
       draft && !submission ? "Draft" : "Submitted",
     ].filter(Boolean).join(" · "),
     draft: Boolean(draft && !submission),
@@ -111,28 +118,46 @@ export function saveCaseworkReport(current, { draft = false } = {}) {
 
 /** Pull in any submitted patient cases that are not yet listed. */
 function syncSubmittedCases(entries) {
-  const known = new Set(entries.map((item) => item.key));
+  const byKey = new Map(entries.map((item) => [item.key, item]));
+  let changed = false;
   const extras = [];
   for (const current of patientCases()) {
     if (!current.submission) continue;
     const key = caseworkKey(current.id);
-    if (known.has(key)) continue;
+    const existing = byKey.get(key);
     const lab = current.lab === "fish" ? "fish" : "karyotype";
-    extras.push({
+    const summary = [
+      laboratoryLabel(lab),
+      current.submission.conclusions?.iscn || current.iscnDraft || current.finding || current.observation || "",
+      "Submitted",
+    ].filter(Boolean).join(" · ");
+    if (existing) {
+      if (existing.draft || (current.submission.submittedAt && existing.savedAt !== current.submission.submittedAt)) {
+        existing.draft = false;
+        existing.savedAt = current.submission.submittedAt || existing.savedAt;
+        existing.summary = summary;
+        changed = true;
+      }
+      continue;
+    }
+    const created = {
       id: newId(lab),
       key,
       kind: lab,
       lab,
       caseId: current.id,
       title: current.label || current.submission.caseLabel || "Untitled case",
-      summary: [laboratoryLabel(lab), current.submission.conclusions?.iscn || current.iscnDraft || "", "Submitted"].filter(Boolean).join(" · "),
+      summary,
       draft: false,
       savedAt: current.submission.submittedAt || new Date().toISOString(),
       href: `#/patients/${lab}/${encodeURIComponent(current.id)}/report`,
-    });
+    };
+    byKey.set(key, created);
+    extras.push(created);
+    changed = true;
   }
-  if (!extras.length) return entries;
-  return writeStore([...extras, ...entries]);
+  if (!changed) return entries;
+  return writeStore([...extras, ...entries.map((item) => byKey.get(item.key) || item)]);
 }
 
 export function listMyCaseReports() {
@@ -223,19 +248,16 @@ async function sectionForEntry(entry) {
       body: `<p class="note">This case is no longer stored on this device. Open Casework and submit again to restore it.</p>`,
     };
   }
-  const snapshot = current.submission || null;
-  if (!snapshot) {
-    return {
-      title: entry.title || current.label || "Draft case",
-      kindLabel: KIND_LABEL[entry.kind] || "Casework",
-      body: `<p class="note">This case has not been submitted yet. Open the case report tab to submit or export a draft there.</p>`,
-    };
-  }
+  const snapshot = current.submission || buildSubmission(current, {
+    ...(current.reportMeta || {}),
+    reportedFinding: current.finding || current.observation || "",
+    fishWorkstation: current.fishWorkstation,
+  });
   const cropSource = { images: current.images, sortedChromosomes: snapshot.observations?.crops };
   const [crops, thumbs] = snapshot.lab === "fish"
     ? [[], []]
     : await Promise.all([sortedCrops(cropSource), metaphaseThumbs(current.images)]);
-  const html = caseReportHTML(snapshot, { maps: state.maps, crops, thumbs, draft: false });
+  const html = caseReportHTML(snapshot, { maps: state.maps, crops, thumbs, draft: !current.submission });
   return {
     title: entry.title || snapshot.caseLabel || "Case report",
     kindLabel: KIND_LABEL[entry.kind] || laboratoryLabel(snapshot.lab),
