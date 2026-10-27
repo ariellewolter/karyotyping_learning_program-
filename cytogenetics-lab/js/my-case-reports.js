@@ -6,6 +6,7 @@ import { escapeHtml } from "./util.js?v=20261025lib1";
 import { caseReportHTML, laboratoryLabel, metaphaseThumbs } from "./case-submission.js?v=20261026rep2";
 import { sortedCrops } from "./case-report.js?v=20261026cs1";
 import { state } from "./store.js?v=20261006j";
+import { exportPrintablePDF } from "./print-export.js";
 
 const STORE_KEY = "cyto.myCaseReports";
 const MAX_ENTRIES = 80;
@@ -200,16 +201,8 @@ function printShell(title, sections) {
 }
 
 function openPrint(html, title = "My Case Reports") {
-  const frame = document.createElement("iframe");
-  frame.setAttribute("title", title);
-  frame.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
-  frame.srcdoc = html;
-  frame.onload = () => {
-    frame.contentWindow?.focus();
-    frame.contentWindow?.print();
-    window.setTimeout(() => frame.remove(), 1000);
-  };
-  document.body.append(frame);
+  const stem = String(title || "my-case-reports").replace(/[^\w.+-]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 80) || "my-case-reports";
+  return exportPrintablePDF(html, { title, defaultName: `${stem}.pdf` });
 }
 
 async function sectionForEntry(entry) {
@@ -257,7 +250,7 @@ export async function exportMyCaseReportsPDF(entries) {
   const sections = [];
   for (const entry of list) sections.push(await sectionForEntry(entry));
   const title = list.length === 1 ? (list[0].title || "Case report") : `My Case Reports (${list.length})`;
-  openPrint(printShell(title, sections), title);
+  await openPrint(printShell(title, sections), title);
 }
 
 function formatWhen(iso) {

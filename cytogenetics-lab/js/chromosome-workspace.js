@@ -13,6 +13,7 @@ import { RESOLUTIONS } from "./banding.js?v=20261024c";
 import { validateStructure } from "./structure-validation.js?v=20261025sv1";
 import { bandInterval, bandLinks, formatMb } from "./band-links.js";
 import { downloadPNG, downloadSVG, safeFilename } from "./figure-export.js";
+import { exportPrintablePDF } from "./print-export.js";
 import { analyzeFormula, imbalanceNotation, resolveClones } from "./karyotype-analysis.js?v=20261026p6";
 import { copyNumberPlotSVG } from "./karyotype-analysis-view.js?v=20261026p6";
 import { OPERATIONS, composeFormula, splitBand, tokenFor } from "./iscn-builder.js";
@@ -561,16 +562,8 @@ export function formulaReportPrintHTML({ formula, lineIndex = 0, karyogramSvg = 
 function exportFormulaReportPDF(host) {
   const karyogramSvg = host.querySelector(".cw-karyogram")?.outerHTML || "";
   const html = formulaReportPrintHTML({ formula: ws.formula, lineIndex: ws.line, karyogramSvg });
-  const frame = document.createElement("iframe");
-  frame.setAttribute("title", "Formula report");
-  frame.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
-  frame.srcdoc = html;
-  frame.onload = () => {
-    frame.contentWindow?.focus();
-    frame.contentWindow?.print();
-    window.setTimeout(() => frame.remove(), 1000);
-  };
-  document.body.append(frame);
+  const stem = safeFilename(ws.formula || "formula-report", "pdf");
+  exportPrintablePDF(html, { title: "Formula report", defaultName: stem });
 }
 
 /** Workspace markup. Render inside an element with id "chromosome-workspace". */

@@ -4,11 +4,13 @@
  * from the packaged SQLite database — students do not need Python or npm.
  */
 
-import { app, BrowserWindow, protocol, shell } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, protocol, shell } from "electron";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { configureReferenceApi, respond as referenceRespond } from "./reference-api.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const SCHEME = "app";
 const TYPES = {
@@ -70,6 +72,41 @@ function referenceResponse(requestUrl) {
   return new Response(JSON.stringify(payload), { headers: { "content-type": "application/json" } });
 }
 
+async function saveHtmlAsPdf(parent, html, defaultName) {
+  const { canceled, filePath } = await dialog.showSaveDialog(parent || undefined, {
+    title: "Save PDF",
+    defaultPath: defaultName || "cytogenetics-report.pdf",
+    filters: [{ name: "PDF", extensions: ["pdf"] }],
+  });
+  if (canceled || !filePath) return { ok: false, canceled: true };
+
+  const tempHtml = path.join(app.getPath("temp"), `cytogenetics-print-${process.pid}-${Date.now()}.html`);
+  await fs.promises.writeFile(tempHtml, String(html || ""), "utf8");
+
+  const printer = new BrowserWindow({
+    show: false,
+    webPreferences: {
+      sandbox: true,
+      contextIsolation: true,
+      nodeIntegration: false,
+    },
+  });
+  try {
+    await printer.loadFile(tempHtml);
+    // Allow embedded data-URL images / SVG layout to settle before rasterizing.
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const pdf = await printer.webContents.printToPDF({
+      printBackground: true,
+      margins: { marginType: "default" },
+    });
+    await fs.promises.writeFile(filePath, pdf);
+    return { ok: true, filePath };
+  } finally {
+    if (!printer.isDestroyed()) printer.destroy();
+    await fs.promises.unlink(tempHtml).catch(() => {});
+  }
+}
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
@@ -83,6 +120,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      preload: path.join(__dirname, "preload.cjs"),
     },
   });
   win.webContents.setWindowOpenHandler(({ url: target }) => {
@@ -98,6 +136,10 @@ app.whenReady().then(() => {
     unpackedRoot: unpacked,
     // diseases.json is unpacked beside reference-database for teaching-index links
     labDataRoot: unpacked,
+  });
+  ipcMain.handle("desktop-save-pdf", async (event, { html, defaultName } = {}) => {
+    const parent = BrowserWindow.fromWebContents(event.sender);
+    return saveHtmlAsPdf(parent, html, defaultName);
   });
   protocol.handle(SCHEME, async (request) => {
     const url = new URL(request.url);

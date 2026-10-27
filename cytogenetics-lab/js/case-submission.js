@@ -11,6 +11,7 @@ import { resolveClones } from "./karyotype-analysis.js";
 import { describeKaryogram, inferPloidy, renderChromosome } from "./chromosomes.js?v=20261026p5";
 import { enrichRemakeReasons } from "./guided-case-artifacts.js?v=20261026rep2";
 import { piecesForExercise } from "./banding.js?v=20261024c";
+import { exportPrintablePDF } from "./print-export.js";
 
 export const SUBMISSION_FORMAT = "cytogenetics-lab-submission-v1";
 
@@ -579,16 +580,11 @@ export async function exportCaseReport(current, { maps, meta, reportedFinding } 
     ? [[], []]
     : await Promise.all([sortedCrops(cropSource), metaphaseThumbs(current.images)]);
   const html = reportHTML(snapshot, { maps, crops, thumbs, draft: !current.submission });
-  const frame = document.createElement("iframe");
-  frame.setAttribute("title", "Case report");
-  frame.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
-  frame.srcdoc = html;
-  frame.onload = () => {
-    frame.contentWindow?.focus();
-    frame.contentWindow?.print();
-    window.setTimeout(() => frame.remove(), 1000);
-  };
-  document.body.append(frame);
+  const caseId = String(snapshot.caseId || current.id || "case").replace(/[^\w.+-]+/g, "_").slice(0, 60) || "case";
+  await exportPrintablePDF(html, {
+    title: "Case report",
+    defaultName: `case-report-${caseId}.pdf`,
+  });
 }
 
 export function downloadSubmission(current) {
