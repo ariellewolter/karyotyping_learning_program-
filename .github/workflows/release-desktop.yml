@@ -1,5 +1,5 @@
 # Build Windows portable + Mac Apple Silicon packages and attach them to the tag release.
-# Runs on v* tags (and manual retry). Publishes only after both platform jobs succeed.
+# Uploads go straight to the GitHub Release (not Actions artifacts) to avoid storage quota limits.
 
 name: Release desktop
 
@@ -29,6 +29,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Resolve tag
+        id: tag
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          echo "name=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -44,12 +56,34 @@ jobs:
       - name: Package Windows portable
         run: npm run package:win
 
-      - name: Upload Windows artifact
-        uses: actions/upload-artifact@v4
+      - name: Attach Windows portable to release
+        uses: softprops/action-gh-release@v2
         with:
-          name: windows-portable
-          path: cytogenetics-lab/dist/*.exe
-          if-no-files-found: error
+          tag_name: ${{ steps.tag.outputs.name }}
+          name: Cytogenetics Laboratory ${{ steps.tag.outputs.version }}
+          draft: false
+          make_latest: true
+          fail_on_unmatched_files: true
+          files: cytogenetics-lab/dist/*.exe
+          body: |
+            ## Self-contained student package
+
+            Students only need to download and open the app — **no Python, no npm, no separate server**.
+
+            The cytogenetics reference database ships inside the app (SQLite via Node).
+
+            ### Downloads
+            - **Windows (portable):** `Cytogenetics Laboratory *.exe` — double-click to run (no installer).
+            - **Mac (Apple Silicon):** `.dmg` or `-mac.zip` (attached when the Mac job finishes).
+
+            ### Windows trust warning (unsigned build)
+            This educational build is **not code-signed**. Chrome or SmartScreen may say the file “isn’t commonly downloaded” or is unrecognized. Choose **Keep**, then **More info → Run anyway** if Windows blocks it. That warning is about reputation, not a broken package.
+
+            ### First open on Mac (unsigned build)
+            Right-click the app → **Open** → confirm. Gatekeeper may block a normal double-click once.
+
+            ### What’s included
+            Guided karyotyping, FISH casework, case reports, PDF export via a Save dialog, and the full reference library — offline in one package.
 
   build-mac:
     runs-on: macos-latest
@@ -58,6 +92,18 @@ jobs:
         working-directory: cytogenetics-lab
     steps:
       - uses: actions/checkout@v4
+
+      - name: Resolve tag
+        id: tag
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          echo "name=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-node@v4
         with:
@@ -76,49 +122,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
         run: npm run package:mac
 
-      - name: Upload Mac artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: mac-arm64
-          path: |
-            cytogenetics-lab/dist/*.dmg
-            cytogenetics-lab/dist/*-mac.zip
-          if-no-files-found: error
-
-  publish-release:
-    needs: [build-windows, build-mac]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Resolve tag
-        id: tag
-        shell: bash
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            TAG="${{ inputs.tag }}"
-          else
-            TAG="${GITHUB_REF_NAME}"
-          fi
-          echo "name=${TAG}" >> "$GITHUB_OUTPUT"
-          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
-
-      - name: Download Windows package
-        uses: actions/download-artifact@v4
-        with:
-          name: windows-portable
-          path: release-assets
-
-      - name: Download Mac packages
-        uses: actions/download-artifact@v4
-        with:
-          name: mac-arm64
-          path: release-assets
-
-      - name: List assets
-        run: ls -la release-assets
-
-      - name: Publish GitHub Release
+      - name: Attach Mac packages to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.name }}
@@ -126,7 +130,9 @@ jobs:
           draft: false
           make_latest: true
           fail_on_unmatched_files: true
-          files: release-assets/*
+          files: |
+            cytogenetics-lab/dist/*.dmg
+            cytogenetics-lab/dist/*-mac.zip
           body: |
             ## Self-contained student package
 
