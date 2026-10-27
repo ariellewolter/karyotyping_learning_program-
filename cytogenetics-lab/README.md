@@ -23,7 +23,9 @@ npm install
 npm run desktop
 ```
 
-`npm run package` writes a Windows installer and a portable app to `dist/`.
+Tagged releases (`v*`) build student packages in GitHub Actions: one **Windows portable** `.exe` and **Mac Apple Silicon** `.dmg` / `-mac.zip`.
+
+Those builds are **not code-signed**. Windows may show SmartScreen or Chrome “isn’t commonly downloaded” — choose **Keep** / **More info → Run anyway**. Mac Gatekeeper: right-click → **Open** the first time.
 
 ## What students can do
 

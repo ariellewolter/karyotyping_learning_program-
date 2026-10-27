@@ -1,6 +1,6 @@
 {
   "name": "cytogenetics-lab-instruction",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": true,
   "type": "module",
   "main": "electron/main.js",
@@ -62,13 +62,8 @@
     },
     "win": {
       "target": [
-        "nsis",
         "portable"
       ]
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
     }
   },
   "dependencies": {

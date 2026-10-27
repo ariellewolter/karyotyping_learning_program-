@@ -107,6 +107,12 @@ async function saveHtmlAsPdf(parent, html, defaultName) {
   }
 }
 
+function preloadScript() {
+  // Packaged app lives in app.asar; resolve preload from the app root, not __dirname alone.
+  if (app.isPackaged) return path.join(app.getAppPath(), "electron", "preload.cjs");
+  return path.join(__dirname, "preload.cjs");
+}
+
 function createWindow() {
   const win = new BrowserWindow({
     width: 1280,
@@ -120,7 +126,7 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
-      preload: path.join(__dirname, "preload.cjs"),
+      preload: preloadScript(),
     },
   });
   win.webContents.setWindowOpenHandler(({ url: target }) => {
