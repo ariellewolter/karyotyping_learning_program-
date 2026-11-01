@@ -213,12 +213,109 @@ function navKey(route) {
   return "";
 }
 
+const GITHUB_REPO = "ariellewolter/karyotyping_learning_program-";
+const DESKTOP_VERSION = "1.0.5";
+
+const DOWNLOAD_ASSETS = {
+  mac: {
+    platform: "mac",
+    label: "Mac (Apple Silicon)",
+    file: `Cytogenetics.Laboratory-${DESKTOP_VERSION}-arm64.dmg`,
+    ext: ".dmg",
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${DESKTOP_VERSION}/Cytogenetics.Laboratory-${DESKTOP_VERSION}-arm64.dmg`,
+    size: "107 MB",
+    tip: "Right-click the app and choose Open if Mac Gatekeeper prompts on first launch.",
+  },
+  win: {
+    platform: "win",
+    label: "Windows (Portable)",
+    file: `Cytogenetics.Laboratory.${DESKTOP_VERSION}.exe`,
+    ext: ".exe",
+    url: `https://github.com/${GITHUB_REPO}/releases/download/v${DESKTOP_VERSION}/Cytogenetics.Laboratory.${DESKTOP_VERSION}.exe`,
+    size: "78 MB",
+    tip: "Portable app (no installer). If Windows SmartScreen prompts, click 'More info' → 'Run anyway'.",
+  },
+  all: `https://github.com/${GITHUB_REPO}/releases/latest`,
+};
+
+function detectUserOS() {
+  if (typeof navigator === "undefined") return "win";
+  const ua = (navigator.userAgent || "").toLowerCase();
+  const plat = (navigator.userAgentData?.platform || navigator.platform || "").toLowerCase();
+  if (plat.includes("mac") || ua.includes("macintosh") || ua.includes("mac os")) return "mac";
+  if (plat.includes("win") || ua.includes("windows")) return "win";
+  return "win";
+}
+
+function desktopDownloadLink() {
+  const os = detectUserOS();
+  const asset = DOWNLOAD_ASSETS[os] || DOWNLOAD_ASSETS.win;
+  return {
+    url: asset.url,
+    filename: asset.file,
+    label: asset.label,
+    os,
+  };
+}
+
+function homeDownloadBanner() {
+  const isDesktop = typeof window !== "undefined" && (Boolean(window.cytogeneticsDesktop) || location.protocol === "app:");
+  if (isDesktop) return "";
+
+  const os = detectUserOS();
+  const primary = os === "mac" ? DOWNLOAD_ASSETS.mac : DOWNLOAD_ASSETS.win;
+  const secondary = os === "mac" ? DOWNLOAD_ASSETS.win : DOWNLOAD_ASSETS.mac;
+
+  const macIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.38c.62-.75 1.04-1.8 0.93-2.85-.9.04-1.99.6-2.64 1.35-.57.66-1.07 1.72-.93 2.74 1.01.08 2.02-.49 2.64-1.24z"/></svg>`;
+  const winIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.45l7.3-1v7.05H3V5.45zm0 8.05h7.3v7.05L3 19.55v-6.05zm8.7-9.35L21 2.5v9H11.7V4.15zm9.3 8.35v9l-9.3-1.65v-7.35H21z"/></svg>`;
+  const dlArrow = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>`;
+
+  const primaryIcon = os === "mac" ? macIcon : winIcon;
+
+  return `
+    <section class="home-dl-banner" id="home-dl-banner" aria-label="Download Desktop App">
+      <div class="dl-banner-body">
+        <div class="dl-banner-text">
+          <div class="dl-banner-tag">
+            <span class="dl-tag-pulse" aria-hidden="true"></span>
+            <span>Offline Desktop Edition · v${DESKTOP_VERSION}</span>
+          </div>
+          <h2 class="dl-banner-title">Download Cytogenetics Lab for Your Computer</h2>
+          <p class="dl-banner-desc">
+            Download and run offline on your laptop. Includes all karyotyping cases, chromosome maps, FISH simulations, and SQLite reference databases — <strong>no Python, no server, and no setup required</strong>.
+          </p>
+        </div>
+        <div class="dl-banner-cta">
+          <a class="button dl-primary-btn" id="home-auto-dl-btn" href="${primary.url}" download="${primary.file}" data-platform="${primary.platform}">
+            <span class="dl-btn-icon">${primaryIcon}</span>
+            <div class="dl-btn-labels">
+              <span class="dl-btn-main">Download for ${primary.label}</span>
+              <span class="dl-btn-sub">${primary.ext} (${primary.size}) · Auto-detected</span>
+            </div>
+            <span class="dl-btn-arrow">${dlArrow}</span>
+          </a>
+          <div class="dl-alt-row">
+            <span>Also available:</span>
+            <a href="${secondary.url}" download="${secondary.file}" class="dl-alt-link">${secondary.label} (${secondary.ext})</a>
+            <span class="dl-dot" aria-hidden="true">·</span>
+            <a href="${DOWNLOAD_ASSETS.all}" target="_blank" rel="noopener" class="dl-alt-link">All Downloads ↗</a>
+          </div>
+          <p class="dl-hint">
+            <strong>Tip:</strong> ${escapeHtml(primary.tip)}
+          </p>
+        </div>
+      </div>
+    </section>`;
+}
+
 function navLink(href, label, id, current) {
   return `<a href="${href}"${current === id ? ' aria-current="page"' : ""}>${label}</a>`;
 }
 
 function shell(inner) {
   const current = navKey(parseHash());
+  const isDesktop = typeof window !== "undefined" && (Boolean(window.cytogeneticsDesktop) || location.protocol === "app:");
+  const dlLink = desktopDownloadLink();
   return `
     <header class="topbar">
       <a class="brand" href="#/">
@@ -236,6 +333,10 @@ function shell(inner) {
         ${navLink("#/reports", "My Case Reports", "reports", current)}
         ${navLink("#/help", "Help", "help", current)}
         ${navLink("#/credits", "Credits", "credits", current)}
+        ${isDesktop ? "" : `<a class="topnav-dl-btn" id="topbar-download-btn" href="${dlLink.url}" download="${dlLink.filename}" title="Download desktop app for offline use">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          <span>Download App</span>
+        </a>`}
       </nav>
     </header>
     ${inner}
@@ -270,6 +371,7 @@ function bindChrome() {
 function homeView() {
   return `
     <main class="home home-labs design-home">
+      ${homeDownloadBanner()}
       <header class="lab-home-heading"><h2>Two laboratory periods</h2><p>Each period starts with a short Learn section, then Casework: one guided example, then a different case of your own. Draw is a separate workspace for any ISCN formula. The <a href="#/library">Reference library</a> searches stored records and does not start a graded case.</p></header>
       <section class="lab-hubs">
         ${labHomeColumn("karyotype", "Lab 1 · Karyotyping and Chromosome Analysis", "Anatomy · Bands · Karyotypes · ISCN", "Learn chromosome analysis, then investigate a karyotype. No FISH is required.")}
